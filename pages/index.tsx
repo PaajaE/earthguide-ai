@@ -1,17 +1,33 @@
 import { Chat } from "@/components/Chat/Chat";
 import { Navbar } from "@/components/Mobile/Navbar";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
-import { ChatBody, Conversation, KeyValuePair, Message, OpenAIModel, OpenAIModelID, OpenAIModels } from "@/types";
-import { cleanConversationHistory, cleanSelectedConversation } from "@/utils/app/clean";
+import {
+  ChatBody,
+  Conversation,
+  KeyValuePair,
+  Message,
+  OpenAIModel,
+  OpenAIModelID,
+  OpenAIModels,
+} from "@/types";
+import {
+  cleanConversationHistory,
+  cleanSelectedConversation,
+} from "@/utils/app/clean";
 import { DEFAULT_SYSTEM_PROMPT } from "@/utils/app/const";
-import { saveConversation, saveConversations, updateConversation } from "@/utils/app/conversation";
+import {
+  saveConversation,
+  saveConversations,
+  updateConversation,
+} from "@/utils/app/conversation";
 import { IconArrowBarLeft, IconArrowBarRight } from "@tabler/icons-react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
-  const [selectedConversation, setSelectedConversation] = useState<Conversation>();
+  const [selectedConversation, setSelectedConversation] =
+    useState<Conversation>();
   const [loading, setLoading] = useState<boolean>(false);
   const [models, setModels] = useState<OpenAIModel[]>([]);
   const [lightMode, setLightMode] = useState<"dark" | "light">("dark");
@@ -26,7 +42,7 @@ export default function Home() {
     if (window.innerWidth < 640) {
       setShowSidebar(false);
     }
-  }, [selectedConversation])
+  }, [selectedConversation]);
 
   const handleSend = async (message: Message, isResend: boolean) => {
     if (selectedConversation) {
@@ -38,12 +54,12 @@ export default function Home() {
 
         updatedConversation = {
           ...selectedConversation,
-          messages: [...updatedMessages, message]
+          messages: [...updatedMessages, message],
         };
       } else {
         updatedConversation = {
           ...selectedConversation,
-          messages: [...selectedConversation.messages, message]
+          messages: [...selectedConversation.messages, message],
         };
       }
 
@@ -56,15 +72,15 @@ export default function Home() {
         model: updatedConversation.model,
         messages: updatedConversation.messages,
         key: apiKey,
-        prompt: updatedConversation.prompt
+        prompt: updatedConversation.prompt,
       };
 
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
-          "Content-Type": "application/json"
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(chatBody)
+        body: JSON.stringify(chatBody),
       });
 
       if (!response.ok) {
@@ -101,29 +117,34 @@ export default function Home() {
 
         if (isFirst) {
           isFirst = false;
-          const updatedMessages: Message[] = [...updatedConversation.messages, { role: "assistant", content: chunkValue }];
+          const updatedMessages: Message[] = [
+            ...updatedConversation.messages,
+            { role: "assistant", content: chunkValue },
+          ];
 
           updatedConversation = {
             ...updatedConversation,
-            messages: updatedMessages
+            messages: updatedMessages,
           };
 
           setSelectedConversation(updatedConversation);
         } else {
-          const updatedMessages: Message[] = updatedConversation.messages.map((message, index) => {
-            if (index === updatedConversation.messages.length - 1) {
-              return {
-                ...message,
-                content: text
-              };
-            }
+          const updatedMessages: Message[] = updatedConversation.messages.map(
+            (message, index) => {
+              if (index === updatedConversation.messages.length - 1) {
+                return {
+                  ...message,
+                  content: text,
+                };
+              }
 
-            return message;
-          });
+              return message;
+            }
+          );
 
           updatedConversation = {
             ...updatedConversation,
-            messages: updatedMessages
+            messages: updatedMessages,
           };
 
           setSelectedConversation(updatedConversation);
@@ -132,13 +153,15 @@ export default function Home() {
 
       saveConversation(updatedConversation);
 
-      const updatedConversations: Conversation[] = conversations.map((conversation) => {
-        if (conversation.id === selectedConversation.id) {
-          return updatedConversation;
-        }
+      const updatedConversations: Conversation[] = conversations.map(
+        (conversation) => {
+          if (conversation.id === selectedConversation.id) {
+            return updatedConversation;
+          }
 
-        return conversation;
-      });
+          return conversation;
+        }
+      );
 
       if (updatedConversations.length === 0) {
         updatedConversations.push(updatedConversation);
@@ -156,11 +179,11 @@ export default function Home() {
     const response = await fetch("/api/models", {
       method: "POST",
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
-        key
-      })
+        key,
+      }),
     });
 
     if (!response.ok) {
@@ -201,7 +224,7 @@ export default function Home() {
       name: `Conversation ${lastConversation ? lastConversation.id + 1 : 1}`,
       messages: [],
       model: OpenAIModels[OpenAIModelID.GPT_3_5],
-      prompt: DEFAULT_SYSTEM_PROMPT
+      prompt: DEFAULT_SYSTEM_PROMPT,
     };
 
     const updatedConversations = [...conversations, newConversation];
@@ -216,12 +239,16 @@ export default function Home() {
   };
 
   const handleDeleteConversation = (conversation: Conversation) => {
-    const updatedConversations = conversations.filter((c) => c.id !== conversation.id);
+    const updatedConversations = conversations.filter(
+      (c) => c.id !== conversation.id
+    );
     setConversations(updatedConversations);
     saveConversations(updatedConversations);
 
     if (updatedConversations.length > 0) {
-      setSelectedConversation(updatedConversations[updatedConversations.length - 1]);
+      setSelectedConversation(
+        updatedConversations[updatedConversations.length - 1]
+      );
       saveConversation(updatedConversations[updatedConversations.length - 1]);
     } else {
       setSelectedConversation({
@@ -229,22 +256,43 @@ export default function Home() {
         name: "New conversation",
         messages: [],
         model: OpenAIModels[OpenAIModelID.GPT_3_5],
-        prompt: DEFAULT_SYSTEM_PROMPT
+        prompt: DEFAULT_SYSTEM_PROMPT,
       });
       localStorage.removeItem("selectedConversation");
     }
   };
 
-  const handleUpdateConversation = (conversation: Conversation, data: KeyValuePair) => {
+  const handleUpdateConversation = (
+    conversation: Conversation,
+    data: KeyValuePair
+  ) => {
     const updatedConversation = {
       ...conversation,
-      [data.key]: data.value
+      [data.key]: data.value,
     };
 
-    const { single, all } = updateConversation(updatedConversation, conversations);
+    const { single, all } = updateConversation(
+      updatedConversation,
+      conversations
+    );
 
     setSelectedConversation(single);
     setConversations(all);
+  };
+
+  const getIP = () => {
+    console.log("fetch IP");
+    var requestOptions = {
+      method: "GET",
+    };
+
+    fetch(
+      "https://api.geoapify.com/v1/ipinfo?&apiKey=12ce59f76de1435e87e69ec2085a6758",
+      requestOptions
+    )
+      .then((response) => response.json())
+      .then((result) => console.log(result))
+      .catch((error) => console.log("error", error));
   };
 
   useEffect(() => {
@@ -264,15 +312,21 @@ export default function Home() {
 
     const conversationHistory = localStorage.getItem("conversationHistory");
     if (conversationHistory) {
-      const parsedConversationHistory: Conversation[] = JSON.parse(conversationHistory);
-      const cleanedConversationHistory = cleanConversationHistory(parsedConversationHistory);
+      const parsedConversationHistory: Conversation[] =
+        JSON.parse(conversationHistory);
+      const cleanedConversationHistory = cleanConversationHistory(
+        parsedConversationHistory
+      );
       setConversations(cleanedConversationHistory);
     }
 
     const selectedConversation = localStorage.getItem("selectedConversation");
     if (selectedConversation) {
-      const parsedSelectedConversation: Conversation = JSON.parse(selectedConversation);
-      const cleanedSelectedConversation = cleanSelectedConversation(parsedSelectedConversation);
+      const parsedSelectedConversation: Conversation =
+        JSON.parse(selectedConversation);
+      const cleanedSelectedConversation = cleanSelectedConversation(
+        parsedSelectedConversation
+      );
       setSelectedConversation(cleanedSelectedConversation);
     } else {
       setSelectedConversation({
@@ -280,32 +334,29 @@ export default function Home() {
         name: "New conversation",
         messages: [],
         model: OpenAIModels[OpenAIModelID.GPT_3_5],
-        prompt: DEFAULT_SYSTEM_PROMPT
+        prompt: DEFAULT_SYSTEM_PROMPT,
       });
     }
 
     fetchModels(apiKey);
   }, []);
 
+  useEffect(() => {
+    getIP();
+  }, []);
+
   return (
     <>
       <Head>
         <title>Chatbot UI</title>
-        <meta
-          name="description"
-          content="ChatGPT but better."
-        />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        />
-        <link
-          rel="icon"
-          href="/favicon.ico"
-        />
+        <meta name="description" content="ChatGPT but better." />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="icon" href="/favicon.ico" />
       </Head>
       {selectedConversation && (
-        <div className={`flex flex-col h-screen w-screen text-white ${lightMode}`}>
+        <div
+          className={`flex flex-col h-screen w-screen text-white ${lightMode}`}
+        >
           <div className="sm:hidden w-full fixed top-0">
             <Navbar
               selectedConversation={selectedConversation}
