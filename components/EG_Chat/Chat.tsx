@@ -3,7 +3,7 @@ import { FC, useEffect, useRef, useState } from "react";
 import { ChatInput } from "./ChatInput";
 import { ChatLoader } from "./ChatLoader";
 import { ChatMessage } from "./ChatMessage";
-import { ModelSelect } from "./ModelSelect";
+import { ModelSelect } from "./ModalSelect";
 import { Regenerate } from "./Regenerate";
 import { SystemPrompt } from "./SystemPrompt";
 
@@ -46,7 +46,7 @@ export const Chat: FC<Props> = ({
   }, [conversation.messages]);
 
   return (
-    <div className="flex-1 overflow-scroll dark:bg-[#343541]">
+    <div className="flex-1 overflow-scroll bg-[#FAFAFA] px-4 py-3">
       {modelError ? (
         <div className="flex flex-col justify-center mx-auto h-full w-[300px] sm:w-[500px] space-y-6">
           <div className="text-center text-red-500">Error fetching models.</div>
@@ -96,9 +96,9 @@ export const Chat: FC<Props> = ({
               </>
             ) : (
               <>
-                <div className="flex justify-center py-2 text-neutral-500 bg-neutral-100 dark:bg-[#444654] dark:text-neutral-200 text-sm border border-b-neutral-300 dark:border-none">
+                {/* <div className="flex justify-center py-2 text-neutral-500 bg-neutral-100 dark:bg-[#444654] dark:text-neutral-200 text-sm border border-b-neutral-300 dark:border-none">
                   Model: {conversation.model.name}
-                </div>
+                </div> */}
 
                 {conversation.messages.map((message, index) => (
                   <ChatMessage
@@ -111,7 +111,7 @@ export const Chat: FC<Props> = ({
                 {loading && <ChatLoader />}
 
                 <div
-                  className="bg-white dark:bg-[#343541] h-24 sm:h-32"
+                  className="bg-white bg-[#FAFAFA] h-24 sm:h-32"
                   ref={messagesEndRef}
                 />
               </>

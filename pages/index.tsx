@@ -1,14 +1,18 @@
-import { Chat } from "@/components/Chat/Chat";
+import { Chat } from "@/components/EG_Chat/Chat";
 import { Navbar } from "@/components/Mobile/Navbar";
 import { Sidebar } from "@/components/Sidebar/Sidebar";
+import mockConversation, { mockedEGMessage } from "@/mocks/api-result-mock";
 import {
   ChatBody,
   Conversation,
+  EarthGuideQuestionBody,
+  EarthGuideQuestionResponse,
   KeyValuePair,
   Message,
   OpenAIModel,
   OpenAIModelID,
   OpenAIModels,
+  TypeOfPrompt,
 } from "@/types";
 import {
   cleanConversationHistory,
@@ -36,6 +40,7 @@ export default function Home() {
   const [apiKey, setApiKey] = useState<string>("");
   const [messageError, setMessageError] = useState<boolean>(false);
   const [modelError, setModelError] = useState<boolean>(false);
+  const [machineId, setMachineId] = useState<string>("");
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -74,6 +79,22 @@ export default function Home() {
         key: apiKey,
         prompt: updatedConversation.prompt,
       };
+
+      const lastUserInput =
+        updatedConversation.messages[updatedConversation.messages.length - 1]
+          .content;
+
+      const earthGuideResponse: Promise<EarthGuideQuestionResponse> =
+        fetchEGQuestion({
+          type_of_prompt: TypeOfPrompt.TEXT_PROMPT,
+          text: lastUserInput,
+          user_identification: "",
+          language_of_browser: "",
+          date_and_time: "",
+          city_of_user: "",
+          gps: "",
+          type_of_device: "mobile",
+        });
 
       const response = await fetch("/api/chat", {
         method: "POST",
@@ -151,25 +172,45 @@ export default function Home() {
         }
       }
 
-      saveConversation(updatedConversation);
+      earthGuideResponse
+        .then((data: EarthGuideQuestionResponse) => {
+          console.log("Question submitted successfully!");
+          console.log(data);
 
-      const updatedConversations: Conversation[] = conversations.map(
-        (conversation) => {
-          if (conversation.id === selectedConversation.id) {
-            return updatedConversation;
+          const updatedMessages: Message[] = [
+            ...updatedConversation.messages,
+            { role: "earth.guide", content: data.formated_text },
+          ];
+
+          const enrichedConversation: Conversation = {
+            ...updatedConversation,
+            messages: updatedMessages,
+          };
+
+          saveConversation(enrichedConversation);
+          setSelectedConversation(enrichedConversation);
+
+          const updatedConversations: Conversation[] = conversations.map(
+            (conversation) => {
+              if (conversation.id === selectedConversation.id) {
+                return enrichedConversation;
+              }
+
+              return conversation;
+            }
+          );
+
+          if (updatedConversations.length === 0) {
+            updatedConversations.push(updatedConversation);
           }
 
-          return conversation;
-        }
-      );
+          setConversations(updatedConversations);
 
-      if (updatedConversations.length === 0) {
-        updatedConversations.push(updatedConversation);
-      }
-
-      setConversations(updatedConversations);
-
-      saveConversations(updatedConversations);
+          saveConversations(updatedConversations);
+        })
+        .catch(() => {
+          console.log("There was an error submitting the question.");
+        });
 
       setMessageIsStreaming(false);
     }
@@ -280,19 +321,18 @@ export default function Home() {
     setConversations(all);
   };
 
-  const getIP = () => {
-    console.log("fetch IP");
-    var requestOptions = {
-      method: "GET",
-    };
+  const fetchIpData = async () => {
+    const response = await fetch("/api/getIp");
 
-    fetch(
-      "https://api.geoapify.com/v1/ipinfo?&apiKey=12ce59f76de1435e87e69ec2085a6758",
-      requestOptions
-    )
-      .then((response) => response.json())
-      .then((result) => console.log(result))
-      .catch((error) => console.log("error", error));
+    if (!response.ok) {
+      return;
+    }
+
+    const data = await response.json();
+
+    if (!data) {
+      return;
+    }
   };
 
   useEffect(() => {
@@ -341,8 +381,52 @@ export default function Home() {
     fetchModels(apiKey);
   }, []);
 
+  function getMachineId() {
+    let machineId = localStorage.getItem("MachineId");
+
+    if (!machineId) {
+      machineId = crypto.randomUUID();
+      localStorage.setItem("MachineId", machineId);
+    }
+
+    return machineId;
+  }
+
+  const fetchEGQuestion = (
+    requestBody: EarthGuideQuestionBody
+  ): Promise<EarthGuideQuestionResponse> => {
+    return new Promise<EarthGuideQuestionResponse>((resolve, reject) => {
+      fetch("/api/eg-question", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(requestBody),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            reject();
+          }
+
+          return response.json();
+        })
+        .then((data: EarthGuideQuestionResponse) => {
+          if (!data) {
+            reject();
+          }
+
+          resolve(data);
+        })
+        .catch(() => {
+          reject();
+        });
+    });
+  };
+
   useEffect(() => {
-    getIP();
+    const machId = getMachineId();
+    setMachineId(machId);
+    // fetchIpData();
   }, []);
 
   return (
