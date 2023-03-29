@@ -174,14 +174,14 @@ export const ChatMessage: FC<Props> = ({ message, lightMode }) => {
           <Button
             text="More places like these"
             iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
-            bgColor="rgba(255,86,0,0.41)"
+            bgColor="#d4845c"
             typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
             onClick={handleClick}
           />
           <Button
             text="Show me lesser-known places"
             iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
-            bgColor="rgba(255,86,0,0.41)"
+            bgColor="#d4845c"
             typeOfPrompt={TypeOfPrompt.MORE_PLACES}
             onClick={handleClick}
           />
