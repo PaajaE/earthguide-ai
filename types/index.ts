@@ -67,7 +67,8 @@ export interface EarthGuideQuestionBody {
 
 export enum WhereToDisplay {
   BODY = 'body',
-  PANEL = 'panel'
+  PANEL_DESTINATION = 'panel_dest',
+  PANEL_FLIGHTS = 'panel_flights'
 }
 
 export enum TypeOfPrompt {
@@ -96,4 +97,14 @@ export enum DeviceTypes {
   COMPUTER = 'computer',
   MOBILE = 'mobile',
   TABLET = 'tablet'
+}
+
+export interface PanelData {
+  type: WhereToDisplay;
+  content: string;
+}
+
+export interface ToggleItem {
+  type: WhereToDisplay;
+  label: string;
 }

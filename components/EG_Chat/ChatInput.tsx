@@ -69,7 +69,10 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
   }, [content]);
 
   return (
-    <div className="fixed sm:absolute bottom-0 sm:bottom-8 w-full sm:w-1/2 px-4 pb-4 left-0 sm:left-[280px] lg:left-[200px] right-0 ml-auto mr-auto bg-[#FAFAFA]">
+    <div
+      className="fixed bottom-0 px-8 pb-4 left-0 right-0 bg-[#FAFAFA]"
+      style={{ width: "inherit" }}
+    >
       <textarea
         ref={textareaRef}
         className="pl-4 pr-8 py-3 w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"
@@ -89,7 +92,7 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
       />
 
       <button
-        className="absolute right-5 bottom-[30px] focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
+        className="absolute right-10 bottom-[32px] focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
         onClick={handleSend}
       >
         <IconSend size={18} color={"#999"} />

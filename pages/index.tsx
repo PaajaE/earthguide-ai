@@ -14,7 +14,9 @@ import {
   OpenAIModel,
   OpenAIModelID,
   OpenAIModels,
+  PanelData,
   TypeOfPrompt,
+  WhereToDisplay,
 } from "@/types";
 import {
   cleanConversationHistory,
@@ -32,6 +34,7 @@ import { fetchEGQuestion, fetchIpData } from "@/utils/server/requests";
 import { IconArrowBarLeft, IconArrowBarRight } from "@tabler/icons-react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
+import { LeftPanel } from "@/components/EG_Chat/LeftPanel";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -51,6 +54,7 @@ export default function Home() {
   const [deviceType, setDeviceType] = useState<DeviceTypes>(
     DeviceTypes.COMPUTER
   );
+  const [panelData, setPanelData] = useState<PanelData | null>(null);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -348,51 +352,61 @@ export default function Home() {
       });
 
     if (selectedConversation) {
-      let updatedConversation: Conversation;
-
-      updatedConversation = {
-        ...selectedConversation,
-      };
-
       earthGuideResponse
         .then((data: EarthGuideQuestionResponse) => {
-          console.log("Question submitted successfully!");
-          console.log(data);
-
-          const updatedMessages: Message[] = [
-            ...updatedConversation.messages,
-            {
-              role: "earth.guide",
+          if (
+            data.where_to_display === WhereToDisplay.PANEL_DESTINATION ||
+            data.where_to_display === WhereToDisplay.PANEL_FLIGHTS
+          ) {
+            setPanelData({
               content: data.formated_text,
-              id: data.id_answer,
-            },
-          ];
+              type: data.where_to_display,
+            });
+          } else {
+            let updatedConversation: Conversation;
 
-          const enrichedConversation: Conversation = {
-            ...updatedConversation,
-            messages: updatedMessages,
-          };
+            updatedConversation = {
+              ...selectedConversation,
+            };
 
-          saveConversation(enrichedConversation);
-          setSelectedConversation(enrichedConversation);
+            console.log("Question submitted successfully!");
+            console.log(data);
 
-          const updatedConversations: Conversation[] = conversations.map(
-            (conversation) => {
-              if (conversation.id === selectedConversation.id) {
-                return enrichedConversation;
+            const updatedMessages: Message[] = [
+              ...updatedConversation.messages,
+              {
+                role: "earth.guide",
+                content: data.formated_text,
+                id: data.id_answer,
+              },
+            ];
+
+            const enrichedConversation: Conversation = {
+              ...updatedConversation,
+              messages: updatedMessages,
+            };
+
+            saveConversation(enrichedConversation);
+            setSelectedConversation(enrichedConversation);
+
+            const updatedConversations: Conversation[] = conversations.map(
+              (conversation) => {
+                if (conversation.id === selectedConversation.id) {
+                  return enrichedConversation;
+                }
+
+                return conversation;
               }
+            );
 
-              return conversation;
+            if (updatedConversations.length === 0) {
+              updatedConversations.push(updatedConversation);
             }
-          );
 
-          if (updatedConversations.length === 0) {
-            updatedConversations.push(updatedConversation);
+            setConversations(updatedConversations);
+
+            saveConversations(updatedConversations);
           }
-
-          setConversations(updatedConversations);
-
-          saveConversations(updatedConversations);
         })
         .catch(() => {
           console.log("There was an error submitting the question.");
@@ -530,6 +544,15 @@ export default function Home() {
               onUpdateConversation={handleUpdateConversation}
               onAnotherPromptClick={handleAnotherPromptClick}
             />
+            {panelData && (
+              <div className="w-2/5 h-100 bg-slate-50 text-black">
+                <LeftPanel
+                  data={panelData}
+                  lightMode="light"
+                  onAnotherPromptClick={handleAnotherPromptClick}
+                />
+              </div>
+            )}
           </div>
         </div>
       )}

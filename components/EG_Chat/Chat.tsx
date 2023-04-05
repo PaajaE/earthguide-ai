@@ -54,7 +54,7 @@ export const Chat: FC<Props> = ({
   }, [conversation.messages]);
 
   return (
-    <div className="flex-1 overflow-scroll bg-[#FAFAFA] px-4 py-3">
+    <div className="relative flex-1 w-3/5 overflow-scroll bg-[#FAFAFA] px-4 py-3">
       {modelError ? (
         <div className="flex flex-col justify-center mx-auto h-full w-[300px] sm:w-[500px] space-y-6">
           <div className="text-center text-red-500">Error fetching models.</div>
