@@ -1,20 +1,24 @@
 /* eslint-disable @next/next/no-img-element */
 import { Message, TypeOfPrompt } from "@/types";
-import { FC } from "react";
+import { FC, ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import { CodeBlock } from "../Markdown/CodeBlock";
 import { Button } from "../Shared/Button";
+import { ReactElement } from "react-markdown/lib/react-markdown";
 
 interface Props {
   message: Message;
   lightMode: "light" | "dark";
+  onAnotherPromptClick: (typeOfPrompt: TypeOfPrompt, id: string) => void;
 }
 
-export const ChatMessage: FC<Props> = ({ message, lightMode }) => {
-  const handleClick = (typeOfPrompt: TypeOfPrompt) => {
-    console.log(typeOfPrompt);
-  };
+export const ChatMessage: FC<Props> = ({
+  message,
+  lightMode,
+  onAnotherPromptClick,
+}) => {
+  console.log("message", message);
   return (
     <>
       <div className="text-black font-semibold pl-4 mt-4 mb-2">
@@ -131,18 +135,37 @@ export const ChatMessage: FC<Props> = ({ message, lightMode }) => {
                     </td>
                   );
                 },
-                ol({ children }) {
-                  return <ol className="list-auto pl-4">{children}</ol>;
+                ol(ref) {
+                  return <ol className="list-auto pl-4">{ref.children}</ol>;
                 },
-                a(ref) {
-                  return (
-                    <a
-                      href={ref.href}
-                      className="text-[#FF5600] cursor-pointer no-underline border-b border-[#FF5600]"
-                    >
-                      {ref.children}
-                    </a>
-                  );
+                a({ children, href }: { children: ReactNode; href?: string }) {
+                  if (href === "LINK") {
+                    return (
+                      <button
+                        onClick={() => {
+                          if (children) {
+                            console.log(children.toString());
+                            onAnotherPromptClick(
+                              TypeOfPrompt.CLICK_ON_LOCATION,
+                              children.toString()
+                            );
+                          }
+                        }}
+                        className="text-[#FF5600] cursor-pointer no-underline border-b border-[#FF5600]"
+                      >
+                        {children}
+                      </button>
+                    );
+                  } else {
+                    return (
+                      <a
+                        href={href}
+                        className="text-[#FF5600] cursor-pointer no-underline border-b border-[#FF5600]"
+                      >
+                        {children}
+                      </a>
+                    );
+                  }
                 },
                 ul({ children }) {
                   return (
@@ -175,15 +198,19 @@ export const ChatMessage: FC<Props> = ({ message, lightMode }) => {
             text="More places like these"
             iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
             bgColor="#d4845c"
-            typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
-            onClick={handleClick}
+            typeOfPrompt={TypeOfPrompt.MORE_PLACES}
+            onClick={(typeOfPrompt: TypeOfPrompt) => {
+              onAnotherPromptClick(typeOfPrompt, message.id ?? "");
+            }}
           />
           <Button
             text="Show me lesser-known places"
             iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
             bgColor="#d4845c"
-            typeOfPrompt={TypeOfPrompt.MORE_PLACES}
-            onClick={handleClick}
+            typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
+            onClick={(typeOfPrompt: TypeOfPrompt) => {
+              onAnotherPromptClick(typeOfPrompt, message.id ?? "");
+            }}
           />
         </div>
       )}

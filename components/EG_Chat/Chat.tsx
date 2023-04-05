@@ -1,4 +1,10 @@
-import { Conversation, KeyValuePair, Message, OpenAIModel } from "@/types";
+import {
+  Conversation,
+  KeyValuePair,
+  Message,
+  OpenAIModel,
+  TypeOfPrompt,
+} from "@/types";
 import { FC, useEffect, useRef, useState } from "react";
 import { ChatInput } from "./ChatInput";
 import { ChatLoader } from "./ChatLoader";
@@ -20,6 +26,7 @@ interface Props {
     conversation: Conversation,
     data: KeyValuePair
   ) => void;
+  onAnotherPromptClick: (typeOfPrompt: TypeOfPrompt, id: string) => void;
 }
 
 export const Chat: FC<Props> = ({
@@ -32,6 +39,7 @@ export const Chat: FC<Props> = ({
   lightMode,
   onSend,
   onUpdateConversation,
+  onAnotherPromptClick,
 }) => {
   const [currentMessage, setCurrentMessage] = useState<Message>();
 
@@ -105,6 +113,7 @@ export const Chat: FC<Props> = ({
                     key={index}
                     message={message}
                     lightMode={lightMode}
+                    onAnotherPromptClick={onAnotherPromptClick}
                   />
                 ))}
 

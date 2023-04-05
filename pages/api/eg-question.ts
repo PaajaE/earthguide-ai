@@ -7,6 +7,7 @@ export const config = {
 const handler = async (req: Request): Promise<Response> => {
     try {
         const requestBody = (await req.json()) as EarthGuideQuestionBody;
+        console.log(requestBody)
 
         const response = await fetch("https://test.api.earth.guide/api/question_api", {
             method: 'POST',
@@ -17,6 +18,7 @@ const handler = async (req: Request): Promise<Response> => {
             },
             body: JSON.stringify(requestBody),
         });
+        console.log(response)
 
         if (response.status !== 200) {
             throw new Error("Earth.Guide API returned an error");

@@ -5,8 +5,10 @@ import mockConversation, { mockedEGMessage } from "@/mocks/api-result-mock";
 import {
   ChatBody,
   Conversation,
+  DeviceTypes,
   EarthGuideQuestionBody,
   EarthGuideQuestionResponse,
+  IpData,
   KeyValuePair,
   Message,
   OpenAIModel,
@@ -24,6 +26,9 @@ import {
   saveConversations,
   updateConversation,
 } from "@/utils/app/conversation";
+import getMachineId from "@/utils/app/machineId";
+import { getLanguage, getDeviceType } from "@/utils/app/browserInfo";
+import { fetchEGQuestion, fetchIpData } from "@/utils/server/requests";
 import { IconArrowBarLeft, IconArrowBarRight } from "@tabler/icons-react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
@@ -41,6 +46,11 @@ export default function Home() {
   const [messageError, setMessageError] = useState<boolean>(false);
   const [modelError, setModelError] = useState<boolean>(false);
   const [machineId, setMachineId] = useState<string>("");
+  const [ipData, setIpData] = useState<IpData | null>(null);
+  const [language, setLanguage] = useState<string>("en");
+  const [deviceType, setDeviceType] = useState<DeviceTypes>(
+    DeviceTypes.COMPUTER
+  );
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -88,12 +98,11 @@ export default function Home() {
         fetchEGQuestion({
           type_of_prompt: TypeOfPrompt.TEXT_PROMPT,
           text: lastUserInput,
-          user_identification: "",
-          language_of_browser: "",
-          date_and_time: "",
-          city_of_user: "",
-          gps: "",
-          type_of_device: "mobile",
+          user_identification: machineId,
+          language_of_browser: language,
+          city_of_user: ipData?.city || "",
+          gps: ipData?.gps || "",
+          type_of_device: deviceType,
         });
 
       const response = await fetch("/api/chat", {
@@ -179,7 +188,11 @@ export default function Home() {
 
           const updatedMessages: Message[] = [
             ...updatedConversation.messages,
-            { role: "earth.guide", content: data.formated_text },
+            {
+              role: "earth.guide",
+              content: data.formated_text,
+              id: data.id_answer,
+            },
           ];
 
           const enrichedConversation: Conversation = {
@@ -321,18 +334,75 @@ export default function Home() {
     setConversations(all);
   };
 
-  const fetchIpData = async () => {
-    const response = await fetch("/api/getIp");
+  const handleAnotherPromptClick = (typeOfPrompt: TypeOfPrompt, id: string) => {
+    console.log(typeOfPrompt);
+    const earthGuideResponse: Promise<EarthGuideQuestionResponse> =
+      fetchEGQuestion({
+        type_of_prompt: typeOfPrompt,
+        text: `${id}`,
+        user_identification: machineId,
+        language_of_browser: language,
+        city_of_user: ipData?.city || "",
+        gps: ipData?.gps || "",
+        type_of_device: deviceType,
+      });
 
-    if (!response.ok) {
-      return;
+    if (selectedConversation) {
+      let updatedConversation: Conversation;
+
+      updatedConversation = {
+        ...selectedConversation,
+      };
+
+      earthGuideResponse
+        .then((data: EarthGuideQuestionResponse) => {
+          console.log("Question submitted successfully!");
+          console.log(data);
+
+          const updatedMessages: Message[] = [
+            ...updatedConversation.messages,
+            {
+              role: "earth.guide",
+              content: data.formated_text,
+              id: data.id_answer,
+            },
+          ];
+
+          const enrichedConversation: Conversation = {
+            ...updatedConversation,
+            messages: updatedMessages,
+          };
+
+          saveConversation(enrichedConversation);
+          setSelectedConversation(enrichedConversation);
+
+          const updatedConversations: Conversation[] = conversations.map(
+            (conversation) => {
+              if (conversation.id === selectedConversation.id) {
+                return enrichedConversation;
+              }
+
+              return conversation;
+            }
+          );
+
+          if (updatedConversations.length === 0) {
+            updatedConversations.push(updatedConversation);
+          }
+
+          setConversations(updatedConversations);
+
+          saveConversations(updatedConversations);
+        })
+        .catch(() => {
+          console.log("There was an error submitting the question.");
+        });
     }
 
-    const data = await response.json();
-
-    if (!data) {
-      return;
-    }
+    earthGuideResponse.then((data: EarthGuideQuestionResponse) => {
+      console.log("Question submitted successfully!");
+      console.log(data);
+    });
   };
 
   useEffect(() => {
@@ -381,52 +451,22 @@ export default function Home() {
     fetchModels(apiKey);
   }, []);
 
-  function getMachineId() {
-    let machineId = localStorage.getItem("MachineId");
-
-    if (!machineId) {
-      machineId = crypto.randomUUID();
-      localStorage.setItem("MachineId", machineId);
-    }
-
-    return machineId;
-  }
-
-  const fetchEGQuestion = (
-    requestBody: EarthGuideQuestionBody
-  ): Promise<EarthGuideQuestionResponse> => {
-    return new Promise<EarthGuideQuestionResponse>((resolve, reject) => {
-      fetch("/api/eg-question", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(requestBody),
-      })
-        .then((response) => {
-          if (!response.ok) {
-            reject();
-          }
-
-          return response.json();
-        })
-        .then((data: EarthGuideQuestionResponse) => {
-          if (!data) {
-            reject();
-          }
-
-          resolve(data);
-        })
-        .catch(() => {
-          reject();
-        });
-    });
-  };
-
   useEffect(() => {
     const machId = getMachineId();
     setMachineId(machId);
-    // fetchIpData();
+    const ipData = fetchIpData();
+    ipData.then((data) => {
+      setIpData({
+        city: data.city.name,
+        ip: data.ip,
+        gps: `${data.location.latitude},${data.location.longitude}`,
+      });
+    });
+    const language = getLanguage();
+    setLanguage(language);
+
+    const deviceType = getDeviceType();
+    setDeviceType(deviceType);
   }, []);
 
   return (
@@ -488,6 +528,7 @@ export default function Home() {
               lightMode={lightMode}
               onSend={handleSend}
               onUpdateConversation={handleUpdateConversation}
+              onAnotherPromptClick={handleAnotherPromptClick}
             />
           </div>
         </div>

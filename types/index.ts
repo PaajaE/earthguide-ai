@@ -22,6 +22,7 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
 export interface Message {
   role: Role;
   content: string;
+  id?: string;
 }
 
 export type Role = "assistant" | "user" | "earth.guide";
@@ -59,7 +60,6 @@ export interface EarthGuideQuestionBody {
   text: string,
   user_identification: string,
   language_of_browser: string,
-  date_and_time: string,
   city_of_user: string,
   type_of_device: string,
   gps: string
@@ -73,6 +73,7 @@ export enum WhereToDisplay {
 export enum TypeOfPrompt {
   TEXT_PROMPT = 'text_prompt',
   CLICK_ON_LOCATION = 'click_on_location',
+  CLICK_ON_PRICE = 'click_on_price',
   MORE_PLACES = 'more_places',
   LESSER_KNOWN = 'lesser-known',
   MORE_LIKE = 'more_like…'
@@ -83,4 +84,16 @@ export interface EarthGuideQuestionResponse {
   "formated_text": string,
   "id_answer": string,
   "where_to_display": WhereToDisplay
+}
+
+export interface IpData {
+  ip: string;
+  city: string;
+  gps: string;
+}
+
+export enum DeviceTypes {
+  COMPUTER = 'computer',
+  MOBILE = 'mobile',
+  TABLET = 'tablet'
 }
