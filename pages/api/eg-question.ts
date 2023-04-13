@@ -9,7 +9,7 @@ const handler = async (req: Request): Promise<Response> => {
         const requestBody = (await req.json()) as EarthGuideQuestionBody;
         console.log(requestBody)
 
-        const response = await fetch("https://test.api.earth.guide/api/question_api", {
+        const response = await fetch("https://api.earth.guide/api/question_api", {
             method: 'POST',
             headers: {
                 "Content-Type": "application/json",
