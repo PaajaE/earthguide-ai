@@ -3,8 +3,8 @@ import { TypeOfPrompt } from "@/types";
 import { FC, ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-import { CodeBlock } from "../Markdown/CodeBlock";
-
+// import { CodeBlock } from "../Markdown/CodeBlock";
+// import { content } from "@/mocks/md-content-mock";
 interface Props {
   content: string;
   lightMode: "light" | "dark";
@@ -12,29 +12,46 @@ interface Props {
 }
 
 export const EarthGuideReactMarkdown: FC<Props> = ({
-  content,
   lightMode,
+  content,
   onAnotherPromptClick,
 }) => {
+  console.log(content);
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
         code({ node, inline, className, children, ...props }) {
-          const match = /language-(\w+)/.exec(className || "");
-          return !inline && match ? (
-            <CodeBlock
-              key={Math.random()}
-              language={match[1]}
-              value={String(children).replace(/\n$/, "")}
-              lightMode={lightMode}
-              {...props}
-            />
-          ) : (
-            <code className={className} {...props}>
-              {children}
-            </code>
-          );
+          const div = String(children).replace(/\n$/, "");
+          if (div.includes(`data-type="flight"`)) {
+            console.log(div);
+            return (
+              <div
+                className="w-100 pb-2"
+                dangerouslySetInnerHTML={{ __html: div }}
+              ></div>
+            );
+          }
+          if (div.includes(`class="gallery"`)) {
+            return (
+              <div
+                className="w-100"
+                dangerouslySetInnerHTML={{ __html: div }}
+              ></div>
+            );
+          } else {
+            return (
+              <code className={className} {...props}>
+                {children}
+              </code>
+            );
+          }
+
+          // const match = /language-(\w+)/.exec(className || "");
+          // return !inline && match ? (
+          //
+          // ) : (
+          // );
         },
         table({ children }) {
           return (
