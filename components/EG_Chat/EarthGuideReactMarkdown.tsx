@@ -24,7 +24,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
         code({ node, inline, className, children, ...props }) {
           const div = String(children).replace(/\n$/, "");
           if (div.includes(`data-type="flight"`)) {
-            console.log(div);
+            console.log("div", div);
             return (
               <div
                 className="w-100 pb-2"
