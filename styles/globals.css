@@ -46,3 +46,13 @@ pre {
   margin-left: 0.4rem;
   margin-top: -0.33rem;
 }
+
+p.flights {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+}
+
+strong.flights {
+  color: #ff5600;
+}
