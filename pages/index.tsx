@@ -34,7 +34,7 @@ import { fetchEGQuestion, fetchIpData } from "@/utils/server/requests";
 import { IconArrowBarLeft, IconArrowBarRight } from "@tabler/icons-react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { LeftPanel } from "@/components/EG_Chat/LeftPanel";
+import { RightSidebar } from "@/components/EG_Chat/RightSidebar";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -55,6 +55,7 @@ export default function Home() {
     DeviceTypes.COMPUTER
   );
   const [panelData, setPanelData] = useState<PanelData | null>(null);
+  const [showPanelData, setShowPanelData] = useState<boolean>(false);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -362,6 +363,7 @@ export default function Home() {
               content: data.formated_text,
               type: data.where_to_display,
             });
+            setShowPanelData(true);
           } else {
             let updatedConversation: Conversation;
 
@@ -470,6 +472,7 @@ export default function Home() {
     setMachineId(machId);
     const ipData = fetchIpData();
     ipData.then((data) => {
+      console.log(data);
       setIpData({
         city: data.city.name,
         ip: data.ip,
@@ -503,7 +506,7 @@ export default function Home() {
           </div>
 
           <div className="flex h-full w-full pt-[48px] sm:pt-0">
-            {showSidebar ? (
+            {showSidebar && (
               <>
                 <Sidebar
                   loading={messageIsStreaming}
@@ -525,11 +528,17 @@ export default function Home() {
                   onClick={() => setShowSidebar(!showSidebar)}
                 />
               </>
-            ) : (
+            )}
+            {!showSidebar && !showPanelData ? (
               <IconArrowBarRight
                 className="fixed top-2.5 left-4 sm:top-1.5 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8"
-                onClick={() => setShowSidebar(!showSidebar)}
+                onClick={() => {
+                  setShowSidebar(!showSidebar);
+                  setShowPanelData(false);
+                }}
               />
+            ) : (
+              <></>
             )}
 
             <Chat
@@ -544,14 +553,18 @@ export default function Home() {
               onUpdateConversation={handleUpdateConversation}
               onAnotherPromptClick={handleAnotherPromptClick}
             />
-            {panelData && (
-              <div className="w-2/5 h-100 bg-slate-50 text-black">
-                <LeftPanel
+            {showPanelData && (
+              <>
+                <RightSidebar
                   data={panelData}
                   lightMode="light"
                   onAnotherPromptClick={handleAnotherPromptClick}
                 />
-              </div>
+                <IconArrowBarLeft
+                  className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
+                  onClick={() => setShowPanelData(true)}
+                />
+              </>
             )}
           </div>
         </div>

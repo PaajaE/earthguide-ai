@@ -16,7 +16,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
   content,
   onAnotherPromptClick,
 }) => {
-  console.log(content);
+  // console.log(content);
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -24,7 +24,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
         code({ node, inline, className, children, ...props }) {
           const div = String(children).replace(/\n$/, "");
           if (div.includes(`data-type="flight"`)) {
-            console.log("div", div);
+            // console.log(div);
             return (
               <div
                 className="w-100 pb-2"
@@ -83,7 +83,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
               <button
                 onClick={() => {
                   if (children) {
-                    console.log(children.toString());
+                    // console.log(children.toString());
                     onAnotherPromptClick(
                       TypeOfPrompt.CLICK_ON_LOCATION,
                       children.toString()
