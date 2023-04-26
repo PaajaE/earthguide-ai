@@ -9,13 +9,15 @@ import { EarthGuideReactMarkdown } from "./EarthGuideReactMarkdown";
 interface Props {
   message: Message;
   lightMode: "light" | "dark";
-  onAnotherPromptClick: (typeOfPrompt: TypeOfPrompt, id: string) => void;
+  onAnotherPromptClick?: (typeOfPrompt: TypeOfPrompt, id: string) => void;
+  onSampleClick?: (content: string) => void;
 }
 
 export const ChatMessage: FC<Props> = ({
   message,
   lightMode,
   onAnotherPromptClick,
+  onSampleClick,
 }) => {
   // console.log("message", message);
   return (
@@ -31,7 +33,7 @@ export const ChatMessage: FC<Props> = ({
       )}
       <div
         className={`flex flex-row justify-start items-start gap-2.5 w-100 px-[17px] py-3 mb-3 box-border ${
-          message.role === "assistant"
+          message.role === "assistant" || message.role === "starter"
             ? "bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] mr-8"
             : ""
         }
@@ -45,13 +47,35 @@ export const ChatMessage: FC<Props> = ({
             ? "bg-[#3000FF] rounded-t-[10px] rounded-r-[10px] mr-8"
             : ""
         }
+        ${
+          message.role === "sample"
+            ? "bg-white rounded-t-[10px] rounded-r-[10px] mr-4"
+            : ""
+        }
         `}
+        style={{
+          cursor:
+            message.role === "sample" && onSampleClick ? "pointer" : "default",
+        }}
+        onClick={() => {
+          if (message.role === "sample") {
+            onSampleClick && onSampleClick(message.content);
+          }
+        }}
       >
         <div
           className={`border-[#000000ff] leading-6  font-plus jakarta sans  font-[400]
-      ${message.role === "assistant" ? "text-black" : "text-white"}`}
+      ${
+        message.role === "assistant" ||
+        message.role === "sample" ||
+        message.role === "starter"
+          ? "text-black"
+          : "text-white"
+      }`}
         >
           {message.role === "user" && <>{message.content}</>}
+          {message.role === "sample" && <>{message.content}</>}
+          {message.role === "starter" && <>{message.content}</>}
           {message.role === "assistant" && (
             <ReactMarkdown
               remarkPlugins={[remarkGfm]}
@@ -115,7 +139,8 @@ export const ChatMessage: FC<Props> = ({
             bgColor="#d4845c"
             typeOfPrompt={TypeOfPrompt.MORE_PLACES}
             onClick={(typeOfPrompt: TypeOfPrompt) => {
-              onAnotherPromptClick(typeOfPrompt, message.id ?? "");
+              onAnotherPromptClick &&
+                onAnotherPromptClick(typeOfPrompt, message.id ?? "");
             }}
           />
           <Button
@@ -124,7 +149,8 @@ export const ChatMessage: FC<Props> = ({
             bgColor="#d4845c"
             typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
             onClick={(typeOfPrompt: TypeOfPrompt) => {
-              onAnotherPromptClick(typeOfPrompt, message.id ?? "");
+              onAnotherPromptClick &&
+                onAnotherPromptClick(typeOfPrompt, message.id ?? "");
             }}
           />
         </div>

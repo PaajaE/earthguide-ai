@@ -56,6 +56,7 @@ export default function Home() {
     DeviceTypes.COMPUTER
   );
   const [panelData, setPanelData] = useState<PanelData | null>(null);
+  const [panelDataLoading, setPanelDataLoading] = useState<boolean>(false);
   const [showPanelData, setShowPanelData] = useState<boolean>(true);
 
   // Close sidebar when a conversation is selected/created on mobile
@@ -342,6 +343,13 @@ export default function Home() {
 
   const handleAnotherPromptClick = (typeOfPrompt: TypeOfPrompt, id: string) => {
     console.log(typeOfPrompt);
+    if (
+      typeOfPrompt === TypeOfPrompt.CLICK_ON_LOCATION ||
+      typeOfPrompt === TypeOfPrompt.CLICK_ON_PRICE
+    ) {
+      setPanelDataLoading(true);
+      setPanelData(null);
+    }
     const earthGuideResponse: Promise<EarthGuideQuestionResponse> =
       fetchEGQuestion({
         type_of_prompt: typeOfPrompt,
@@ -363,8 +371,10 @@ export default function Home() {
             setPanelData({
               content: data.formatted_text,
               type: data.where_to_display,
+              id: +data.id_answer,
             });
             setShowPanelData(true);
+            setPanelDataLoading(false);
           } else {
             let updatedConversation: Conversation;
 
@@ -415,11 +425,6 @@ export default function Home() {
           console.log("There was an error submitting the question.");
         });
     }
-
-    earthGuideResponse.then((data: EarthGuideQuestionResponse) => {
-      console.log("Question submitted successfully!");
-      console.log(data);
-    });
   };
 
   useEffect(() => {
@@ -541,9 +546,12 @@ export default function Home() {
               {showPanelData && (
                 <>
                   <RightSidebar
+                    loading={panelDataLoading}
+                    showSample={selectedConversation.messages.length === 0}
                     data={panelData}
                     lightMode="light"
                     onAnotherPromptClick={handleAnotherPromptClick}
+                    onSend={handleSend}
                   />
                   {/* <IconArrowBarLeft
                   className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"

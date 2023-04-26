@@ -11,15 +11,17 @@ pre {
 .gallery {
   display: flex;
   overflow-x: auto;
-  height: calc(100% / 3);
+  /* height: calc(100% / 3); */
   margin: 1rem 0;
   padding-bottom: 5px;
 }
 
 .gallery img {
-  width: 40%;
-  height: 100%;
+  /* min-width: calc((65vw - 260px) / 3); */
+  width: calc((65vw - 260px) / 3);
+  height: calc((65vw - 260px) / 3);
   object-fit: cover;
+  object-position: center;
   margin-right: 0.5rem;
   border-radius: 0.5rem;
   cursor: pointer;

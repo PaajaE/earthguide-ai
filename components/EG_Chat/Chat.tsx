@@ -54,9 +54,9 @@ export const Chat: FC<Props> = ({
   }, [conversation.messages]);
 
   return (
-    <div className="relative flex flex-col justify-end flex-1 md:w-full min-h-[calc(100vh_-_100px)] lg:w-3/5 bg-[#FAFAFA] px-4 mr-4">
+    <div className="relative flex flex-col justify-between flex-1 md:w-full min-h-[calc(100vh_-_100px)] lg:w-3/5 bg-[#FAFAFA] px-4 mr-4">
       {modelError ? (
-        <div className="flex flex-col justify-center mx-auto h-full w-[300px] sm:w-[500px] space-y-6">
+        <div className="flex flex-col justify-center mx-auto h-full w-full space-y-6">
           <div className="text-center text-red-500">Error fetching models.</div>
           <div className="text-center text-red-500">
             Make sure your OpenAI API key is set in the bottom left of the
@@ -69,14 +69,19 @@ export const Chat: FC<Props> = ({
       ) : (
         <>
           <div>
+            <ChatMessage
+              key="starter-message"
+              message={{
+                role: "starter",
+                content:
+                  "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect destination for your next adventure and find the best flight tickets to get you there.",
+              }}
+              lightMode={lightMode}
+            />
             {conversation.messages.length === 0 ? (
               <></>
             ) : (
               <>
-                {/* <div className="flex justify-center py-2 text-neutral-500 bg-neutral-100 dark:bg-[#444654] dark:text-neutral-200 text-sm border border-b-neutral-300 dark:border-none">
-                  Model: {conversation.model.name}
-                </div> */}
-
                 {conversation.messages.map((message, index) => (
                   <ChatMessage
                     key={index}
@@ -86,7 +91,7 @@ export const Chat: FC<Props> = ({
                   />
                 ))}
 
-                {loading && <ChatLoader />}
+                {/* {loading && <ChatLoader />} */}
 
                 <div className="bg-[#FAFAFA] h-8" ref={messagesEndRef} />
               </>

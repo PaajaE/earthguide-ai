@@ -69,31 +69,45 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
   }, [content]);
 
   return (
-    <div className="pb-4 bg-[#FAFAFA]">
-      <textarea
-        ref={textareaRef}
-        className="pl-4 pr-8 py-3 w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"
-        style={{
-          resize: "none",
-          bottom: `${textareaRef?.current?.scrollHeight}px`,
-          maxHeight: "400px",
-          overflow: "auto",
-        }}
-        placeholder="Type a message..."
-        value={content}
-        rows={1}
-        onCompositionStart={() => setIsTyping(true)}
-        onCompositionEnd={() => setIsTyping(false)}
-        onChange={handleChange}
-        onKeyDown={handleKeyDown}
-      />
+    <>
+      <div className="fixed bottom-0 lg:w-[calc(100vw_-_260px_-_30%_-_5rem)] pb-6 bg-[#FAFAFA]">
+        <textarea
+          ref={textareaRef}
+          className="pl-4 pr-8 py-3 w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"
+          style={{
+            resize: "none",
+            bottom: `${textareaRef?.current?.scrollHeight}px`,
+            maxHeight: "400px",
+            overflow: "auto",
+          }}
+          placeholder="Ready to travel? Ask me anything!"
+          value={content}
+          rows={1}
+          onCompositionStart={() => setIsTyping(true)}
+          onCompositionEnd={() => setIsTyping(false)}
+          onChange={handleChange}
+          onKeyDown={handleKeyDown}
+        />
 
-      <button
-        className="absolute right-10 bottom-[32px] focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
-        onClick={handleSend}
-      >
-        <IconSend size={18} color={"#999"} />
-      </button>
-    </div>
+        <button
+          className="absolute right-4 bottom-[32px] focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
+          onClick={handleSend}
+        >
+          <IconSend size={18} color={"#999"} />
+        </button>
+        <p className="absolute bottom-2 text-black text-[0.6rem] w-full text-center">
+          All photos are from our community. Want to join, earn to train AI and
+          create content and earn dividends?{" "}
+          <a
+            className="underline"
+            href="https://earth.guide"
+            title="Earth.Guide"
+            target="_blank"
+          >
+            Join
+          </a>
+        </p>
+      </div>
+    </>
   );
 };

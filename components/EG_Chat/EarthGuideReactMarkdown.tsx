@@ -8,7 +8,7 @@ import remarkGfm from "remark-gfm";
 interface Props {
   content: string;
   lightMode: "light" | "dark";
-  onAnotherPromptClick: (typeOfPrompt: TypeOfPrompt, id: string) => void;
+  onAnotherPromptClick?: (typeOfPrompt: TypeOfPrompt, id: string) => void;
 }
 
 export const EarthGuideReactMarkdown: FC<Props> = ({
@@ -16,7 +16,6 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
   content,
   onAnotherPromptClick,
 }) => {
-  // console.log(content);
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -75,7 +74,12 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
           );
         },
         ol(ref) {
-          return <ol className="list-auto pl-4">{ref.children}</ol>;
+          console.log(ref);
+          return (
+            <ol className="list-auto pl-4" start={ref.start}>
+              {ref.children}
+            </ol>
+          );
         },
         a({ children, href }: { children: ReactNode; href?: string }) {
           if (href === "LINK") {
@@ -84,10 +88,11 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
                 onClick={() => {
                   if (children) {
                     // console.log(children.toString());
-                    onAnotherPromptClick(
-                      TypeOfPrompt.CLICK_ON_LOCATION,
-                      children.toString()
-                    );
+                    onAnotherPromptClick &&
+                      onAnotherPromptClick(
+                        TypeOfPrompt.CLICK_ON_LOCATION,
+                        children.toString()
+                      );
                   }
                 }}
                 className="text-[#FF5600] cursor-pointer no-underline border-b border-[#FF5600]"

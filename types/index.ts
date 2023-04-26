@@ -25,7 +25,7 @@ export interface Message {
   id?: string;
 }
 
-export type Role = "assistant" | "user" | "earth.guide";
+export type Role = "assistant" | "user" | "earth.guide" | "sample" | "starter";
 
 export interface Conversation {
   id: number;
@@ -102,6 +102,7 @@ export enum DeviceTypes {
 export interface PanelData {
   type: WhereToDisplay;
   content: string;
+  id: number;
 }
 
 export interface ToggleItem {
