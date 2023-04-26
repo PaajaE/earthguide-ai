@@ -35,6 +35,7 @@ import { IconArrowBarLeft, IconArrowBarRight } from "@tabler/icons-react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import { RightSidebar } from "@/components/EG_Chat/RightSidebar";
+import { LeftSidebar } from "@/components/EG_Chat/LeftSidebar";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -55,7 +56,7 @@ export default function Home() {
     DeviceTypes.COMPUTER
   );
   const [panelData, setPanelData] = useState<PanelData | null>(null);
-  const [showPanelData, setShowPanelData] = useState<boolean>(false);
+  const [showPanelData, setShowPanelData] = useState<boolean>(true);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -195,7 +196,7 @@ export default function Home() {
             ...updatedConversation.messages,
             {
               role: "earth.guide",
-              content: data.formated_text,
+              content: data.formatted_text,
               id: data.id_answer,
             },
           ];
@@ -360,7 +361,7 @@ export default function Home() {
             data.where_to_display === WhereToDisplay.PANEL_FLIGHTS
           ) {
             setPanelData({
-              content: data.formated_text,
+              content: data.formatted_text,
               type: data.where_to_display,
             });
             setShowPanelData(true);
@@ -378,7 +379,7 @@ export default function Home() {
               ...updatedConversation.messages,
               {
                 role: "earth.guide",
-                content: data.formated_text,
+                content: data.formatted_text,
                 id: data.id_answer,
               },
             ];
@@ -495,9 +496,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {selectedConversation && (
-        <div
-          className={`flex flex-col h-screen w-screen text-white ${lightMode}`}
-        >
+        <div className={`flex flex-col h-100 w-100 text-white ${lightMode}`}>
           <div className="sm:hidden w-full fixed top-0">
             <Navbar
               selectedConversation={selectedConversation}
@@ -505,31 +504,17 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex h-full w-full pt-[48px] sm:pt-0">
-            {showSidebar && (
-              <>
-                <Sidebar
-                  loading={messageIsStreaming}
-                  conversations={conversations}
-                  lightMode={lightMode}
-                  selectedConversation={selectedConversation}
-                  apiKey={apiKey}
-                  onToggleLightMode={handleLightMode}
-                  onNewConversation={handleNewConversation}
-                  onSelectConversation={handleSelectConversation}
-                  onDeleteConversation={handleDeleteConversation}
-                  onToggleSidebar={() => setShowSidebar(!showSidebar)}
-                  onUpdateConversation={handleUpdateConversation}
-                  onApiKeyChange={handleApiKeyChange}
-                />
+          <div className="h-100 w-100 p-2">
+            <div className="flex bg-[#FAFAFA] pl-6 py-10 rounded-md">
+              {/* <> */}
+              <LeftSidebar lightMode="light" />
 
-                <IconArrowBarLeft
-                  className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
-                  onClick={() => setShowSidebar(!showSidebar)}
-                />
-              </>
-            )}
-            {!showSidebar && !showPanelData ? (
+              {/* <IconArrowBarLeft
+                className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
+                onClick={() => setShowSidebar(!showSidebar)}
+              /> */}
+              {/* </> */}
+              {/* {!showSidebar && !showPanelData ? (
               <IconArrowBarRight
                 className="fixed top-2.5 left-4 sm:top-1.5 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8"
                 onClick={() => {
@@ -539,33 +524,34 @@ export default function Home() {
               />
             ) : (
               <></>
-            )}
+            )} */}
 
-            <Chat
-              conversation={selectedConversation}
-              messageIsStreaming={messageIsStreaming}
-              modelError={modelError}
-              messageError={messageError}
-              models={models}
-              loading={loading}
-              lightMode={lightMode}
-              onSend={handleSend}
-              onUpdateConversation={handleUpdateConversation}
-              onAnotherPromptClick={handleAnotherPromptClick}
-            />
-            {showPanelData && (
-              <>
-                <RightSidebar
-                  data={panelData}
-                  lightMode="light"
-                  onAnotherPromptClick={handleAnotherPromptClick}
-                />
-                <IconArrowBarLeft
+              <Chat
+                conversation={selectedConversation}
+                messageIsStreaming={messageIsStreaming}
+                modelError={modelError}
+                messageError={messageError}
+                models={models}
+                loading={loading}
+                lightMode={lightMode}
+                onSend={handleSend}
+                onUpdateConversation={handleUpdateConversation}
+                onAnotherPromptClick={handleAnotherPromptClick}
+              />
+              {showPanelData && (
+                <>
+                  <RightSidebar
+                    data={panelData}
+                    lightMode="light"
+                    onAnotherPromptClick={handleAnotherPromptClick}
+                  />
+                  {/* <IconArrowBarLeft
                   className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
                   onClick={() => setShowPanelData(true)}
-                />
-              </>
-            )}
+                /> */}
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

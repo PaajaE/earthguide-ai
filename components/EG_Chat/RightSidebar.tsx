@@ -18,10 +18,10 @@ export const RightSidebar: FC<Props> = ({
 }) => {
   return (
     <div
-      className={`flex flex-col bg-[#FAFAFA] min-w-full sm:min-w-[260px] sm:max-w-[calc((100%_-_260px)_/_2)] z-10 sm:relative sm:top-0 absolute top-12 bottom-0`}
+      className={`flex flex-col bg-[#F4F4F4] min-w-full sm:min-w-[300px] lg:min-w-[30%] z-10 sm:relative sm:top-0 absolute top-12 bottom-0 rounded-md`}
     >
       <div className="flex-1 overflow-auto">
-        <div className="text-black mt-4 mb-2 mx-2 p-2 bg-[#FAFAFA]">
+        <div className="text-black mt-4 mb-2 mx-2 p-2">
           <div className="flex flex-row justify-center align-center">
             <Toggle
               items={[
@@ -46,7 +46,7 @@ export const RightSidebar: FC<Props> = ({
                 onAnotherPromptClick={onAnotherPromptClick}
               />
             ) : (
-              <div className="flex flex-col items-center justify-center h-full">
+              <div className="flex flex-col items-center justify-center h-full mt-2">
                 <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
 
                 <p className="text-2xl font-bold">Loading...</p>

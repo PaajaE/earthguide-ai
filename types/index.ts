@@ -81,8 +81,8 @@ export enum TypeOfPrompt {
 }
 
 export interface EarthGuideQuestionResponse {
-  "anwer_datetime": string,
-  "formated_text": string,
+  "answer_datetime": string,
+  "formatted_text": string,
   "id_answer": string,
   "where_to_display": WhereToDisplay
 }

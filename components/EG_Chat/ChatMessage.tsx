@@ -20,10 +20,15 @@ export const ChatMessage: FC<Props> = ({
   // console.log("message", message);
   return (
     <>
-      <div className="text-black font-semibold pl-4 mt-4 mb-2">
-        {message.role === "assistant" && "Answer from ChatGPT:"}
-        {message.role === "earth.guide" && "Answer from Earth.Guide:"}
-      </div>
+      {message.role === "assistant" || message.role === "earth.guide" ? (
+        <div className="text-black font-semibold pl-4 mt-4 mb-2">
+          {message.role === "assistant"
+            ? "Answer from ChatGPT:"
+            : "Answer from Earth.Guide:"}
+        </div>
+      ) : (
+        <></>
+      )}
       <div
         className={`flex flex-row justify-start items-start gap-2.5 w-100 px-[17px] py-3 mb-3 box-border ${
           message.role === "assistant"

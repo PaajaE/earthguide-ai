@@ -69,10 +69,7 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
   }, [content]);
 
   return (
-    <div
-      className="fixed bottom-0 px-8 pb-4 left-0 right-0 bg-[#FAFAFA]"
-      style={{ width: "inherit" }}
-    >
+    <div className="pb-4 bg-[#FAFAFA]">
       <textarea
         ref={textareaRef}
         className="pl-4 pr-8 py-3 w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"
