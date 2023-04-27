@@ -125,17 +125,19 @@ export const RightSidebar: FC<Props> = ({
             </>
           )}
         </div>
-        <div className="flex mt-4 mb-2 px-4">
-          <Button
-            text="Similar places"
-            iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
-            bgColor="#d4845c"
-            typeOfPrompt={TypeOfPrompt.MORE_LIKE}
-            onClick={(typeOfPrompt: TypeOfPrompt) => {
-              onAnotherPromptClick(typeOfPrompt, `${data?.id}`);
-            }}
-          />
-        </div>
+        {data && (
+          <div className="flex mt-4 mb-2 px-4">
+            <Button
+              text="Similar places"
+              iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
+              bgColor="#d4845c"
+              typeOfPrompt={TypeOfPrompt.MORE_LIKE}
+              onClick={(typeOfPrompt: TypeOfPrompt) => {
+                onAnotherPromptClick(typeOfPrompt, `${data?.id}`);
+              }}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
