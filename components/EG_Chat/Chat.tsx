@@ -54,9 +54,9 @@ export const Chat: FC<Props> = ({
   }, [conversation.messages]);
 
   return (
-    <div className="relative flex-1 w-3/5 overflow-scroll bg-[#FAFAFA] px-4 py-3">
+    <div className="relative flex flex-col justify-between flex-1 md:w-full min-h-[calc(100vh_-_100px)] lg:w-3/5 bg-[#FAFAFA] px-4 mr-4">
       {modelError ? (
-        <div className="flex flex-col justify-center mx-auto h-full w-[300px] sm:w-[500px] space-y-6">
+        <div className="flex flex-col justify-center mx-auto h-full w-full space-y-6">
           <div className="text-center text-red-500">Error fetching models.</div>
           <div className="text-center text-red-500">
             Make sure your OpenAI API key is set in the bottom left of the
@@ -69,45 +69,19 @@ export const Chat: FC<Props> = ({
       ) : (
         <>
           <div>
+            <ChatMessage
+              key="starter-message"
+              message={{
+                role: "starter",
+                content:
+                  "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect destination for your next adventure and find the best flight tickets to get you there.",
+              }}
+              lightMode={lightMode}
+            />
             {conversation.messages.length === 0 ? (
-              <>
-                <div className="flex flex-col mx-auto pt-12 space-y-10 w-[350px] sm:w-[600px]">
-                  <div className="text-4xl text-center text-neutral-600 dark:text-neutral-200">
-                    {models.length === 0 ? "Loading..." : "Chatbot UI"}
-                  </div>
-
-                  {models.length > 0 && (
-                    <div className="flex flex-col h-full space-y-4 border p-4 rounded border-neutral-500">
-                      <ModelSelect
-                        model={conversation.model}
-                        models={models}
-                        onModelChange={(model) =>
-                          onUpdateConversation(conversation, {
-                            key: "model",
-                            value: model,
-                          })
-                        }
-                      />
-
-                      <SystemPrompt
-                        conversation={conversation}
-                        onChangePrompt={(prompt) =>
-                          onUpdateConversation(conversation, {
-                            key: "prompt",
-                            value: prompt,
-                          })
-                        }
-                      />
-                    </div>
-                  )}
-                </div>
-              </>
+              <></>
             ) : (
               <>
-                {/* <div className="flex justify-center py-2 text-neutral-500 bg-neutral-100 dark:bg-[#444654] dark:text-neutral-200 text-sm border border-b-neutral-300 dark:border-none">
-                  Model: {conversation.model.name}
-                </div> */}
-
                 {conversation.messages.map((message, index) => (
                   <ChatMessage
                     key={index}
@@ -117,12 +91,9 @@ export const Chat: FC<Props> = ({
                   />
                 ))}
 
-                {loading && <ChatLoader />}
+                {/* {loading && <ChatLoader />} */}
 
-                <div
-                  className="bg-white bg-[#FAFAFA] h-24 sm:h-32"
-                  ref={messagesEndRef}
-                />
+                <div className="bg-[#FAFAFA] h-8" ref={messagesEndRef} />
               </>
             )}
           </div>

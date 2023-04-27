@@ -14,10 +14,8 @@ export const Toggle: FC<Props> = ({ items }) => {
     setSelected(whereToDisplay);
   };
 
-  console.log(selected);
-
   return (
-    <div className=" flex flex-row justify-between items-center rounded-[40px] box-border bg-[rgba(255,255,255,1)]">
+    <div className=" flex flex-row mb-4 justify-between items-center rounded-[40px] box-border bg-[rgba(255,255,255,1)]">
       <div
         className="flex items-center px-[20px] py-[10px] rounded-[40px] box-border"
         style={{

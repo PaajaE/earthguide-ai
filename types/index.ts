@@ -25,7 +25,7 @@ export interface Message {
   id?: string;
 }
 
-export type Role = "assistant" | "user" | "earth.guide";
+export type Role = "assistant" | "user" | "earth.guide" | "sample" | "starter";
 
 export interface Conversation {
   id: number;
@@ -81,8 +81,8 @@ export enum TypeOfPrompt {
 }
 
 export interface EarthGuideQuestionResponse {
-  "anwer_datetime": string,
-  "formated_text": string,
+  "answer_datetime": string,
+  "formatted_text": string,
   "id_answer": string,
   "where_to_display": WhereToDisplay
 }
@@ -102,6 +102,7 @@ export enum DeviceTypes {
 export interface PanelData {
   type: WhereToDisplay;
   content: string;
+  id: number;
 }
 
 export interface ToggleItem {

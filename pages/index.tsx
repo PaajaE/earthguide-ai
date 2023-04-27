@@ -34,7 +34,8 @@ import { fetchEGQuestion, fetchIpData } from "@/utils/server/requests";
 import { IconArrowBarLeft, IconArrowBarRight } from "@tabler/icons-react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
-import { LeftPanel } from "@/components/EG_Chat/LeftPanel";
+import { RightSidebar } from "@/components/EG_Chat/RightSidebar";
+import { LeftSidebar } from "@/components/EG_Chat/LeftSidebar";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -55,6 +56,8 @@ export default function Home() {
     DeviceTypes.COMPUTER
   );
   const [panelData, setPanelData] = useState<PanelData | null>(null);
+  const [panelDataLoading, setPanelDataLoading] = useState<boolean>(false);
+  const [showPanelData, setShowPanelData] = useState<boolean>(true);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -194,7 +197,7 @@ export default function Home() {
             ...updatedConversation.messages,
             {
               role: "earth.guide",
-              content: data.formated_text,
+              content: data.formatted_text,
               id: data.id_answer,
             },
           ];
@@ -340,6 +343,13 @@ export default function Home() {
 
   const handleAnotherPromptClick = (typeOfPrompt: TypeOfPrompt, id: string) => {
     console.log(typeOfPrompt);
+    if (
+      typeOfPrompt === TypeOfPrompt.CLICK_ON_LOCATION ||
+      typeOfPrompt === TypeOfPrompt.CLICK_ON_PRICE
+    ) {
+      setPanelDataLoading(true);
+      setPanelData(null);
+    }
     const earthGuideResponse: Promise<EarthGuideQuestionResponse> =
       fetchEGQuestion({
         type_of_prompt: typeOfPrompt,
@@ -359,9 +369,12 @@ export default function Home() {
             data.where_to_display === WhereToDisplay.PANEL_FLIGHTS
           ) {
             setPanelData({
-              content: data.formated_text,
+              content: data.formatted_text,
               type: data.where_to_display,
+              id: +data.id_answer,
             });
+            setShowPanelData(true);
+            setPanelDataLoading(false);
           } else {
             let updatedConversation: Conversation;
 
@@ -376,7 +389,7 @@ export default function Home() {
               ...updatedConversation.messages,
               {
                 role: "earth.guide",
-                content: data.formated_text,
+                content: data.formatted_text,
                 id: data.id_answer,
               },
             ];
@@ -412,11 +425,6 @@ export default function Home() {
           console.log("There was an error submitting the question.");
         });
     }
-
-    earthGuideResponse.then((data: EarthGuideQuestionResponse) => {
-      console.log("Question submitted successfully!");
-      console.log(data);
-    });
   };
 
   useEffect(() => {
@@ -470,6 +478,7 @@ export default function Home() {
     setMachineId(machId);
     const ipData = fetchIpData();
     ipData.then((data) => {
+      console.log(data);
       setIpData({
         city: data.city.name,
         ip: data.ip,
@@ -492,9 +501,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {selectedConversation && (
-        <div
-          className={`flex flex-col h-screen w-screen text-white ${lightMode}`}
-        >
+        <div className={`flex flex-col h-100 w-100 text-white ${lightMode}`}>
           <div className="sm:hidden w-full fixed top-0">
             <Navbar
               selectedConversation={selectedConversation}
@@ -502,57 +509,57 @@ export default function Home() {
             />
           </div>
 
-          <div className="flex h-full w-full pt-[48px] sm:pt-0">
-            {showSidebar ? (
-              <>
-                <Sidebar
-                  loading={messageIsStreaming}
-                  conversations={conversations}
-                  lightMode={lightMode}
-                  selectedConversation={selectedConversation}
-                  apiKey={apiKey}
-                  onToggleLightMode={handleLightMode}
-                  onNewConversation={handleNewConversation}
-                  onSelectConversation={handleSelectConversation}
-                  onDeleteConversation={handleDeleteConversation}
-                  onToggleSidebar={() => setShowSidebar(!showSidebar)}
-                  onUpdateConversation={handleUpdateConversation}
-                  onApiKeyChange={handleApiKeyChange}
-                />
+          <div className="h-100 w-100 p-2">
+            <div className="flex bg-[#FAFAFA] pl-6 py-10 rounded-md">
+              {/* <> */}
+              <LeftSidebar lightMode="light" />
 
-                <IconArrowBarLeft
-                  className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
-                  onClick={() => setShowSidebar(!showSidebar)}
-                />
-              </>
-            ) : (
+              {/* <IconArrowBarLeft
+                className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
+                onClick={() => setShowSidebar(!showSidebar)}
+              /> */}
+              {/* </> */}
+              {/* {!showSidebar && !showPanelData ? (
               <IconArrowBarRight
                 className="fixed top-2.5 left-4 sm:top-1.5 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8"
-                onClick={() => setShowSidebar(!showSidebar)}
+                onClick={() => {
+                  setShowSidebar(!showSidebar);
+                  setShowPanelData(false);
+                }}
               />
-            )}
+            ) : (
+              <></>
+            )} */}
 
-            <Chat
-              conversation={selectedConversation}
-              messageIsStreaming={messageIsStreaming}
-              modelError={modelError}
-              messageError={messageError}
-              models={models}
-              loading={loading}
-              lightMode={lightMode}
-              onSend={handleSend}
-              onUpdateConversation={handleUpdateConversation}
-              onAnotherPromptClick={handleAnotherPromptClick}
-            />
-            {panelData && (
-              <div className="w-2/5 h-100 bg-slate-50 text-black">
-                <LeftPanel
-                  data={panelData}
-                  lightMode="light"
-                  onAnotherPromptClick={handleAnotherPromptClick}
-                />
-              </div>
-            )}
+              <Chat
+                conversation={selectedConversation}
+                messageIsStreaming={messageIsStreaming}
+                modelError={modelError}
+                messageError={messageError}
+                models={models}
+                loading={loading}
+                lightMode={lightMode}
+                onSend={handleSend}
+                onUpdateConversation={handleUpdateConversation}
+                onAnotherPromptClick={handleAnotherPromptClick}
+              />
+              {showPanelData && (
+                <>
+                  <RightSidebar
+                    loading={panelDataLoading}
+                    showSample={selectedConversation.messages.length === 0}
+                    data={panelData}
+                    lightMode="light"
+                    onAnotherPromptClick={handleAnotherPromptClick}
+                    onSend={handleSend}
+                  />
+                  {/* <IconArrowBarLeft
+                  className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
+                  onClick={() => setShowPanelData(true)}
+                /> */}
+                </>
+              )}
+            </div>
           </div>
         </div>
       )}

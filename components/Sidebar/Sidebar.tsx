@@ -11,29 +11,54 @@ interface Props {
   lightMode: "light" | "dark";
   selectedConversation: Conversation;
   apiKey: string;
+  show: boolean;
   onNewConversation: () => void;
   onToggleLightMode: (mode: "light" | "dark") => void;
   onSelectConversation: (conversation: Conversation) => void;
   onDeleteConversation: (conversation: Conversation) => void;
   onToggleSidebar: () => void;
-  onUpdateConversation: (conversation: Conversation, data: KeyValuePair) => void;
+  onUpdateConversation: (
+    conversation: Conversation,
+    data: KeyValuePair
+  ) => void;
   onApiKeyChange: (apiKey: string) => void;
 }
 
-export const Sidebar: FC<Props> = ({ loading, conversations, lightMode, selectedConversation, apiKey, onNewConversation, onToggleLightMode, onSelectConversation, onDeleteConversation, onToggleSidebar, onUpdateConversation, onApiKeyChange }) => {
+export const Sidebar: FC<Props> = ({
+  loading,
+  conversations,
+  lightMode,
+  show,
+  selectedConversation,
+  apiKey,
+  onNewConversation,
+  onToggleLightMode,
+  onSelectConversation,
+  onDeleteConversation,
+  onToggleSidebar,
+  onUpdateConversation,
+  onApiKeyChange,
+}) => {
   const [searchTerm, setSearchTerm] = useState<string>("");
-  const [filteredConversations, setFilteredConversations] = useState<Conversation[]>(conversations);
+  const [filteredConversations, setFilteredConversations] =
+    useState<Conversation[]>(conversations);
 
   useEffect(() => {
     if (searchTerm) {
-      setFilteredConversations(conversations.filter((conversation) => conversation.name.toLowerCase().includes(searchTerm.toLowerCase())));
+      setFilteredConversations(
+        conversations.filter((conversation) =>
+          conversation.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      );
     } else {
       setFilteredConversations(conversations);
     }
   }, [searchTerm, conversations]);
 
   return (
-    <div className={`flex flex-col bg-[#202123] min-w-full sm:min-w-[260px] sm:max-w-[260px] z-10 sm:relative sm:top-0 absolute top-12 bottom-0`}>
+    <div
+      className={`flex flex-col bg-[#202123] min-w-full sm:min-w-[260px] sm:max-w-[260px] z-10 sm:relative sm:top-0 absolute top-12 bottom-0`}
+    >
       <div className="flex items-center h-[60px] sm:pl-2 px-2">
         <button
           className="flex items-center w-full sm:w-[200px] h-[40px] rounded-lg bg-[#202123] border border-neutral-600 text-sm hover:bg-neutral-700"
@@ -42,10 +67,7 @@ export const Sidebar: FC<Props> = ({ loading, conversations, lightMode, selected
             setSearchTerm("");
           }}
         >
-          <IconPlus
-            className="ml-4 mr-3"
-            size={16}
-          />
+          <IconPlus className="ml-4 mr-3" size={16} />
           New chat
         </button>
 
@@ -57,10 +79,7 @@ export const Sidebar: FC<Props> = ({ loading, conversations, lightMode, selected
       </div>
 
       {conversations.length > 1 && (
-        <Search
-          searchTerm={searchTerm}
-          onSearch={setSearchTerm}
-        />
+        <Search searchTerm={searchTerm} onSearch={setSearchTerm} />
       )}
 
       <div className="flex-1 overflow-auto">
