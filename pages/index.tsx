@@ -1,12 +1,9 @@
 import { Chat } from "@/components/EG_Chat/Chat";
 import { Navbar } from "@/components/Mobile/Navbar";
-import { Sidebar } from "@/components/Sidebar/Sidebar";
-import mockConversation, { mockedEGMessage } from "@/mocks/api-result-mock";
 import {
   ChatBody,
   Conversation,
   DeviceTypes,
-  EarthGuideQuestionBody,
   EarthGuideQuestionResponse,
   IpData,
   KeyValuePair,
@@ -58,6 +55,7 @@ export default function Home() {
   const [panelData, setPanelData] = useState<PanelData | null>(null);
   const [panelDataLoading, setPanelDataLoading] = useState<boolean>(false);
   const [showPanelData, setShowPanelData] = useState<boolean>(true);
+  const [socket, setSocket] = useState<WebSocket | null>(null);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -66,7 +64,37 @@ export default function Home() {
     }
   }, [selectedConversation]);
 
+  useEffect(() => {
+    const ws = new WebSocket("ws://test.api.earth.guide:8765");
+
+    ws.onopen = () => {
+      console.log("WebSocket connected");
+    };
+
+    ws.onmessage = (event) => {
+      console.log("Received message:", event.data);
+    };
+
+    ws.onclose = () => {
+      console.log("WebSocket closed");
+    };
+
+    setSocket(ws);
+
+    return () => {
+      ws.close();
+    };
+  }, []);
+
+  const sendMessage = (message: string) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(message);
+    }
+  };
+
   const handleSend = async (message: Message, isResend: boolean) => {
+    sendMessage(message.content);
+
     if (selectedConversation) {
       let updatedConversation: Conversation;
 
