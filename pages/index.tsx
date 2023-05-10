@@ -93,8 +93,6 @@ export default function Home() {
   };
 
   const handleSend = async (message: Message, isResend: boolean) => {
-    sendMessage(message.content);
-
     if (selectedConversation) {
       let updatedConversation: Conversation;
 
@@ -128,6 +126,18 @@ export default function Home() {
       const lastUserInput =
         updatedConversation.messages[updatedConversation.messages.length - 1]
           .content;
+
+      sendMessage(
+        JSON.stringify({
+          type_of_prompt: TypeOfPrompt.TEXT_PROMPT,
+          text: lastUserInput,
+          user_identification: machineId,
+          language_of_browser: language,
+          city_of_user: ipData?.city || "",
+          gps: ipData?.gps || "",
+          type_of_device: deviceType,
+        })
+      );
 
       const earthGuideResponse: Promise<EarthGuideQuestionResponse> =
         fetchEGQuestion({
