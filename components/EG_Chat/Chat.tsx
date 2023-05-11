@@ -88,6 +88,11 @@ export const Chat: FC<Props> = ({
                     message={message}
                     lightMode={lightMode}
                     onAnotherPromptClick={onAnotherPromptClick}
+                    messageIsStreaming={messageIsStreaming}
+                    onSend={(message) => {
+                      setCurrentMessage(message);
+                      onSend(message, false);
+                    }}
                   />
                 ))}
 
