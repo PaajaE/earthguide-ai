@@ -33,6 +33,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { RightSidebar } from "@/components/EG_Chat/RightSidebar";
 import { LeftSidebar } from "@/components/EG_Chat/LeftSidebar";
+import { isValidJSON } from "@/utils/app/misc";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -57,6 +58,69 @@ export default function Home() {
   const [showPanelData, setShowPanelData] = useState<boolean>(true);
   const [socket, setSocket] = useState<WebSocket | null>(null);
 
+  // const handleSocketMessage = (json: string) => {
+  //   console.log(json);
+  //   console.log(selectedConversation);
+  //   if (selectedConversation) {
+  //     let updatedConversation = selectedConversation;
+
+  //     if (isValidJSON(json)) {
+  //       const data = JSON.parse(json);
+  //       console.log("valid json", data);
+  //       const curText = text + data.formatted_text;
+  //       console.log(curText);
+
+  //       console.log(isWsFirst);
+
+  //       if (isWsFirst) {
+  //         isWsFirst = false;
+  //         const updatedMessages: Message[] = [
+  //           ...updatedConversation.messages,
+  //           {
+  //             role: "earth.guide",
+  //             content: curText,
+  //             id: data.id_answer,
+  //           },
+  //         ];
+
+  //         updatedConversation = {
+  //           ...updatedConversation,
+  //           messages: updatedMessages,
+  //         };
+
+  //         setSelectedConversation(updatedConversation);
+  //       } else {
+  //         console.log(text);
+  //         const updatedMessages: Message[] = updatedConversation.messages.map(
+  //           (message, index) => {
+  //             console.log(index, message);
+  //             if (index === updatedConversation.messages.length) {
+  //               return {
+  //                 ...message,
+  //                 content: curText,
+  //               };
+  //             }
+
+  //             console.log("message", message);
+
+  //             return message;
+  //           }
+  //         );
+
+  //         updatedConversation = {
+  //           ...updatedConversation,
+  //           messages: updatedMessages,
+  //         };
+
+  //         setSelectedConversation(updatedConversation);
+  //         setText(curText);
+  //       }
+  //     } else {
+  //       console.log("finished", json);
+  //     }
+  //   }
+  // };
+
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
     if (window.innerWidth < 640) {
@@ -71,11 +135,8 @@ export default function Home() {
       console.log("WebSocket connected");
     };
 
-    ws.onmessage = (event) => {
-      console.log("Received message:", event.data);
-    };
-
-    ws.onclose = () => {
+    ws.onclose = (e) => {
+      console.log(e);
       console.log("WebSocket closed");
     };
 
@@ -86,191 +147,189 @@ export default function Home() {
     };
   }, []);
 
-  const sendMessage = (message: string) => {
-    if (socket && socket.readyState === WebSocket.OPEN) {
-      socket.send(message);
-    }
-  };
-
   const handleSend = async (message: Message, isResend: boolean) => {
     if (selectedConversation) {
       let updatedConversation: Conversation;
 
-      if (isResend) {
-        const updatedMessages = [...selectedConversation.messages];
-        updatedMessages.pop();
+      //   if (isResend) {
+      //     const updatedMessages = [...selectedConversation.messages];
+      //     updatedMessages.pop();
 
-        updatedConversation = {
-          ...selectedConversation,
-          messages: [...updatedMessages, message],
-        };
-      } else {
-        updatedConversation = {
-          ...selectedConversation,
-          messages: [...selectedConversation.messages, message],
-        };
-      }
+      //     updatedConversation = {
+      //       ...selectedConversation,
+      //       messages: [...updatedMessages, message],
+      //     };
+      //   } else {
+      updatedConversation = {
+        ...selectedConversation,
+        messages: [...selectedConversation.messages, message],
+      };
+      //   }
 
       setSelectedConversation(updatedConversation);
-      setLoading(true);
-      setMessageIsStreaming(true);
-      setMessageError(false);
+      //   setLoading(true);
+      //   setMessageIsStreaming(true);
+      //   setMessageError(false);
 
-      const chatBody: ChatBody = {
-        model: updatedConversation.model,
-        messages: updatedConversation.messages,
-        key: apiKey,
-        prompt: updatedConversation.prompt,
-      };
+      //   const chatBody: ChatBody = {
+      //     model: updatedConversation.model,
+      //     messages: updatedConversation.messages,
+      //     key: apiKey,
+      //     prompt: updatedConversation.prompt,
+      //   };
 
       const lastUserInput =
         updatedConversation.messages[updatedConversation.messages.length - 1]
           .content;
 
-      sendMessage(
-        JSON.stringify({
-          type_of_prompt: TypeOfPrompt.TEXT_PROMPT,
-          text: lastUserInput,
-          user_identification: machineId,
-          language_of_browser: language,
-          city_of_user: ipData?.city || "",
-          gps: ipData?.gps || "",
-          type_of_device: deviceType,
-        })
-      );
+      if (socket && socket.readyState === WebSocket.OPEN) {
+        let text = "";
+        let isWsFirst = true;
+        socket.onmessage = (event) => {
+          const json = event.data;
+          if (isValidJSON(json)) {
+            let data: EarthGuideQuestionResponse = JSON.parse(json);
+            console.log("valid json", data);
+            text += data.formatted_text;
+            console.log(text);
 
-      const earthGuideResponse: Promise<EarthGuideQuestionResponse> =
-        fetchEGQuestion({
-          type_of_prompt: TypeOfPrompt.TEXT_PROMPT,
-          text: lastUserInput,
-          user_identification: machineId,
-          language_of_browser: language,
-          city_of_user: ipData?.city || "",
-          gps: ipData?.gps || "",
-          type_of_device: deviceType,
-        });
+            console.log(isWsFirst);
 
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(chatBody),
-      });
+            if (isWsFirst) {
+              console.log(text);
+              isWsFirst = false;
+              const updatedMessages: Message[] = [
+                ...updatedConversation.messages,
+                {
+                  role: "earth.guide",
+                  content: data.formatted_text,
+                  id: data.id_answer,
+                },
+              ];
 
-      if (!response.ok) {
-        setLoading(false);
-        setMessageIsStreaming(false);
-        setMessageError(true);
-        return;
-      }
+              updatedConversation = {
+                ...updatedConversation,
+                messages: updatedMessages,
+              };
 
-      const data = response.body;
+              setSelectedConversation(updatedConversation);
+            } else {
+              console.log(text);
+              console.log(updatedConversation.messages);
+              const updatedMessages: Message[] =
+                updatedConversation.messages.map((message, index) => {
+                  console.log(index, message);
+                  if (index === updatedConversation.messages.length - 1) {
+                    return {
+                      ...message,
+                      content: text,
+                    };
+                  }
 
-      if (!data) {
-        setLoading(false);
-        setMessageIsStreaming(false);
-        setMessageError(true);
+                  console.log("message", message);
 
-        return;
-      }
+                  return message;
+                });
 
-      setLoading(false);
+              updatedConversation = {
+                ...updatedConversation,
+                messages: updatedMessages,
+              };
 
-      const reader = data.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let isFirst = true;
-      let text = "";
-
-      while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        const chunkValue = decoder.decode(value);
-
-        text += chunkValue;
-
-        if (isFirst) {
-          isFirst = false;
-          const updatedMessages: Message[] = [
-            ...updatedConversation.messages,
-            { role: "assistant", content: chunkValue },
-          ];
-
-          updatedConversation = {
-            ...updatedConversation,
-            messages: updatedMessages,
-          };
-
-          setSelectedConversation(updatedConversation);
-        } else {
-          const updatedMessages: Message[] = updatedConversation.messages.map(
-            (message, index) => {
-              if (index === updatedConversation.messages.length - 1) {
-                return {
-                  ...message,
-                  content: text,
-                };
-              }
-
-              return message;
+              setSelectedConversation(updatedConversation);
             }
-          );
-
-          updatedConversation = {
-            ...updatedConversation,
-            messages: updatedMessages,
-          };
-
-          setSelectedConversation(updatedConversation);
-        }
-      }
-
-      earthGuideResponse
-        .then((data: EarthGuideQuestionResponse) => {
-          console.log("Question submitted successfully!");
-          console.log(data);
-
-          const updatedMessages: Message[] = [
-            ...updatedConversation.messages,
-            {
-              role: "earth.guide",
-              content: data.formatted_text,
-              id: data.id_answer,
-            },
-          ];
-
-          const enrichedConversation: Conversation = {
-            ...updatedConversation,
-            messages: updatedMessages,
-          };
-
-          saveConversation(enrichedConversation);
-          setSelectedConversation(enrichedConversation);
-
-          const updatedConversations: Conversation[] = conversations.map(
-            (conversation) => {
-              if (conversation.id === selectedConversation.id) {
-                return enrichedConversation;
-              }
-
-              return conversation;
-            }
-          );
-
-          if (updatedConversations.length === 0) {
-            updatedConversations.push(updatedConversation);
           }
+        };
 
-          setConversations(updatedConversations);
+        socket.send(
+          JSON.stringify({
+            type_of_prompt: TypeOfPrompt.TEXT_PROMPT,
+            text: lastUserInput,
+            user_identification: machineId,
+            language_of_browser: language,
+            city_of_user: ipData?.city || "",
+            gps: ipData?.gps || "",
+            type_of_device: deviceType,
+          })
+        );
+      }
 
-          saveConversations(updatedConversations);
-        })
-        .catch(() => {
-          console.log("There was an error submitting the question.");
-        });
+      // const response = await fetch("/api/chat", {
+      //   method: "POST",
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(chatBody),
+      // });
 
-      setMessageIsStreaming(false);
+      // if (!response.ok) {
+      //   setLoading(false);
+      //   setMessageIsStreaming(false);
+      //   setMessageError(true);
+      //   return;
+      // }
+
+      // const data = response.body;
+
+      // if (!data) {
+      //   setLoading(false);
+      //   setMessageIsStreaming(false);
+      //   setMessageError(true);
+
+      //   return;
+      // }
+
+      // setLoading(false);
+
+      // const reader = data.getReader();
+      // const decoder = new TextDecoder();
+      // let done = false;
+      // let isFirst = true;
+      // let text = "";
+
+      // while (!done) {
+      //   const { value, done: doneReading } = await reader.read();
+      //   done = doneReading;
+      //   const chunkValue = decoder.decode(value);
+
+      //   text += chunkValue;
+
+      //   if (isFirst) {
+      //     isFirst = false;
+      //     const updatedMessages: Message[] = [
+      //       ...updatedConversation.messages,
+      //       { role: "assistant", content: chunkValue },
+      //     ];
+
+      //     updatedConversation = {
+      //       ...updatedConversation,
+      //       messages: updatedMessages,
+      //     };
+
+      //     setSelectedConversation(updatedConversation);
+      //   } else {
+      //     const updatedMessages: Message[] = updatedConversation.messages.map(
+      //       (message, index) => {
+      //         if (index === updatedConversation.messages.length - 1) {
+      //           return {
+      //             ...message,
+      //             content: text,
+      //           };
+      //         }
+
+      //         return message;
+      //       }
+      //     );
+
+      //     updatedConversation = {
+      //       ...updatedConversation,
+      //       messages: updatedMessages,
+      //     };
+
+      //     setSelectedConversation(updatedConversation);
+      //   }
+      // }
+      // setMessageIsStreaming(false);
     }
   };
 
@@ -298,21 +357,6 @@ export default function Home() {
     }
 
     setModels(data);
-  };
-
-  const handleLightMode = (mode: "dark" | "light") => {
-    setLightMode(mode);
-    localStorage.setItem("theme", mode);
-  };
-
-  const handleApiKeyChange = (apiKey: string) => {
-    setApiKey(apiKey);
-    localStorage.setItem("apiKey", apiKey);
-  };
-
-  const handleSelectConversation = (conversation: Conversation) => {
-    setSelectedConversation(conversation);
-    saveConversation(conversation);
   };
 
   const handleNewConversation = () => {
@@ -388,81 +432,18 @@ export default function Home() {
       setPanelDataLoading(true);
       setPanelData(null);
     }
-    const earthGuideResponse: Promise<EarthGuideQuestionResponse> =
-      fetchEGQuestion({
-        type_of_prompt: typeOfPrompt,
-        text: `${id}`,
-        user_identification: machineId,
-        language_of_browser: language,
-        city_of_user: ipData?.city || "",
-        gps: ipData?.gps || "",
-        type_of_device: deviceType,
-      });
 
-    if (selectedConversation) {
-      earthGuideResponse
-        .then((data: EarthGuideQuestionResponse) => {
-          if (
-            data.where_to_display === WhereToDisplay.PANEL_DESTINATION ||
-            data.where_to_display === WhereToDisplay.PANEL_FLIGHTS
-          ) {
-            setPanelData({
-              content: data.formatted_text,
-              type: data.where_to_display,
-              id: +data.id_answer,
-            });
-            setShowPanelData(true);
-            setPanelDataLoading(false);
-          } else {
-            let updatedConversation: Conversation;
-
-            updatedConversation = {
-              ...selectedConversation,
-            };
-
-            console.log("Question submitted successfully!");
-            console.log(data);
-
-            const updatedMessages: Message[] = [
-              ...updatedConversation.messages,
-              {
-                role: "earth.guide",
-                content: data.formatted_text,
-                id: data.id_answer,
-              },
-            ];
-
-            const enrichedConversation: Conversation = {
-              ...updatedConversation,
-              messages: updatedMessages,
-            };
-
-            saveConversation(enrichedConversation);
-            setSelectedConversation(enrichedConversation);
-
-            const updatedConversations: Conversation[] = conversations.map(
-              (conversation) => {
-                if (conversation.id === selectedConversation.id) {
-                  return enrichedConversation;
-                }
-
-                return conversation;
-              }
-            );
-
-            if (updatedConversations.length === 0) {
-              updatedConversations.push(updatedConversation);
-            }
-
-            setConversations(updatedConversations);
-
-            saveConversations(updatedConversations);
-          }
-        })
-        .catch(() => {
-          console.log("There was an error submitting the question.");
-        });
-    }
+    // sendMessage(
+    //   JSON.stringify({
+    //     type_of_prompt: typeOfPrompt,
+    //     text: `${id}`,
+    //     user_identification: machineId,
+    //     language_of_browser: language,
+    //     city_of_user: ipData?.city || "",
+    //     gps: ipData?.gps || "",
+    //     type_of_device: deviceType,
+    //   })
+    // );
   };
 
   useEffect(() => {
