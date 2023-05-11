@@ -22,6 +22,7 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
 export interface Message {
   role: Role;
   content: string;
+  typeOfPrompt?: TypeOfPrompt;
   id?: string;
 }
 

@@ -134,6 +134,16 @@ export const RightSidebar: FC<Props> = ({
               typeOfPrompt={TypeOfPrompt.MORE_LIKE}
               onClick={(typeOfPrompt: TypeOfPrompt) => {
                 onAnotherPromptClick(typeOfPrompt, `${data?.id}`);
+                onSend &&
+                  onSend(
+                    {
+                      role: "user",
+                      content: "Similar places like this",
+                      typeOfPrompt,
+                      id: `${data?.id ?? ""}`,
+                    },
+                    false
+                  );
               }}
             />
           </div>

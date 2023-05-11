@@ -56,70 +56,6 @@ export default function Home() {
   const [panelData, setPanelData] = useState<PanelData | null>(null);
   const [panelDataLoading, setPanelDataLoading] = useState<boolean>(false);
   const [showPanelData, setShowPanelData] = useState<boolean>(true);
-  const [socket, setSocket] = useState<WebSocket | null>(null);
-
-  // const handleSocketMessage = (json: string) => {
-  //   console.log(json);
-  //   console.log(selectedConversation);
-  //   if (selectedConversation) {
-  //     let updatedConversation = selectedConversation;
-
-  //     if (isValidJSON(json)) {
-  //       const data = JSON.parse(json);
-  //       console.log("valid json", data);
-  //       const curText = text + data.formatted_text;
-  //       console.log(curText);
-
-  //       console.log(isWsFirst);
-
-  //       if (isWsFirst) {
-  //         isWsFirst = false;
-  //         const updatedMessages: Message[] = [
-  //           ...updatedConversation.messages,
-  //           {
-  //             role: "earth.guide",
-  //             content: curText,
-  //             id: data.id_answer,
-  //           },
-  //         ];
-
-  //         updatedConversation = {
-  //           ...updatedConversation,
-  //           messages: updatedMessages,
-  //         };
-
-  //         setSelectedConversation(updatedConversation);
-  //       } else {
-  //         console.log(text);
-  //         const updatedMessages: Message[] = updatedConversation.messages.map(
-  //           (message, index) => {
-  //             console.log(index, message);
-  //             if (index === updatedConversation.messages.length) {
-  //               return {
-  //                 ...message,
-  //                 content: curText,
-  //               };
-  //             }
-
-  //             console.log("message", message);
-
-  //             return message;
-  //           }
-  //         );
-
-  //         updatedConversation = {
-  //           ...updatedConversation,
-  //           messages: updatedMessages,
-  //         };
-
-  //         setSelectedConversation(updatedConversation);
-  //         setText(curText);
-  //       }
-  //     } else {
-  //       console.log("finished", json);
-  //     }
-  //   }
-  // };
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -128,75 +64,33 @@ export default function Home() {
     }
   }, [selectedConversation]);
 
-  useEffect(() => {
-    const ws = new WebSocket("ws://test.api.earth.guide:8765");
-
-    ws.onopen = () => {
-      console.log("WebSocket connected");
-    };
-
-    ws.onclose = (e) => {
-      console.log(e);
-      console.log("WebSocket closed");
-    };
-
-    setSocket(ws);
-
-    return () => {
-      ws.close();
-    };
-  }, []);
-
   const handleSend = async (message: Message, isResend: boolean) => {
     if (selectedConversation) {
+      setMessageIsStreaming(true);
       let updatedConversation: Conversation;
 
-      //   if (isResend) {
-      //     const updatedMessages = [...selectedConversation.messages];
-      //     updatedMessages.pop();
-
-      //     updatedConversation = {
-      //       ...selectedConversation,
-      //       messages: [...updatedMessages, message],
-      //     };
-      //   } else {
       updatedConversation = {
         ...selectedConversation,
         messages: [...selectedConversation.messages, message],
       };
-      //   }
 
       setSelectedConversation(updatedConversation);
-      //   setLoading(true);
-      //   setMessageIsStreaming(true);
-      //   setMessageError(false);
 
-      //   const chatBody: ChatBody = {
-      //     model: updatedConversation.model,
-      //     messages: updatedConversation.messages,
-      //     key: apiKey,
-      //     prompt: updatedConversation.prompt,
-      //   };
+      const lastMessage =
+        updatedConversation.messages[updatedConversation.messages.length - 1];
 
-      const lastUserInput =
-        updatedConversation.messages[updatedConversation.messages.length - 1]
-          .content;
-
-      if (socket && socket.readyState === WebSocket.OPEN) {
+      const ws = new WebSocket("ws://test.api.earth.guide:8765");
+      ws.onopen = () => {
         let text = "";
         let isWsFirst = true;
-        socket.onmessage = (event) => {
+        ws.onmessage = (event) => {
           const json = event.data;
           if (isValidJSON(json)) {
             let data: EarthGuideQuestionResponse = JSON.parse(json);
-            console.log("valid json", data);
             text += data.formatted_text;
             console.log(text);
 
-            console.log(isWsFirst);
-
             if (isWsFirst) {
-              console.log(text);
               isWsFirst = false;
               const updatedMessages: Message[] = [
                 ...updatedConversation.messages,
@@ -214,19 +108,14 @@ export default function Home() {
 
               setSelectedConversation(updatedConversation);
             } else {
-              console.log(text);
-              console.log(updatedConversation.messages);
               const updatedMessages: Message[] =
                 updatedConversation.messages.map((message, index) => {
-                  console.log(index, message);
                   if (index === updatedConversation.messages.length - 1) {
                     return {
                       ...message,
                       content: text,
                     };
                   }
-
-                  console.log("message", message);
 
                   return message;
                 });
@@ -238,13 +127,19 @@ export default function Home() {
 
               setSelectedConversation(updatedConversation);
             }
+          } else {
+            setMessageIsStreaming(false);
           }
         };
 
-        socket.send(
+        ws.send(
           JSON.stringify({
-            type_of_prompt: TypeOfPrompt.TEXT_PROMPT,
-            text: lastUserInput,
+            type_of_prompt:
+              lastMessage.typeOfPrompt || TypeOfPrompt.TEXT_PROMPT,
+            text:
+              lastMessage.typeOfPrompt === TypeOfPrompt.TEXT_PROMPT
+                ? lastMessage.content
+                : lastMessage.id,
             user_identification: machineId,
             language_of_browser: language,
             city_of_user: ipData?.city || "",
@@ -252,84 +147,12 @@ export default function Home() {
             type_of_device: deviceType,
           })
         );
-      }
+      };
 
-      // const response = await fetch("/api/chat", {
-      //   method: "POST",
-      //   headers: {
-      //     "Content-Type": "application/json",
-      //   },
-      //   body: JSON.stringify(chatBody),
-      // });
-
-      // if (!response.ok) {
-      //   setLoading(false);
-      //   setMessageIsStreaming(false);
-      //   setMessageError(true);
-      //   return;
-      // }
-
-      // const data = response.body;
-
-      // if (!data) {
-      //   setLoading(false);
-      //   setMessageIsStreaming(false);
-      //   setMessageError(true);
-
-      //   return;
-      // }
-
-      // setLoading(false);
-
-      // const reader = data.getReader();
-      // const decoder = new TextDecoder();
-      // let done = false;
-      // let isFirst = true;
-      // let text = "";
-
-      // while (!done) {
-      //   const { value, done: doneReading } = await reader.read();
-      //   done = doneReading;
-      //   const chunkValue = decoder.decode(value);
-
-      //   text += chunkValue;
-
-      //   if (isFirst) {
-      //     isFirst = false;
-      //     const updatedMessages: Message[] = [
-      //       ...updatedConversation.messages,
-      //       { role: "assistant", content: chunkValue },
-      //     ];
-
-      //     updatedConversation = {
-      //       ...updatedConversation,
-      //       messages: updatedMessages,
-      //     };
-
-      //     setSelectedConversation(updatedConversation);
-      //   } else {
-      //     const updatedMessages: Message[] = updatedConversation.messages.map(
-      //       (message, index) => {
-      //         if (index === updatedConversation.messages.length - 1) {
-      //           return {
-      //             ...message,
-      //             content: text,
-      //           };
-      //         }
-
-      //         return message;
-      //       }
-      //     );
-
-      //     updatedConversation = {
-      //       ...updatedConversation,
-      //       messages: updatedMessages,
-      //     };
-
-      //     setSelectedConversation(updatedConversation);
-      //   }
-      // }
-      // setMessageIsStreaming(false);
+      ws.onclose = (e) => {
+        console.log(e);
+        console.log("WebSocket closed");
+      };
     }
   };
 
@@ -381,30 +204,6 @@ export default function Home() {
     setLoading(false);
   };
 
-  const handleDeleteConversation = (conversation: Conversation) => {
-    const updatedConversations = conversations.filter(
-      (c) => c.id !== conversation.id
-    );
-    setConversations(updatedConversations);
-    saveConversations(updatedConversations);
-
-    if (updatedConversations.length > 0) {
-      setSelectedConversation(
-        updatedConversations[updatedConversations.length - 1]
-      );
-      saveConversation(updatedConversations[updatedConversations.length - 1]);
-    } else {
-      setSelectedConversation({
-        id: 1,
-        name: "New conversation",
-        messages: [],
-        model: OpenAIModels[OpenAIModelID.GPT_3_5],
-        prompt: DEFAULT_SYSTEM_PROMPT,
-      });
-      localStorage.removeItem("selectedConversation");
-    }
-  };
-
   const handleUpdateConversation = (
     conversation: Conversation,
     data: KeyValuePair
@@ -424,7 +223,6 @@ export default function Home() {
   };
 
   const handleAnotherPromptClick = (typeOfPrompt: TypeOfPrompt, id: string) => {
-    console.log(typeOfPrompt);
     if (
       typeOfPrompt === TypeOfPrompt.CLICK_ON_LOCATION ||
       typeOfPrompt === TypeOfPrompt.CLICK_ON_PRICE
@@ -433,17 +231,56 @@ export default function Home() {
       setPanelData(null);
     }
 
-    // sendMessage(
-    //   JSON.stringify({
-    //     type_of_prompt: typeOfPrompt,
-    //     text: `${id}`,
-    //     user_identification: machineId,
-    //     language_of_browser: language,
-    //     city_of_user: ipData?.city || "",
-    //     gps: ipData?.gps || "",
-    //     type_of_device: deviceType,
-    //   })
-    // );
+    if (selectedConversation) {
+      const ws = new WebSocket("ws://test.api.earth.guide:8765");
+      ws.onopen = () => {
+        let text = "";
+        let isWsFirst = true;
+        ws.onmessage = (event) => {
+          const json = event.data;
+          if (isValidJSON(json)) {
+            const data: EarthGuideQuestionResponse = JSON.parse(json);
+            console.log("valid json", data);
+
+            if (
+              data.where_to_display === WhereToDisplay.PANEL_DESTINATION ||
+              data.where_to_display === WhereToDisplay.PANEL_FLIGHTS
+            ) {
+              text += data.formatted_text;
+              setPanelData({
+                content: text,
+                type: data.where_to_display,
+                id: +data.id_answer,
+              });
+              setShowPanelData(true);
+              setPanelDataLoading(false);
+            } else {
+              let updatedConversation: Conversation;
+
+              updatedConversation = {
+                ...selectedConversation,
+              };
+            }
+          }
+        };
+
+        ws.send(
+          JSON.stringify({
+            type_of_prompt: typeOfPrompt,
+            text: `${id}`,
+            user_identification: machineId,
+            language_of_browser: language,
+            city_of_user: ipData?.city || "",
+            gps: ipData?.gps || "",
+            type_of_device: deviceType,
+          })
+        );
+      };
+      ws.onclose = (e) => {
+        console.log(e);
+        console.log("WebSocket closed");
+      };
+    }
   };
 
   useEffect(() => {
