@@ -8,14 +8,18 @@ import { EarthGuideReactMarkdown } from "./EarthGuideReactMarkdown";
 
 interface Props {
   message: Message;
+  messageIsStreaming?: boolean;
   lightMode: "light" | "dark";
   onAnotherPromptClick?: (typeOfPrompt: TypeOfPrompt, id: string) => void;
+  onSend?: (message: Message) => void;
   onSampleClick?: (content: string) => void;
 }
 
 export const ChatMessage: FC<Props> = ({
   message,
   lightMode,
+  messageIsStreaming = false,
+  onSend,
   onAnotherPromptClick,
   onSampleClick,
 }) => {
@@ -131,7 +135,7 @@ export const ChatMessage: FC<Props> = ({
           )}
         </div>
       </div>
-      {message.role === "earth.guide" && (
+      {message.role === "earth.guide" && !messageIsStreaming && (
         <div className="flex mt-4 mb-2">
           <Button
             text="More places like these"
@@ -139,8 +143,13 @@ export const ChatMessage: FC<Props> = ({
             bgColor="#d4845c"
             typeOfPrompt={TypeOfPrompt.MORE_PLACES}
             onClick={(typeOfPrompt: TypeOfPrompt) => {
-              onAnotherPromptClick &&
-                onAnotherPromptClick(typeOfPrompt, message.id ?? "");
+              onSend &&
+                onSend({
+                  role: "user",
+                  content: "More places like these",
+                  typeOfPrompt,
+                  id: message.id ?? "",
+                });
             }}
           />
           <Button
@@ -149,8 +158,13 @@ export const ChatMessage: FC<Props> = ({
             bgColor="#d4845c"
             typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
             onClick={(typeOfPrompt: TypeOfPrompt) => {
-              onAnotherPromptClick &&
-                onAnotherPromptClick(typeOfPrompt, message.id ?? "");
+              onSend &&
+                onSend({
+                  role: "user",
+                  content: "Show me lesser-known places",
+                  typeOfPrompt,
+                  id: message.id ?? "",
+                });
             }}
           />
         </div>
