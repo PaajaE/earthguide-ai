@@ -26,10 +26,10 @@ export const RightSidebar: FC<Props> = ({
 }) => {
   return (
     <div
-      className={`flex flex-col bg-[#F4F4F4] min-w-full sm:min-w-[300px] lg:min-w-[30%] lg:max-w-[30%] z-10 sm:relative sm:top-0 absolute top-12 bottom-0 rounded-md`}
+      className={`flex flex-col min-w-full sm:min-w-[300px] lg:min-w-[30%] lg:max-w-[30%] z-10 sm:relative sm:top-0 absolute top-12 bottom-0 rounded-md`}
     >
-      <div className="">
-        <div className="text-black mt-4 mb-2 mx-2 p-2 pt-0">
+      <div className="fixed min-w-full sm:min-w-[300px] lg:min-w-[30%] lg:max-w-[30%] bg-[#F4F4F4] rounded-md h-[calc(100%_-_6rem);]">
+        <div className="text-black mt-4 mb-2 mx-2 p-2 pt-0 w-full">
           {showSample && (
             <div className="flex flex-col mt-2">
               <h2 className="font-bold mb-4">Examples</h2>
@@ -103,7 +103,7 @@ export const RightSidebar: FC<Props> = ({
                 />
               </div>
               <div
-                className={`border-[#000000ff] leading-6  font-plus jakarta sans  font-[400]`}
+                className={`border-[#000000ff] leading-6  font-plus jakarta sans  font-[400] overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_300px)]`}
               >
                 {loading && (
                   <div className="flex flex-col items-center justify-center h-full mt-2">
