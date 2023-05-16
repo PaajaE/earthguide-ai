@@ -5,6 +5,7 @@ import remarkGfm from "remark-gfm";
 import { CodeBlock } from "../Markdown/CodeBlock";
 import { Button } from "../Shared/Button";
 import { EarthGuideReactMarkdown } from "./EarthGuideReactMarkdown";
+import { ChatLoader } from "./ChatLoader";
 
 interface Props {
   message: Message;
@@ -126,11 +127,14 @@ export const ChatMessage: FC<Props> = ({
             </ReactMarkdown>
           )}
           {message.role === "earth.guide" && (
-            <EarthGuideReactMarkdown
-              content={message.content}
-              lightMode={lightMode}
-              onAnotherPromptClick={onAnotherPromptClick}
-            />
+            <>
+              <EarthGuideReactMarkdown
+                content={message.content}
+                lightMode={lightMode}
+                onAnotherPromptClick={onAnotherPromptClick}
+              />
+              {messageIsStreaming && <ChatLoader />}
+            </>
           )}
         </div>
       </div>

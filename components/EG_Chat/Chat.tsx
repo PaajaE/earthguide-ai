@@ -96,8 +96,6 @@ export const Chat: FC<Props> = ({
                   />
                 ))}
 
-                {/* {loading && <ChatLoader />} */}
-
                 <div className="bg-[#FAFAFA] h-8" ref={messagesEndRef} />
               </>
             )}
