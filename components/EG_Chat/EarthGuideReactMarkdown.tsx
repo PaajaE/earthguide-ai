@@ -22,16 +22,26 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
       components={{
         code({ node, inline, className, children, ...props }) {
           const div = String(children).replace(/\n$/, "");
-          if (div.includes(`data-type="flight"`)) {
-            // console.log(div);
+          // if (div.includes(`data-type="flight"`)) {
+          //   return (
+          //     <div
+          //       className="w-100 inline pb-2"
+          //       dangerouslySetInnerHTML={{ __html: div }}
+          //     ></div>
+          //   );
+          // }
+          if (div.includes(`class="gallery"`)) {
+            return (
+              <div className="" dangerouslySetInnerHTML={{ __html: div }}></div>
+            );
+          } else if (div.includes(`class="no-photos"`)) {
             return (
               <div
-                className="w-100 pb-2"
+                className="w-100"
                 dangerouslySetInnerHTML={{ __html: div }}
               ></div>
             );
-          }
-          if (div.includes(`class="gallery"`)) {
+          } else if (div.includes(`class="inline-flights"`)) {
             return (
               <div
                 className="w-100"
@@ -39,18 +49,8 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
               ></div>
             );
           } else {
-            return (
-              <code className={className} {...props}>
-                {children}
-              </code>
-            );
+            return <></>;
           }
-
-          // const match = /language-(\w+)/.exec(className || "");
-          // return !inline && match ? (
-          //
-          // ) : (
-          // );
         },
         table({ children }) {
           return (
@@ -74,7 +74,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
           );
         },
         ol(ref) {
-          console.log(ref);
+          // console.log(ref);
           return (
             <ol className="list-auto pl-4" start={ref.start}>
               {ref.children}

@@ -23,7 +23,6 @@ export const ChatMessage: FC<Props> = ({
   onAnotherPromptClick,
   onSampleClick,
 }) => {
-  // console.log("message", message);
   return (
     <>
       {message.role === "assistant" || message.role === "earth.guide" ? (
@@ -68,7 +67,7 @@ export const ChatMessage: FC<Props> = ({
         }}
       >
         <div
-          className={`border-[#000000ff] leading-6  font-plus jakarta sans  font-[400]
+          className={`border-[#000000ff] leading-6 w-full  font-plus jakarta sans  font-[400]
       ${
         message.role === "assistant" ||
         message.role === "sample" ||

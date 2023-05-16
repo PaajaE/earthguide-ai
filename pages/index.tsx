@@ -137,7 +137,8 @@ export default function Home() {
             type_of_prompt:
               lastMessage.typeOfPrompt || TypeOfPrompt.TEXT_PROMPT,
             text:
-              lastMessage.typeOfPrompt === TypeOfPrompt.TEXT_PROMPT
+              lastMessage.typeOfPrompt === TypeOfPrompt.TEXT_PROMPT ||
+              !lastMessage.typeOfPrompt
                 ? lastMessage.content
                 : lastMessage.id,
             user_identification: machineId,
