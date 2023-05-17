@@ -236,7 +236,6 @@ export default function Home() {
       const ws = new WebSocket("ws://api.earth.guide:8765");
       ws.onopen = () => {
         let text = "";
-        let isWsFirst = true;
         ws.onmessage = (event) => {
           const json = event.data;
           if (isValidJSON(json)) {
@@ -254,7 +253,6 @@ export default function Home() {
                 id: +data.id_answer,
               });
               setShowPanelData(true);
-              setPanelDataLoading(false);
             } else {
               let updatedConversation: Conversation;
 
@@ -262,6 +260,8 @@ export default function Home() {
                 ...selectedConversation,
               };
             }
+          } else {
+            setPanelDataLoading(false);
           }
         };
 
