@@ -1,12 +1,9 @@
 import { Chat } from "@/components/EG_Chat/Chat";
 import { Navbar } from "@/components/Mobile/Navbar";
-import { Sidebar } from "@/components/Sidebar/Sidebar";
-import mockConversation, { mockedEGMessage } from "@/mocks/api-result-mock";
 import {
   ChatBody,
   Conversation,
   DeviceTypes,
-  EarthGuideQuestionBody,
   EarthGuideQuestionResponse,
   IpData,
   KeyValuePair,
@@ -36,6 +33,7 @@ import Head from "next/head";
 import { useEffect, useState } from "react";
 import { RightSidebar } from "@/components/EG_Chat/RightSidebar";
 import { LeftSidebar } from "@/components/EG_Chat/LeftSidebar";
+import { isValidJSON } from "@/utils/app/misc";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -68,171 +66,94 @@ export default function Home() {
 
   const handleSend = async (message: Message, isResend: boolean) => {
     if (selectedConversation) {
+      setMessageIsStreaming(true);
       let updatedConversation: Conversation;
 
-      if (isResend) {
-        const updatedMessages = [...selectedConversation.messages];
-        updatedMessages.pop();
-
-        updatedConversation = {
-          ...selectedConversation,
-          messages: [...updatedMessages, message],
-        };
-      } else {
-        updatedConversation = {
-          ...selectedConversation,
-          messages: [...selectedConversation.messages, message],
-        };
-      }
-
-      setSelectedConversation(updatedConversation);
-      setLoading(true);
-      setMessageIsStreaming(true);
-      setMessageError(false);
-
-      const chatBody: ChatBody = {
-        model: updatedConversation.model,
-        messages: updatedConversation.messages,
-        key: apiKey,
-        prompt: updatedConversation.prompt,
+      updatedConversation = {
+        ...selectedConversation,
+        messages: [...selectedConversation.messages, message],
       };
 
-      const lastUserInput =
-        updatedConversation.messages[updatedConversation.messages.length - 1]
-          .content;
+      setSelectedConversation(updatedConversation);
 
-      const earthGuideResponse: Promise<EarthGuideQuestionResponse> =
-        fetchEGQuestion({
-          type_of_prompt: TypeOfPrompt.TEXT_PROMPT,
-          text: lastUserInput,
-          user_identification: machineId,
-          language_of_browser: language,
-          city_of_user: ipData?.city || "",
-          gps: ipData?.gps || "",
-          type_of_device: deviceType,
-        });
+      const lastMessage =
+        updatedConversation.messages[updatedConversation.messages.length - 1];
 
-      const response = await fetch("/api/chat", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(chatBody),
-      });
+      const ws = new WebSocket("ws://test.api.earth.guide:8765");
+      ws.onopen = () => {
+        let text = "";
+        let isWsFirst = true;
+        ws.onmessage = (event) => {
+          const json = event.data;
+          if (isValidJSON(json)) {
+            let data: EarthGuideQuestionResponse = JSON.parse(json);
+            text += data.formatted_text;
+            console.log(text);
 
-      if (!response.ok) {
-        setLoading(false);
-        setMessageIsStreaming(false);
-        setMessageError(true);
-        return;
-      }
+            if (isWsFirst) {
+              isWsFirst = false;
+              const updatedMessages: Message[] = [
+                ...updatedConversation.messages,
+                {
+                  role: "earth.guide",
+                  content: data.formatted_text,
+                  id: data.id_answer,
+                },
+              ];
 
-      const data = response.body;
+              updatedConversation = {
+                ...updatedConversation,
+                messages: updatedMessages,
+              };
 
-      if (!data) {
-        setLoading(false);
-        setMessageIsStreaming(false);
-        setMessageError(true);
+              setSelectedConversation(updatedConversation);
+            } else {
+              const updatedMessages: Message[] =
+                updatedConversation.messages.map((message, index) => {
+                  if (index === updatedConversation.messages.length - 1) {
+                    return {
+                      ...message,
+                      content: text,
+                    };
+                  }
 
-        return;
-      }
+                  return message;
+                });
 
-      setLoading(false);
+              updatedConversation = {
+                ...updatedConversation,
+                messages: updatedMessages,
+              };
 
-      const reader = data.getReader();
-      const decoder = new TextDecoder();
-      let done = false;
-      let isFirst = true;
-      let text = "";
-
-      while (!done) {
-        const { value, done: doneReading } = await reader.read();
-        done = doneReading;
-        const chunkValue = decoder.decode(value);
-
-        text += chunkValue;
-
-        if (isFirst) {
-          isFirst = false;
-          const updatedMessages: Message[] = [
-            ...updatedConversation.messages,
-            { role: "assistant", content: chunkValue },
-          ];
-
-          updatedConversation = {
-            ...updatedConversation,
-            messages: updatedMessages,
-          };
-
-          setSelectedConversation(updatedConversation);
-        } else {
-          const updatedMessages: Message[] = updatedConversation.messages.map(
-            (message, index) => {
-              if (index === updatedConversation.messages.length - 1) {
-                return {
-                  ...message,
-                  content: text,
-                };
-              }
-
-              return message;
+              setSelectedConversation(updatedConversation);
             }
-          );
-
-          updatedConversation = {
-            ...updatedConversation,
-            messages: updatedMessages,
-          };
-
-          setSelectedConversation(updatedConversation);
-        }
-      }
-
-      earthGuideResponse
-        .then((data: EarthGuideQuestionResponse) => {
-          console.log("Question submitted successfully!");
-          console.log(data);
-
-          const updatedMessages: Message[] = [
-            ...updatedConversation.messages,
-            {
-              role: "earth.guide",
-              content: data.formatted_text,
-              id: data.id_answer,
-            },
-          ];
-
-          const enrichedConversation: Conversation = {
-            ...updatedConversation,
-            messages: updatedMessages,
-          };
-
-          saveConversation(enrichedConversation);
-          setSelectedConversation(enrichedConversation);
-
-          const updatedConversations: Conversation[] = conversations.map(
-            (conversation) => {
-              if (conversation.id === selectedConversation.id) {
-                return enrichedConversation;
-              }
-
-              return conversation;
-            }
-          );
-
-          if (updatedConversations.length === 0) {
-            updatedConversations.push(updatedConversation);
+          } else {
+            setMessageIsStreaming(false);
           }
+        };
 
-          setConversations(updatedConversations);
+        ws.send(
+          JSON.stringify({
+            type_of_prompt:
+              lastMessage.typeOfPrompt || TypeOfPrompt.TEXT_PROMPT,
+            text:
+              lastMessage.typeOfPrompt === TypeOfPrompt.TEXT_PROMPT ||
+              !lastMessage.typeOfPrompt
+                ? lastMessage.content
+                : lastMessage.id,
+            user_identification: machineId,
+            language_of_browser: language,
+            city_of_user: ipData?.city || "",
+            gps: ipData?.gps || "",
+            type_of_device: deviceType,
+          })
+        );
+      };
 
-          saveConversations(updatedConversations);
-        })
-        .catch(() => {
-          console.log("There was an error submitting the question.");
-        });
-
-      setMessageIsStreaming(false);
+      ws.onclose = (e) => {
+        console.log(e);
+        console.log("WebSocket closed");
+      };
     }
   };
 
@@ -262,21 +183,6 @@ export default function Home() {
     setModels(data);
   };
 
-  const handleLightMode = (mode: "dark" | "light") => {
-    setLightMode(mode);
-    localStorage.setItem("theme", mode);
-  };
-
-  const handleApiKeyChange = (apiKey: string) => {
-    setApiKey(apiKey);
-    localStorage.setItem("apiKey", apiKey);
-  };
-
-  const handleSelectConversation = (conversation: Conversation) => {
-    setSelectedConversation(conversation);
-    saveConversation(conversation);
-  };
-
   const handleNewConversation = () => {
     const lastConversation = conversations[conversations.length - 1];
 
@@ -299,30 +205,6 @@ export default function Home() {
     setLoading(false);
   };
 
-  const handleDeleteConversation = (conversation: Conversation) => {
-    const updatedConversations = conversations.filter(
-      (c) => c.id !== conversation.id
-    );
-    setConversations(updatedConversations);
-    saveConversations(updatedConversations);
-
-    if (updatedConversations.length > 0) {
-      setSelectedConversation(
-        updatedConversations[updatedConversations.length - 1]
-      );
-      saveConversation(updatedConversations[updatedConversations.length - 1]);
-    } else {
-      setSelectedConversation({
-        id: 1,
-        name: "New conversation",
-        messages: [],
-        model: OpenAIModels[OpenAIModelID.GPT_3_5],
-        prompt: DEFAULT_SYSTEM_PROMPT,
-      });
-      localStorage.removeItem("selectedConversation");
-    }
-  };
-
   const handleUpdateConversation = (
     conversation: Conversation,
     data: KeyValuePair
@@ -342,7 +224,6 @@ export default function Home() {
   };
 
   const handleAnotherPromptClick = (typeOfPrompt: TypeOfPrompt, id: string) => {
-    console.log(typeOfPrompt);
     if (
       typeOfPrompt === TypeOfPrompt.CLICK_ON_LOCATION ||
       typeOfPrompt === TypeOfPrompt.CLICK_ON_PRICE
@@ -350,80 +231,56 @@ export default function Home() {
       setPanelDataLoading(true);
       setPanelData(null);
     }
-    const earthGuideResponse: Promise<EarthGuideQuestionResponse> =
-      fetchEGQuestion({
-        type_of_prompt: typeOfPrompt,
-        text: `${id}`,
-        user_identification: machineId,
-        language_of_browser: language,
-        city_of_user: ipData?.city || "",
-        gps: ipData?.gps || "",
-        type_of_device: deviceType,
-      });
 
     if (selectedConversation) {
-      earthGuideResponse
-        .then((data: EarthGuideQuestionResponse) => {
-          if (
-            data.where_to_display === WhereToDisplay.PANEL_DESTINATION ||
-            data.where_to_display === WhereToDisplay.PANEL_FLIGHTS
-          ) {
-            setPanelData({
-              content: data.formatted_text,
-              type: data.where_to_display,
-              id: +data.id_answer,
-            });
-            setShowPanelData(true);
-            setPanelDataLoading(false);
-          } else {
-            let updatedConversation: Conversation;
+      const ws = new WebSocket("ws://test.api.earth.guide:8765");
+      ws.onopen = () => {
+        let text = "";
+        let isWsFirst = true;
+        ws.onmessage = (event) => {
+          const json = event.data;
+          if (isValidJSON(json)) {
+            const data: EarthGuideQuestionResponse = JSON.parse(json);
+            console.log("valid json", data);
 
-            updatedConversation = {
-              ...selectedConversation,
-            };
+            if (
+              data.where_to_display === WhereToDisplay.PANEL_DESTINATION ||
+              data.where_to_display === WhereToDisplay.PANEL_FLIGHTS
+            ) {
+              text += data.formatted_text;
+              setPanelData({
+                content: text,
+                type: data.where_to_display,
+                id: +data.id_answer,
+              });
+              setShowPanelData(true);
+              setPanelDataLoading(false);
+            } else {
+              let updatedConversation: Conversation;
 
-            console.log("Question submitted successfully!");
-            console.log(data);
-
-            const updatedMessages: Message[] = [
-              ...updatedConversation.messages,
-              {
-                role: "earth.guide",
-                content: data.formatted_text,
-                id: data.id_answer,
-              },
-            ];
-
-            const enrichedConversation: Conversation = {
-              ...updatedConversation,
-              messages: updatedMessages,
-            };
-
-            saveConversation(enrichedConversation);
-            setSelectedConversation(enrichedConversation);
-
-            const updatedConversations: Conversation[] = conversations.map(
-              (conversation) => {
-                if (conversation.id === selectedConversation.id) {
-                  return enrichedConversation;
-                }
-
-                return conversation;
-              }
-            );
-
-            if (updatedConversations.length === 0) {
-              updatedConversations.push(updatedConversation);
+              updatedConversation = {
+                ...selectedConversation,
+              };
             }
-
-            setConversations(updatedConversations);
-
-            saveConversations(updatedConversations);
           }
-        })
-        .catch(() => {
-          console.log("There was an error submitting the question.");
-        });
+        };
+
+        ws.send(
+          JSON.stringify({
+            type_of_prompt: typeOfPrompt,
+            text: `${id}`,
+            user_identification: machineId,
+            language_of_browser: language,
+            city_of_user: ipData?.city || "",
+            gps: ipData?.gps || "",
+            type_of_device: deviceType,
+          })
+        );
+      };
+      ws.onclose = (e) => {
+        console.log(e);
+        console.log("WebSocket closed");
+      };
     }
   };
 

@@ -54,7 +54,7 @@ export const Chat: FC<Props> = ({
   }, [conversation.messages]);
 
   return (
-    <div className="relative flex flex-col justify-between flex-1 md:w-full min-h-[calc(100vh_-_100px)] lg:w-3/5 bg-[#FAFAFA] px-4 mr-4">
+    <div className="relative flex flex-col justify-between flex-1 md:w-[calc(70%_-_290px)] min-h-[calc(100vh_-_100px)] bg-[#FAFAFA] px-4 mr-4">
       {modelError ? (
         <div className="flex flex-col justify-center mx-auto h-full w-full space-y-6">
           <div className="text-center text-red-500">Error fetching models.</div>
@@ -68,7 +68,7 @@ export const Chat: FC<Props> = ({
         </div>
       ) : (
         <>
-          <div>
+          <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_300px)]">
             <ChatMessage
               key="starter-message"
               message={{
@@ -88,10 +88,13 @@ export const Chat: FC<Props> = ({
                     message={message}
                     lightMode={lightMode}
                     onAnotherPromptClick={onAnotherPromptClick}
+                    messageIsStreaming={messageIsStreaming}
+                    onSend={(message) => {
+                      setCurrentMessage(message);
+                      onSend(message, false);
+                    }}
                   />
                 ))}
-
-                {/* {loading && <ChatLoader />} */}
 
                 <div className="bg-[#FAFAFA] h-8" ref={messagesEndRef} />
               </>

@@ -70,7 +70,7 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
 
   return (
     <>
-      <div className="fixed bottom-0 lg:w-[calc(100vw_-_260px_-_30%_-_5rem)] pb-6 bg-[#FAFAFA]">
+      <div className="fixed bottom-4 lg:w-[calc(100vw_-_260px_-_30%_-_5rem)] pb-6 bg-[#FAFAFA]">
         <textarea
           ref={textareaRef}
           className="pl-4 pr-8 py-3 w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"

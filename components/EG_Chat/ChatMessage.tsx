@@ -5,21 +5,25 @@ import remarkGfm from "remark-gfm";
 import { CodeBlock } from "../Markdown/CodeBlock";
 import { Button } from "../Shared/Button";
 import { EarthGuideReactMarkdown } from "./EarthGuideReactMarkdown";
+import { ChatLoader } from "./ChatLoader";
 
 interface Props {
   message: Message;
+  messageIsStreaming?: boolean;
   lightMode: "light" | "dark";
   onAnotherPromptClick?: (typeOfPrompt: TypeOfPrompt, id: string) => void;
+  onSend?: (message: Message) => void;
   onSampleClick?: (content: string) => void;
 }
 
 export const ChatMessage: FC<Props> = ({
   message,
   lightMode,
+  messageIsStreaming = false,
+  onSend,
   onAnotherPromptClick,
   onSampleClick,
 }) => {
-  // console.log("message", message);
   return (
     <>
       {message.role === "assistant" || message.role === "earth.guide" ? (
@@ -64,7 +68,7 @@ export const ChatMessage: FC<Props> = ({
         }}
       >
         <div
-          className={`border-[#000000ff] leading-6  font-plus jakarta sans  font-[400]
+          className={`border-[#000000ff] leading-6 w-full  font-plus jakarta sans  font-[400]
       ${
         message.role === "assistant" ||
         message.role === "sample" ||
@@ -123,15 +127,18 @@ export const ChatMessage: FC<Props> = ({
             </ReactMarkdown>
           )}
           {message.role === "earth.guide" && (
-            <EarthGuideReactMarkdown
-              content={message.content}
-              lightMode={lightMode}
-              onAnotherPromptClick={onAnotherPromptClick}
-            />
+            <>
+              <EarthGuideReactMarkdown
+                content={message.content}
+                lightMode={lightMode}
+                onAnotherPromptClick={onAnotherPromptClick}
+              />
+              {messageIsStreaming && <ChatLoader />}
+            </>
           )}
         </div>
       </div>
-      {message.role === "earth.guide" && (
+      {message.role === "earth.guide" && !messageIsStreaming && (
         <div className="flex mt-4 mb-2">
           <Button
             text="More places like these"
@@ -139,8 +146,13 @@ export const ChatMessage: FC<Props> = ({
             bgColor="#d4845c"
             typeOfPrompt={TypeOfPrompt.MORE_PLACES}
             onClick={(typeOfPrompt: TypeOfPrompt) => {
-              onAnotherPromptClick &&
-                onAnotherPromptClick(typeOfPrompt, message.id ?? "");
+              onSend &&
+                onSend({
+                  role: "user",
+                  content: "More places like these",
+                  typeOfPrompt,
+                  id: message.id ?? "",
+                });
             }}
           />
           <Button
@@ -149,8 +161,13 @@ export const ChatMessage: FC<Props> = ({
             bgColor="#d4845c"
             typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
             onClick={(typeOfPrompt: TypeOfPrompt) => {
-              onAnotherPromptClick &&
-                onAnotherPromptClick(typeOfPrompt, message.id ?? "");
+              onSend &&
+                onSend({
+                  role: "user",
+                  content: "Show me lesser-known places",
+                  typeOfPrompt,
+                  id: message.id ?? "",
+                });
             }}
           />
         </div>
