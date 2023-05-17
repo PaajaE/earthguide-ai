@@ -6,6 +6,7 @@ import { IconArrowBarLeft } from "@tabler/icons-react";
 import { FC } from "react";
 import { ChatMessage } from "./ChatMessage";
 import { Button } from "../Shared/Button";
+import { ChatLoader } from "./ChatLoader";
 
 interface Props {
   data: PanelData | null;
@@ -105,15 +106,6 @@ export const RightSidebar: FC<Props> = ({
               <div
                 className={`border-[#000000ff] leading-6  font-plus jakarta sans  font-[400] overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_300px)]`}
               >
-                {loading && (
-                  <div className="flex flex-col items-center justify-center h-full mt-2">
-                    <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
-
-                    <p className="text-2xl font-bold">Loading...</p>
-
-                    <p className="text-xl">Please wait...</p>
-                  </div>
-                )}
                 {data && (
                   <EarthGuideReactMarkdown
                     content={data.content}
@@ -121,6 +113,7 @@ export const RightSidebar: FC<Props> = ({
                     onAnotherPromptClick={onAnotherPromptClick}
                   />
                 )}
+                {loading && <ChatLoader dark />}
               </div>
             </>
           )}

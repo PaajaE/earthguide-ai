@@ -20,6 +20,9 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
       components={{
+        pre({ children }) {
+          return <>{children}</>;
+        },
         code({ node, inline, className, children, ...props }) {
           const div = String(children).replace(/\n$/, "");
           // if (div.includes(`data-type="flight"`)) {
