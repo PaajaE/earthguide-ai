@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+body {
+  overflow: hidden;
+}
+
 pre {
   font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont,
     "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif,
@@ -31,8 +35,14 @@ pre {
   margin-right: 0;
 }
 
+.inline-flights {
+  margin-left: 1rem;
+  margin-bottom: 1rem;
+}
+
 .outer-link {
   line-height: 1.1rem;
+  margin: 0 0.75rem 0 0.5rem;
 }
 
 .outer-link a {
@@ -57,4 +67,27 @@ p.flights {
 
 strong.flights {
   color: #ff5600;
+}
+
+.no-photos {
+  font-size: small;
+  padding-left: 1rem;
+  margin: 0 0 0.5rem 0;
+  width: 100%;
+}
+
+.no-photos a {
+  color: #ff5600;
+  border-bottom: 1px solid #ff5600;
+}
+
+.no-photos a img {
+  display: inline;
+  width: 12px;
+  margin-left: 0.2rem;
+  margin-top: -0.33rem;
+}
+
+ol li {
+  margin: 1rem 0;
 }
