@@ -79,7 +79,7 @@ export default function Home() {
       const lastMessage =
         updatedConversation.messages[updatedConversation.messages.length - 1];
 
-      const ws = new WebSocket("wss://test.api.earth.guide:8766");
+      const ws = new WebSocket("wss://test.api.earth.guide:8765");
       ws.onopen = () => {
         let text = "";
         let isWsFirst = true;
@@ -233,7 +233,7 @@ export default function Home() {
     }
 
     if (selectedConversation) {
-      const ws = new WebSocket("wss://test.api.earth.guide:8766");
+      const ws = new WebSocket("wss://test.api.earth.guide:8765");
       ws.onopen = () => {
         let text = "";
         ws.onmessage = (event) => {
