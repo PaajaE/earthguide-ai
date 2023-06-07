@@ -95,7 +95,7 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
         >
           <IconSend size={18} color={"#999"} />
         </button>
-        <p className="absolute bottom-2 text-black text-[0.6rem] w-full text-center">
+        <p className="absolute bottom-2 text-black text-[0.7rem] w-full text-center">
           All photos are from our community. Want to join, earn to train AI and
           create content and earn dividends?{" "}
           <a

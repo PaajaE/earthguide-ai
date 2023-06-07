@@ -85,10 +85,12 @@ export default function Home() {
         let isWsFirst = true;
         ws.onmessage = (event) => {
           const json = event.data;
+          console.log(json)
           if (isValidJSON(json)) {
+            console.log(json)
             let data: EarthGuideQuestionResponse = JSON.parse(json);
             text += data.formatted_text;
-            console.log(text);
+            console.log(JSON.stringify(text));
 
             if (isWsFirst) {
               isWsFirst = false;
@@ -126,9 +128,11 @@ export default function Home() {
               };
 
               setSelectedConversation(updatedConversation);
+
+              if(json.done || data.formatted_text.includes('Answer successfully finished.')) {
+                setMessageIsStreaming(false);
+              }
             }
-          } else {
-            setMessageIsStreaming(false);
           }
         };
 

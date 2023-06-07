@@ -68,13 +68,13 @@ export const Chat: FC<Props> = ({
         </div>
       ) : (
         <>
-          <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_300px)]">
+          <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_12rem)]">
             <ChatMessage
               key="starter-message"
               message={{
                 role: "starter",
                 content:
-                  "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect destination for your next adventure and find the best flight tickets to get you there.",
+                  "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect flight tickets to your dream destinations.",
               }}
               lightMode={lightMode}
             />

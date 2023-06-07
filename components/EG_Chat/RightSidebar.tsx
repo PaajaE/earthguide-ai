@@ -38,7 +38,7 @@ export const RightSidebar: FC<Props> = ({
                 message={{
                   role: "sample",
                   content:
-                    "What are some affordable beach destinations in Europe with direct flights from Vienna?",
+                    "What are some affordable beach destinations in Europe with direct flights from Vienna? We want to fly in September. From 7 to 11 days.",
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
@@ -49,7 +49,7 @@ export const RightSidebar: FC<Props> = ({
                 message={{
                   role: "sample",
                   content:
-                    "I'm looking for super cheap flights from London next weekend to destinations with good weather and accessible hiking trails.",
+                    "I'm looking for super cheap flights next weekend to destinations with good weather and accessible hiking trails.",
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
@@ -60,7 +60,7 @@ export const RightSidebar: FC<Props> = ({
                 message={{
                   role: "sample",
                   content:
-                    "I'm planning a 14-day trip to Asia and looking for recommendations for hidden gem destinations with astonishing Buddhist monuments and opportunities for surfing.",
+                    "In November I'm planning a 14-day trip to Asia and looking for recommendations for hidden gem destinations with astonishing Buddhist monuments and opportunities for surfing.",
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
@@ -104,7 +104,7 @@ export const RightSidebar: FC<Props> = ({
                 />
               </div>
               <div
-                className={`border-[#000000ff] leading-6  font-plus jakarta sans  font-[400] overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_300px)]`}
+                className={`border-[#000000ff] leading-6  font-plus jakarta sans  font-[400] overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_12rem)]`}
               >
                 {data && (
                   <EarthGuideReactMarkdown
