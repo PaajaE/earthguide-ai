@@ -122,7 +122,7 @@ export const Chat: FC<Props> = ({
   }, [messagesEndRef]);
 
   return (
-    <div className="relative flex flex-col justify-between shrink-0 md:w-[66%] min-h-[calc(100vh_-_100px)] bg-[#FAFAFA] px-4">
+    <div className="relative flex flex-col justify-between w-auto min-h-[calc(100vh_-_100px)] max-w-[70%] bg-[#FAFAFA] px-4">
       {modelError ? (
         <div className="flex flex-col justify-center mx-auto h-full w-full space-y-6">
           <div className="text-center text-red-500">Error fetching models.</div>
@@ -136,7 +136,7 @@ export const Chat: FC<Props> = ({
         </div>
       ) : (
         <>
-          <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_12rem)]"
+          <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_10rem)]"
           ref={chatContainerRef}
           onScroll={handleScroll}
           >

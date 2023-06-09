@@ -3,7 +3,6 @@ import { TypeOfPrompt } from "@/types";
 import { FC, ReactNode } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
-// import { CodeBlock } from "../Markdown/CodeBlock";
 // import { content } from "@/mocks/md-content-mock";
 interface Props {
   content: string;
