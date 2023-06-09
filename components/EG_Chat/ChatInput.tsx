@@ -1,18 +1,18 @@
 import { Message, OpenAIModel, OpenAIModelID } from "@/types";
 import { IconSend } from "@tabler/icons-react";
-import { FC, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { FC, KeyboardEvent, MutableRefObject, useEffect, useRef, useState } from "react";
 
 interface Props {
   messageIsStreaming: boolean;
   onSend: (message: Message) => void;
+  textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   model: OpenAIModel;
 }
 
-export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
+export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model, textareaRef }) => {
   const [content, setContent] = useState<string>();
   const [isTyping, setIsTyping] = useState<boolean>(false);
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
