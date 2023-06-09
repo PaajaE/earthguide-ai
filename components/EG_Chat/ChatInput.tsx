@@ -1,18 +1,18 @@
 import { Message, OpenAIModel, OpenAIModelID } from "@/types";
 import { IconSend } from "@tabler/icons-react";
-import { FC, KeyboardEvent, useEffect, useRef, useState } from "react";
+import { FC, KeyboardEvent, MutableRefObject, useEffect, useRef, useState } from "react";
 
 interface Props {
   messageIsStreaming: boolean;
   onSend: (message: Message) => void;
+  textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   model: OpenAIModel;
 }
 
-export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
+export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model, textareaRef }) => {
   const [content, setContent] = useState<string>();
   const [isTyping, setIsTyping] = useState<boolean>(false);
 
-  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
@@ -70,7 +70,7 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
 
   return (
     <>
-      <div className="fixed bottom-4 lg:w-[calc(100vw_-_260px_-_30%_-_5rem)] pb-6 bg-[#FAFAFA]">
+      <div className="sticky md:w-[calc(66vw_-_5rem)] pb-8 bg-[#FAFAFA]">
         <textarea
           ref={textareaRef}
           className="pl-4 pr-8 py-3 w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"
@@ -90,12 +90,12 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model }) => {
         />
 
         <button
-          className="absolute right-4 bottom-[32px] focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
+          className="absolute right-4 bottom-12 focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
           onClick={handleSend}
         >
           <IconSend size={18} color={"#999"} />
         </button>
-        <p className="absolute bottom-2 text-black text-[0.6rem] w-full text-center">
+        <p className="absolute bottom-4 text-black text-[0.65rem] w-full text-center">
           All photos are from our community. Want to join, earn to train AI and
           create content and earn dividends?{" "}
           <a

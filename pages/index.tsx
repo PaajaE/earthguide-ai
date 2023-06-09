@@ -85,10 +85,12 @@ export default function Home() {
         let isWsFirst = true;
         ws.onmessage = (event) => {
           const json = event.data;
+          console.log(json)
           if (isValidJSON(json)) {
+            console.log(json)
             let data: EarthGuideQuestionResponse = JSON.parse(json);
             text += data.formatted_text;
-            console.log(text);
+            console.log(JSON.stringify(text));
 
             if (isWsFirst) {
               isWsFirst = false;
@@ -126,9 +128,11 @@ export default function Home() {
               };
 
               setSelectedConversation(updatedConversation);
+
+              if(json.done || data.formatted_text.includes('Answer successfully finished.')) {
+                setMessageIsStreaming(false);
+              }
             }
-          } else {
-            setMessageIsStreaming(false);
           }
         };
 
@@ -358,7 +362,7 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {selectedConversation && (
-        <div className={`flex flex-col h-100 w-100 text-white ${lightMode}`}>
+        <div className={`flex flex-col h-screen w-100 text-white ${lightMode}`}>
           <div className="sm:hidden w-full fixed top-0">
             <Navbar
               selectedConversation={selectedConversation}
@@ -366,27 +370,9 @@ export default function Home() {
             />
           </div>
 
-          <div className="h-100 w-100 p-2">
-            <div className="flex bg-[#FAFAFA] pl-6 py-10 rounded-md">
-              {/* <> */}
+          <div className="h-full w-100 p-2">
+            <div className="flex h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
               <LeftSidebar lightMode="light" />
-
-              {/* <IconArrowBarLeft
-                className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
-                onClick={() => setShowSidebar(!showSidebar)}
-              /> */}
-              {/* </> */}
-              {/* {!showSidebar && !showPanelData ? (
-              <IconArrowBarRight
-                className="fixed top-2.5 left-4 sm:top-1.5 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8"
-                onClick={() => {
-                  setShowSidebar(!showSidebar);
-                  setShowPanelData(false);
-                }}
-              />
-            ) : (
-              <></>
-            )} */}
 
               <Chat
                 conversation={selectedConversation}
