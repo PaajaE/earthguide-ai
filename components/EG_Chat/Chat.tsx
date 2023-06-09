@@ -5,13 +5,11 @@ import {
   OpenAIModel,
   TypeOfPrompt,
 } from "@/types";
-import { FC, useEffect, useRef, useState } from "react";
+import { FC, useCallback, useEffect, useRef, useState } from "react";
 import { ChatInput } from "./ChatInput";
-import { ChatLoader } from "./ChatLoader";
 import { ChatMessage } from "./ChatMessage";
-import { ModelSelect } from "./ModalSelect";
 import { Regenerate } from "./Regenerate";
-import { SystemPrompt } from "./SystemPrompt";
+import { throttle } from "@/utils/data/throttle";
 
 interface Props {
   conversation: Conversation;
@@ -42,19 +40,89 @@ export const Chat: FC<Props> = ({
   onAnotherPromptClick,
 }) => {
   const [currentMessage, setCurrentMessage] = useState<Message>();
+  const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const chatContainerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  const scrollToBottom = useCallback(() => {
+    if (autoScrollEnabled) {
+      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      textareaRef.current?.focus();
+    }
+  }, [autoScrollEnabled]);
+
+  const handleScroll = () => {
+    if (chatContainerRef.current) {
+      const { scrollTop, scrollHeight, clientHeight } =
+        chatContainerRef.current;
+      const bottomTolerance = 30;
+
+      if (scrollTop + clientHeight < scrollHeight - bottomTolerance) {
+        setAutoScrollEnabled(false);
+      } else {
+        setAutoScrollEnabled(true);
+      }
+    }
   };
 
+  const handleScrollDown = () => {
+    chatContainerRef.current?.scrollTo({
+      top: chatContainerRef.current.scrollHeight,
+      behavior: 'smooth',
+    });
+  };
+
+  const scrollDown = () => {
+    if (autoScrollEnabled) {
+      messagesEndRef.current?.scrollIntoView(true);
+    }
+  };
+  const throttledScrollDown = throttle(scrollDown, 250);
+
+  // useEffect(() => {
+  //   console.log('currentMessage', currentMessage);
+  //   if (currentMessage) {
+  //     handleSend(currentMessage);
+  //     homeDispatch({ field: 'currentMessage', value: undefined });
+  //   }
+  // }, [currentMessage]);
+
   useEffect(() => {
-    scrollToBottom();
-  }, [conversation.messages]);
+    throttledScrollDown();
+    conversation &&
+      setCurrentMessage(
+        conversation.messages[conversation.messages.length - 2],
+      );
+  }, [conversation, throttledScrollDown]);
+
+  useEffect(() => {
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setAutoScrollEnabled(entry.isIntersecting);
+        if (entry.isIntersecting) {
+          textareaRef.current?.focus();
+        }
+      },
+      {
+        root: null,
+        threshold: 0.5,
+      },
+    );
+    const messagesEndElement = messagesEndRef.current;
+    if (messagesEndElement) {
+      observer.observe(messagesEndElement);
+    }
+    return () => {
+      if (messagesEndElement) {
+        observer.unobserve(messagesEndElement);
+      }
+    };
+  }, [messagesEndRef]);
 
   return (
-    <div className="relative flex flex-col justify-between flex-1 md:w-[calc(70%_-_290px)] min-h-[calc(100vh_-_100px)] bg-[#FAFAFA] px-4 mr-4">
+    <div className="relative flex flex-col justify-between w-auto min-h-[calc(100vh_-_100px)] max-w-[70%] bg-[#FAFAFA] px-4">
       {modelError ? (
         <div className="flex flex-col justify-center mx-auto h-full w-full space-y-6">
           <div className="text-center text-red-500">Error fetching models.</div>
@@ -68,13 +136,16 @@ export const Chat: FC<Props> = ({
         </div>
       ) : (
         <>
-          <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_300px)]">
+          <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_10rem)]"
+          ref={chatContainerRef}
+          onScroll={handleScroll}
+          >
             <ChatMessage
               key="starter-message"
               message={{
                 role: "starter",
                 content:
-                  "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect destination for your next adventure and find the best flight tickets to get you there.",
+                  "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect flight tickets to your dream destinations.",
               }}
               lightMode={lightMode}
             />
@@ -116,6 +187,7 @@ export const Chat: FC<Props> = ({
                 setCurrentMessage(message);
                 onSend(message, false);
               }}
+              textareaRef={textareaRef}
               model={conversation.model}
             />
           )}
