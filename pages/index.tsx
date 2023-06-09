@@ -372,25 +372,7 @@ export default function Home() {
 
           <div className="h-100 w-100 p-2">
             <div className="flex bg-[#FAFAFA] pl-6 py-10 rounded-md">
-              {/* <> */}
               <LeftSidebar lightMode="light" />
-
-              {/* <IconArrowBarLeft
-                className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
-                onClick={() => setShowSidebar(!showSidebar)}
-              /> */}
-              {/* </> */}
-              {/* {!showSidebar && !showPanelData ? (
-              <IconArrowBarRight
-                className="fixed top-2.5 left-4 sm:top-1.5 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8"
-                onClick={() => {
-                  setShowSidebar(!showSidebar);
-                  setShowPanelData(false);
-                }}
-              />
-            ) : (
-              <></>
-            )} */}
 
               <Chat
                 conversation={selectedConversation}

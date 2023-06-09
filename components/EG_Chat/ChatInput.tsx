@@ -70,7 +70,7 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model, textar
 
   return (
     <>
-      <div className="fixed bottom-4 lg:w-[calc(100vw_-_260px_-_30%_-_5rem)] pb-6 bg-[#FAFAFA]">
+      <div className="fixed bottom-4 md:w-[calc(66vw_-_5rem)] pb-6 bg-[#FAFAFA]">
         <textarea
           ref={textareaRef}
           className="pl-4 pr-8 py-3 w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"
@@ -95,7 +95,7 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model, textar
         >
           <IconSend size={18} color={"#999"} />
         </button>
-        <p className="absolute bottom-2 text-black text-[0.7rem] w-full text-center">
+        <p className="absolute bottom-2 text-black text-[0.65rem] w-full text-center">
           All photos are from our community. Want to join, earn to train AI and
           create content and earn dividends?{" "}
           <a

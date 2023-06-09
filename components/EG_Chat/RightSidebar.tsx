@@ -27,10 +27,11 @@ export const RightSidebar: FC<Props> = ({
 }) => {
   return (
     <div
-      className={`flex flex-col min-w-full sm:min-w-[300px] lg:min-w-[30%] lg:max-w-[30%] z-10 sm:relative sm:top-0 absolute top-12 bottom-0 rounded-md`}
+      className={`flex flex-col shrink z-10 sm:relative sm:top-0 absolute top-12 bottom-0 rounded-md`}
+      style={{width: "-webkit-fill-available, fill-available, -moz-fill-available"}}
     >
-      <div className="fixed min-w-full sm:min-w-[300px] lg:min-w-[30%] lg:max-w-[30%] bg-[#F4F4F4] rounded-md h-[calc(100%_-_6rem);]">
-        <div className="text-black mt-4 mb-2 mx-2 p-2 pt-0 w-full">
+      <div className="fixed w-full min-w-full sm:min-w-[150px] lg:min-w-[150px] lg:max-w-[30%] bg-[#F4F4F4] rounded-md h-[calc(100%_-_6rem);] overflow-y-auto">
+        <div className="text-black mt-4 mb-2 mx-2 p-2 pt-0 w-[calc(100%_-_1rem)]">
           {showSample && (
             <div className="flex flex-col mt-2">
               <h2 className="font-bold mb-4">Examples</h2>
