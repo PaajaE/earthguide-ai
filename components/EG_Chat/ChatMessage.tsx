@@ -53,7 +53,7 @@ export const ChatMessage: FC<Props> = ({
         }
         ${
           message.role === "sample"
-            ? "bg-white rounded-t-[10px] rounded-r-[10px] mr-4"
+            ? "bg-white rounded-t-[10px] rounded-r-[10px]"
             : ""
         }
         `}
