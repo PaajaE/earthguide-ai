@@ -34,6 +34,7 @@ import { useEffect, useState } from "react";
 import { RightSidebar } from "@/components/EG_Chat/RightSidebar";
 import { LeftSidebar } from "@/components/EG_Chat/LeftSidebar";
 import { isValidJSON } from "@/utils/app/misc";
+import { Gallery } from "@/components/EG_Chat/Gallery";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -56,6 +57,9 @@ export default function Home() {
   const [panelData, setPanelData] = useState<PanelData | null>(null);
   const [panelDataLoading, setPanelDataLoading] = useState<boolean>(false);
   const [showPanelData, setShowPanelData] = useState<boolean>(true);
+  const [showModal, setShowModal] = useState<boolean>(false);
+  const [galleryItems, setGalleryItems] = useState<string[]>([]);
+  const [galleryIndex, setGalleryIndex] = useState<number>(0);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -85,12 +89,12 @@ export default function Home() {
         let isWsFirst = true;
         ws.onmessage = (event) => {
           const json = event.data;
-          console.log(json)
+          // console.log(json)
           if (isValidJSON(json)) {
-            console.log(json)
+            // console.log(json)
             let data: EarthGuideQuestionResponse = JSON.parse(json);
             text += data.formatted_text;
-            console.log(JSON.stringify(text));
+            // console.log(JSON.stringify(text));
 
             if (isWsFirst) {
               isWsFirst = false;
@@ -129,7 +133,10 @@ export default function Home() {
 
               setSelectedConversation(updatedConversation);
 
-              if(json.done || data.formatted_text.includes('Answer successfully finished.')) {
+              if (
+                json.done ||
+                data.formatted_text.includes("Answer successfully finished.")
+              ) {
                 setMessageIsStreaming(false);
               }
             }
@@ -227,6 +234,12 @@ export default function Home() {
     setConversations(all);
   };
 
+  const handleDisplayGallery = (imgSrcs: string[], curIndex: number) => {
+    setShowModal(true);
+    setGalleryItems(imgSrcs);
+    setGalleryIndex(curIndex);
+  };
+
   const handleAnotherPromptClick = (typeOfPrompt: TypeOfPrompt, id: string) => {
     if (
       typeOfPrompt === TypeOfPrompt.CLICK_ON_LOCATION ||
@@ -244,7 +257,7 @@ export default function Home() {
           const json = event.data;
           if (isValidJSON(json)) {
             const data: EarthGuideQuestionResponse = JSON.parse(json);
-            console.log("valid json", data);
+            // console.log("valid json", data);
 
             if (
               data.where_to_display === WhereToDisplay.PANEL_DESTINATION ||
@@ -361,50 +374,129 @@ export default function Home() {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      {selectedConversation && (
-        <div className={`flex flex-col h-screen w-100 text-white ${lightMode}`}>
-          <div className="sm:hidden w-full fixed top-0">
-            <Navbar
-              selectedConversation={selectedConversation}
-              onNewConversation={handleNewConversation}
-            />
-          </div>
-
-          <div className="h-full w-100 p-2">
-            <div className="flex h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
-              <LeftSidebar lightMode="light" />
-
-              <Chat
-                conversation={selectedConversation}
-                messageIsStreaming={messageIsStreaming}
-                modelError={modelError}
-                messageError={messageError}
-                models={models}
-                loading={loading}
-                lightMode={lightMode}
-                onSend={handleSend}
-                onUpdateConversation={handleUpdateConversation}
-                onAnotherPromptClick={handleAnotherPromptClick}
-              />
-              {showPanelData && (
-                <>
-                  <RightSidebar
-                    loading={panelDataLoading}
-                    showSample={selectedConversation.messages.length === 0}
-                    data={panelData}
-                    lightMode="light"
-                    onAnotherPromptClick={handleAnotherPromptClick}
-                    onSend={handleSend}
-                  />
-                  {/* <IconArrowBarLeft
-                  className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
-                  onClick={() => setShowPanelData(true)}
-                /> */}
-                </>
-              )}
+      {showModal && (
+        <div
+          id="defaultModal"
+          tabIndex={-1}
+          aria-hidden="true"
+          className={`fixed top-0 left-0 right-0 bottom-0 z-50 ${
+            showModal ? "" : "hidden"
+          } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#4d4d4d]`}
+        >
+          <div className="relative w-full h-full max-h-full">
+            <div className="relative h-full bg-black lg:rounded-lg shadow dark:bg-gray-700">
+              <div className="absolute right-0 z-10">
+                <div className="flex justify-end p-2">
+                  <button
+                    type="button"
+                    className="text-white flex justify-center align-center h-[40px] w-[40px] rounded-full bg-white/30 lg:bg-black/70 hover:bg-white/20 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    onClick={() => setShowModal(false)}
+                  >
+                    x<span className="sr-only">Close modal</span>
+                  </button>
+                </div>
+              </div>
+              <div className="p-0 lg:p-6 space-y-6 w-full h-full">
+                {galleryItems.length > 0 && (
+                  <div className="w-full h-full flex">
+                    <Gallery
+                      galleryItems={galleryItems}
+                      curIndex={galleryIndex}
+                    />
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>
+      )}
+      {selectedConversation && (
+        <>
+          <div
+            className={`hidden lg:flex flex-col h-screen w-100 text-white ${lightMode}`}
+          >
+            <div className="h-full w-100 p-2">
+              <div className="flex h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
+                <LeftSidebar lightMode="light" />
+
+                <Chat
+                  conversation={selectedConversation}
+                  messageIsStreaming={messageIsStreaming}
+                  modelError={modelError}
+                  messageError={messageError}
+                  models={models}
+                  loading={loading}
+                  lightMode={lightMode}
+                  onSend={handleSend}
+                  onUpdateConversation={handleUpdateConversation}
+                  onAnotherPromptClick={handleAnotherPromptClick}
+                  onDisplayGallery={handleDisplayGallery}
+                  isMobile={false}
+                />
+                {showPanelData && (
+                  <>
+                    <RightSidebar
+                      loading={panelDataLoading}
+                      showSample={selectedConversation.messages.length === 0}
+                      data={panelData}
+                      lightMode="light"
+                      onAnotherPromptClick={handleAnotherPromptClick}
+                      onSend={handleSend}
+                      onDisplayGallery={handleDisplayGallery}
+                    />
+                    {/* <IconArrowBarLeft
+                  className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
+                  onClick={() => setShowPanelData(true)}
+                /> */}
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div
+            className={`flex lg:hidden flex-col justify-start h-screen w-full text-white ${lightMode}`}
+          >
+            {/* <div className="fixed w-full top-0">
+              <Navbar
+                selectedConversation={selectedConversation}
+                onNewConversation={handleNewConversation}
+              />
+            </div> */}
+
+            <div className="h-full w-100">
+              <div className="flex flex-col h-screen lg:h-full bg-[#FAFAFA] rounded-md">
+                <Chat
+                  conversation={selectedConversation}
+                  messageIsStreaming={messageIsStreaming}
+                  modelError={modelError}
+                  messageError={messageError}
+                  models={models}
+                  loading={loading}
+                  lightMode={lightMode}
+                  onSend={handleSend}
+                  onUpdateConversation={handleUpdateConversation}
+                  onAnotherPromptClick={handleAnotherPromptClick}
+                  onDisplayGallery={handleDisplayGallery}
+                  isMobile={true}
+                />
+                {/* {showPanelData && (
+                  <>
+                    <RightSidebar
+                      loading={panelDataLoading}
+                      showSample={selectedConversation.messages.length === 0}
+                      data={panelData}
+                      lightMode="light"
+                      onAnotherPromptClick={handleAnotherPromptClick}
+                      onSend={handleSend}
+                      onDisplayGallery={handleDisplayGallery}
+                    />
+                  </>
+                )} */}
+              </div>
+            </div>
+          </div>
+        </>
       )}
     </>
   );

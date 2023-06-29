@@ -10,6 +10,7 @@ import { ChatInput } from "./ChatInput";
 import { ChatMessage } from "./ChatMessage";
 import { Regenerate } from "./Regenerate";
 import { throttle } from "@/utils/data/throttle";
+import { LeftSidebar } from "./LeftSidebar";
 
 interface Props {
   conversation: Conversation;
@@ -19,12 +20,14 @@ interface Props {
   messageError: boolean;
   loading: boolean;
   lightMode: "light" | "dark";
+  isMobile: boolean;
   onSend: (message: Message, isResend: boolean) => void;
   onUpdateConversation: (
     conversation: Conversation,
     data: KeyValuePair
   ) => void;
   onAnotherPromptClick: (typeOfPrompt: TypeOfPrompt, id: string) => void;
+  onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
 }
 
 export const Chat: FC<Props> = ({
@@ -35,9 +38,11 @@ export const Chat: FC<Props> = ({
   messageError,
   loading,
   lightMode,
+  isMobile,
   onSend,
   onUpdateConversation,
   onAnotherPromptClick,
+  onDisplayGallery,
 }) => {
   const [currentMessage, setCurrentMessage] = useState<Message>();
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true);
@@ -48,7 +53,7 @@ export const Chat: FC<Props> = ({
 
   const scrollToBottom = useCallback(() => {
     if (autoScrollEnabled) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+      messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
       textareaRef.current?.focus();
     }
   }, [autoScrollEnabled]);
@@ -70,7 +75,7 @@ export const Chat: FC<Props> = ({
   const handleScrollDown = () => {
     chatContainerRef.current?.scrollTo({
       top: chatContainerRef.current.scrollHeight,
-      behavior: 'smooth',
+      behavior: "smooth",
     });
   };
 
@@ -93,7 +98,7 @@ export const Chat: FC<Props> = ({
     throttledScrollDown();
     conversation &&
       setCurrentMessage(
-        conversation.messages[conversation.messages.length - 2],
+        conversation.messages[conversation.messages.length - 2]
       );
   }, [conversation, throttledScrollDown]);
 
@@ -108,7 +113,7 @@ export const Chat: FC<Props> = ({
       {
         root: null,
         threshold: 0.5,
-      },
+      }
     );
     const messagesEndElement = messagesEndRef.current;
     if (messagesEndElement) {
@@ -122,7 +127,7 @@ export const Chat: FC<Props> = ({
   }, [messagesEndRef]);
 
   return (
-    <div className="relative flex flex-col justify-between w-auto min-h-[calc(100vh_-_100px)] max-w-[70%] bg-[#FAFAFA] px-4">
+    <div className="relative flex flex-col justify-between w-auto h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full lg:max-w-[70%] bg-[#FAFAFA] lg:px-4">
       {modelError ? (
         <div className="flex flex-col justify-center mx-auto h-full w-full space-y-6">
           <div className="text-center text-red-500">Error fetching models.</div>
@@ -136,10 +141,14 @@ export const Chat: FC<Props> = ({
         </div>
       ) : (
         <>
-          <div className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_10rem)]"
-          ref={chatContainerRef}
-          onScroll={handleScroll}
+          <div
+            className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_10rem)] p-4 lg:p-0"
+            ref={chatContainerRef}
+            onScroll={handleScroll}
           >
+            {isMobile && (
+              <LeftSidebar lightMode="light"/>
+            )}
             <ChatMessage
               key="starter-message"
               message={{
@@ -149,6 +158,44 @@ export const Chat: FC<Props> = ({
               }}
               lightMode={lightMode}
             />
+
+            <div className="flex lg:hidden flex-col mt-6">
+              <h2 className="text-black font-bold mb-4">Examples</h2>
+              <ChatMessage
+                message={{
+                  role: "sample",
+                  content:
+                    "What are some affordable beach destinations in Europe with direct flights from Vienna? We want to fly in September. From 7 to 11 days.",
+                }}
+                lightMode={lightMode}
+                onSampleClick={(content) => {
+                  onSend({ role: "user", content }, false);
+                }}
+              />
+              <ChatMessage
+                message={{
+                  role: "sample",
+                  content:
+                    "I'm looking for super cheap flights next weekend to destinations with good weather and accessible hiking trails.",
+                }}
+                lightMode={lightMode}
+                onSampleClick={(content) => {
+                  onSend({ role: "user", content }, false);
+                }}
+              />
+              <ChatMessage
+                message={{
+                  role: "sample",
+                  content:
+                    "In November I'm planning a 14-day trip to Asia and looking for recommendations for hidden gem destinations with astonishing Buddhist monuments and opportunities for surfing.",
+                }}
+                lightMode={lightMode}
+                onSampleClick={(content) => {
+                  onSend({ role: "user", content }, false);
+                }}
+              />
+            </div>
+
             {conversation.messages.length === 0 ? (
               <></>
             ) : (
@@ -164,6 +211,7 @@ export const Chat: FC<Props> = ({
                       setCurrentMessage(message);
                       onSend(message, false);
                     }}
+                    onDisplayGallery={onDisplayGallery}
                   />
                 ))}
 

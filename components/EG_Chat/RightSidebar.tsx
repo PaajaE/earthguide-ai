@@ -15,6 +15,7 @@ interface Props {
   showSample: boolean;
   onAnotherPromptClick: (typeOfPrompt: TypeOfPrompt, id: string) => void;
   onSend: (message: Message, isResend: boolean) => void;
+  onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
 }
 
 export const RightSidebar: FC<Props> = ({
@@ -24,6 +25,7 @@ export const RightSidebar: FC<Props> = ({
   showSample,
   onAnotherPromptClick,
   onSend,
+  onDisplayGallery,
 }) => {
   return (
     <div
@@ -112,6 +114,7 @@ export const RightSidebar: FC<Props> = ({
                     content={data.content}
                     lightMode={lightMode}
                     onAnotherPromptClick={onAnotherPromptClick}
+                    onDisplayGallery={onDisplayGallery}
                   />
                 )}
                 {loading && <ChatLoader dark />}
