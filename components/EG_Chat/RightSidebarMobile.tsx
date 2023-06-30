@@ -27,10 +27,10 @@ export const RightSidebarMobile: FC<Props> = ({
 }) => {
   return (
     <div
-      className={`relative flex flex-col w-full h-full z-10 rounded-md bg-[#F4F4F4]`}
+      className={`relative flex flex-col w-full h-full z-10 bg-[#F4F4F4]`}
     //   style={{width: "-webkit-fill-available, fill-available, -moz-fill-available"}}
     >
-      <div className="w-auto flex flex-col h-full justify-between rounded-md overflow-y-auto">
+      <div className="w-auto flex flex-col h-full justify-between overflow-y-auto">
         <div className="text-black">
           {(data || loading) && (
             <>
