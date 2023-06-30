@@ -64,16 +64,16 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model, textar
   useEffect(() => {
     if (textareaRef && textareaRef.current) {
       textareaRef.current.style.height = "inherit";
-      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight}px`;
+      textareaRef.current.style.height = `${textareaRef.current?.scrollHeight+4}px`;
     }
   }, [content]);
 
   return (
     <>
-      <div className="sticky md:w-[calc(66vw_-_5rem)] pb-8 bg-[#FAFAFA]">
+      <div className="sticky lg:w-[calc(66vw_-_5rem)] px-4 lg:px-0 pb-12 lg:pb-8 bg-[#FAFAFA]">
         <textarea
           ref={textareaRef}
-          className="pl-4 pr-8 py-3 w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"
+          className="pl-4 pr-8 pt-[0.8rem] pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"
           style={{
             resize: "none",
             bottom: `${textareaRef?.current?.scrollHeight}px`,
@@ -90,12 +90,12 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model, textar
         />
 
         <button
-          className="absolute right-4 bottom-12 focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
+          className="absolute right-6 lg:right-4 bottom-16 lg:bottom-12 focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
           onClick={handleSend}
         >
           <IconSend size={18} color={"#999"} />
         </button>
-        <p className="absolute bottom-4 text-black text-[0.65rem] w-full text-center">
+        <p className="absolute bottom-4 text-black text-[0.65rem] w-[90%] flex justify-center text-center">
           All photos are from our community. Want to join, earn to train AI and
           create content and earn dividends?{" "}
           <a
