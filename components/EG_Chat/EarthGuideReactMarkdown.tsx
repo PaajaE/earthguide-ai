@@ -1,6 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import { TypeOfPrompt } from "@/types";
-import { FC, ReactNode } from "react";
+import { FC, ReactNode, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 // import { content } from "@/mocks/md-content-mock";
@@ -8,13 +8,62 @@ interface Props {
   content: string;
   lightMode: "light" | "dark";
   onAnotherPromptClick?: (typeOfPrompt: TypeOfPrompt, id: string) => void;
+  onDisplayGallery?: (imgSrcs: string[], curIndex: number) => void;
 }
 
 export const EarthGuideReactMarkdown: FC<Props> = ({
   lightMode,
   content,
   onAnotherPromptClick,
+  onDisplayGallery,
 }) => {
+
+  const getAllImgSrc = (elem: HTMLDivElement): string[] => {
+    const srcArr: string[] = []
+    const imgs = elem.querySelectorAll('img')
+
+    imgs.forEach((img) => {
+      srcArr.push(img.src)
+    })
+
+    return srcArr
+  }
+
+  const getImgIndex = (elem: HTMLDivElement, img: HTMLImageElement): number => {
+    const imgs = elem.querySelectorAll('img')
+    const index = Array.from(imgs).findIndex((imgElement) => imgElement.src === img.src)
+    return index > -1 ? index : 0
+  }
+
+  const handleImgClick = (e: Event) => {
+    const target = e.target as HTMLElement
+    const {nodeName} = target
+    console.log(nodeName)
+    let elem
+    let curIndex = 0
+
+    if(nodeName === 'IMG') {
+      elem = target.parentElement as HTMLDivElement
+      const img = target as HTMLImageElement
+      curIndex = getImgIndex(elem, img)
+    } else {
+      elem = target as HTMLDivElement
+    }
+
+    console.log(elem)
+    const imgSrcs = getAllImgSrc(elem)
+    console.log(imgSrcs)
+
+    onDisplayGallery && onDisplayGallery(imgSrcs, curIndex)
+  }
+
+  useEffect(() => {
+    const elements = document.querySelectorAll('.gallery');
+    elements.forEach((elem) => {
+      elem.addEventListener('click', handleImgClick)
+    })
+    console.log(elements)
+  })
   return (
     <ReactMarkdown
       remarkPlugins={[remarkGfm]}
@@ -33,6 +82,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
           //   );
           // }
           if (div.includes(`class="gallery"`)) {
+            console.log(div)
             return (
               <div className="" dangerouslySetInnerHTML={{ __html: div }}></div>
             );

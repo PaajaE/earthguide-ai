@@ -8,17 +8,17 @@ interface Props {
 export const LeftSidebar: FC<Props> = ({ lightMode }) => {
   return (
     <div
-      className={`relative flex flex-col bg-[#FAFAFA] min-w-full sm:min-w-[150px] sm:max-w-[260px] sm:w-[260px] z-10 sm:relative sm:top-0 absolute top-12 bottom-0`}
+      className={`relative flex flex-col bg-[#FAFAFA] min-w-full sm:min-w-[150px] sm:max-w-[260px] sm:w-[260px] z-10 top-4 lg:top-0 lg:bottom-0 mb-8 lg:mb-0`}
     >
-      <div className="overflow-auto">
-        <div className="max-w-[180px]">
+      <div className="overflow-auto flex flex-row-reverse lg:flex-col">
+        <div className="flex justify-end items-start lg:justify-center w-[50%] lg:w-full lg:max-w-[180px]">
           <img
             src="/earth-guide.svg"
             alt="Your travel guide"
             className="w-full"
           />
         </div>
-        <div className="mt-8">
+        <div className="w-[50%] lg:w-full lg:mt-8">
           <img src="/unicorn.png" alt="Your travel guide" className="w-full" />
         </div>
       </div>

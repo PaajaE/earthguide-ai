@@ -14,6 +14,7 @@ interface Props {
   onAnotherPromptClick?: (typeOfPrompt: TypeOfPrompt, id: string) => void;
   onSend?: (message: Message) => void;
   onSampleClick?: (content: string) => void;
+  onDisplayGallery?: (imgSrcs: string[], curIndex: number) => void;
 }
 
 export const ChatMessage: FC<Props> = ({
@@ -23,11 +24,12 @@ export const ChatMessage: FC<Props> = ({
   onSend,
   onAnotherPromptClick,
   onSampleClick,
+  onDisplayGallery,
 }) => {
   return (
     <>
       {message.role === "assistant" || message.role === "earth.guide" ? (
-        <div className="text-black font-semibold pl-4 mt-4 mb-2">
+        <div className="text-black font-semibold lg:pl-4 mt-4 mb-2">
           {message.role === "assistant"
             ? "Answer from ChatGPT:"
             : "Answer from Earth.Guide:"}
@@ -38,17 +40,17 @@ export const ChatMessage: FC<Props> = ({
       <div
         className={`flex flex-row justify-start items-start gap-2.5 w-100 px-[17px] py-3 mb-3 box-border ${
           message.role === "assistant" || message.role === "starter"
-            ? "bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] mr-8"
+            ? "bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8"
             : ""
         }
         ${
           message.role === "user"
-            ? "bg-[rgba(255,86,0,1)] rounded-t-[10px] rounded-bl-[10px] ml-8"
+            ? "bg-[rgba(255,86,0,1)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8"
             : ""
         }
         ${
           message.role === "earth.guide"
-            ? "bg-[#3000FF] rounded-t-[10px] rounded-r-[10px] mr-8"
+            ? "bg-[#3000FF] rounded-t-[10px] rounded-r-[10px] lg:mr-8"
             : ""
         }
         ${
@@ -132,6 +134,7 @@ export const ChatMessage: FC<Props> = ({
                 content={message.content}
                 lightMode={lightMode}
                 onAnotherPromptClick={onAnotherPromptClick}
+                onDisplayGallery={onDisplayGallery && onDisplayGallery}
               />
               {messageIsStreaming && <ChatLoader />}
             </>
