@@ -35,6 +35,7 @@ import { RightSidebar } from "@/components/EG_Chat/RightSidebar";
 import { LeftSidebar } from "@/components/EG_Chat/LeftSidebar";
 import { isValidJSON } from "@/utils/app/misc";
 import { Gallery } from "@/components/EG_Chat/Gallery";
+import { RightSidebarMobile } from "@/components/EG_Chat/RightSidebarMobile";
 
 export default function Home() {
   const [conversations, setConversations] = useState<Conversation[]>([]);
@@ -57,6 +58,7 @@ export default function Home() {
   const [panelData, setPanelData] = useState<PanelData | null>(null);
   const [panelDataLoading, setPanelDataLoading] = useState<boolean>(false);
   const [showPanelData, setShowPanelData] = useState<boolean>(true);
+  const [showMobilePanelData, setShowMobilePanelData] = useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
@@ -270,6 +272,7 @@ export default function Home() {
                 id: +data.id_answer,
               });
               setShowPanelData(true);
+              setShowMobilePanelData(true);
             } else {
               let updatedConversation: Conversation;
 
@@ -277,8 +280,13 @@ export default function Home() {
                 ...selectedConversation,
               };
             }
-          } else {
-            setPanelDataLoading(false);
+
+            if (
+              json.done ||
+              data.formatted_text.includes("Answer successfully finished.")
+            ) {
+              setPanelDataLoading(false);
+            }
           }
         };
 
@@ -379,13 +387,13 @@ export default function Home() {
           id="defaultModal"
           tabIndex={-1}
           aria-hidden="true"
-          className={`fixed top-0 left-0 right-0 bottom-0 z-50 ${
+          className={`fixed top-0 left-0 right-0 bottom-0 z-40 ${
             showModal ? "" : "hidden"
           } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#4d4d4d]`}
         >
           <div className="relative w-full h-full max-h-full">
             <div className="relative h-full bg-black lg:rounded-lg shadow dark:bg-gray-700">
-              <div className="absolute right-0 z-10">
+              <div className="absolute right-0 z-50">
                 <div className="flex justify-end p-2">
                   <button
                     type="button"
@@ -444,10 +452,6 @@ export default function Home() {
                       onSend={handleSend}
                       onDisplayGallery={handleDisplayGallery}
                     />
-                    {/* <IconArrowBarLeft
-                  className="fixed top-2.5 left-4 sm:top-1 sm:left-4 sm:text-neutral-700 dark:text-white cursor-pointer hover:text-gray-400 dark:hover:text-gray-300 h-7 w-7 sm:h-8 sm:w-8 sm:hidden"
-                  onClick={() => setShowPanelData(true)}
-                /> */}
                   </>
                 )}
               </div>
@@ -457,13 +461,6 @@ export default function Home() {
           <div
             className={`flex lg:hidden flex-col justify-start h-screen w-full text-white ${lightMode}`}
           >
-            {/* <div className="fixed w-full top-0">
-              <Navbar
-                selectedConversation={selectedConversation}
-                onNewConversation={handleNewConversation}
-              />
-            </div> */}
-
             <div className="h-full w-100">
               <div className="flex flex-col h-screen lg:h-full bg-[#FAFAFA] rounded-md">
                 <Chat
@@ -480,19 +477,47 @@ export default function Home() {
                   onDisplayGallery={handleDisplayGallery}
                   isMobile={true}
                 />
-                {/* {showPanelData && (
-                  <>
-                    <RightSidebar
-                      loading={panelDataLoading}
-                      showSample={selectedConversation.messages.length === 0}
-                      data={panelData}
-                      lightMode="light"
-                      onAnotherPromptClick={handleAnotherPromptClick}
-                      onSend={handleSend}
-                      onDisplayGallery={handleDisplayGallery}
-                    />
-                  </>
-                )} */}
+                {showMobilePanelData && (
+                  <div
+                    id="defaultModal"
+                    tabIndex={-1}
+                    aria-hidden="true"
+                    className={`fixed top-0 left-0 right-0 bottom-0 z-20 ${
+                      showMobilePanelData ? "" : "hidden"
+                    } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#4d4d4d]`}
+                  >
+                    <div className="relative w-full h-full max-h-full">
+                      <div className="relative h-full bg-black lg:rounded-lg shadow dark:bg-gray-700">
+                        <div className="absolute right-0 z-30">
+                          <div className="flex justify-end p-2">
+                            <button
+                              type="button"
+                              className="text-black flex justify-center align-center h-[40px] w-[40px] rounded-full bg-black/30 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                              onClick={() => setShowMobilePanelData(false)}
+                            >
+                              x<span className="sr-only">Close modal</span>
+                            </button>
+                          </div>
+                        </div>
+                        <div className="p-0 lg:p-6 space-y-6 w-full h-full">
+                            <div className="w-full h-full flex">
+                              <RightSidebarMobile
+                                loading={panelDataLoading}
+                                data={panelData}
+                                lightMode="light"
+                                onAnotherPromptClick={handleAnotherPromptClick}
+                                onSend={(message: Message, isResend: boolean) => {
+                                  setShowMobilePanelData(false)
+                                  handleSend(message, isResend)
+                                }}
+                                onDisplayGallery={handleDisplayGallery}
+                              />
+                            </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -33,7 +33,7 @@ export const RightSidebar: FC<Props> = ({
       style={{width: "-webkit-fill-available, fill-available, -moz-fill-available"}}
     >
       <div className="w-auto rounded-md overflow-y-auto">
-        <div className="text-black mt-4 mb-2 mx-2 p-2 pt-0">
+        <div className="text-black mt-4 mb-2 pt-0">
           {showSample && (
             <div className="flex flex-col mt-2">
               <h2 className="font-bold mb-4">Examples</h2>
@@ -107,7 +107,7 @@ export const RightSidebar: FC<Props> = ({
                 />
               </div>
               <div
-                className={`border-[#000000ff] leading-6  font-plus jakarta sans  font-[400] overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_12rem)]`}
+                className={`border-[#000000ff] px-4 leading-6  font-plus jakarta sans  font-[400] overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_14rem)]`}
               >
                 {data && (
                   <EarthGuideReactMarkdown
