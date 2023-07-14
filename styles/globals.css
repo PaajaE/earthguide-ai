@@ -17,7 +17,6 @@ pre {
   display: flex;
   overflow-x: auto;
   margin: 0;
-  padding-bottom: 5px;
   border-radius: 0.5rem;
 }
 
@@ -40,7 +39,6 @@ pre {
     display: flex;
     overflow-x: auto;
     /* height: calc(100% / 3); */
-    padding-bottom: 5px;
   }
   
   .gallery img {
