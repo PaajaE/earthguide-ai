@@ -40,7 +40,7 @@ export const ChatMessage: FC<Props> = ({
         <></>
       )} */}
       <div
-        className={`flex flex-row justify-start items-start gap-2.5 mb-3 pb-5 w-100 box-border ${
+        className={`flex flex-row justify-start items-start gap-2.5 mb-5 pb-5 w-100 box-border ${
           message.role === "assistant" || message.role === "starter"
             ? "bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 px-[17px] py-3 mb-3"
             : ""
@@ -146,7 +146,7 @@ export const ChatMessage: FC<Props> = ({
           )}
         </div>
       </div>
-      {message.role === "earth.guide" && !messageIsStreaming && (
+      {message.role === "earth.guide" && streamingFinished && (
         <div className="flex flex-col lg:flex-row mt-3 mb-6">
           <Button
             text="More places like these"
