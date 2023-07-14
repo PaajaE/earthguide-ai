@@ -19,7 +19,7 @@ export const Button: FC<Props> = ({
 }) => {
   return (
     <div
-      className={`flex flex-row justify-start first-of-type:mr-2 cursor-pointer items-start gap-2.5 px-[13px] py-3.5 rounded-t-[15px] rounded-bl-[15px] box-border bg-[#fbae88]`}
+      className={`flex flex-row justify-center lg:justify-start mb-3 lg:mb-0 w-full lg:w-auto items-center first-of-type:mr-2 cursor-pointer items-start gap-2.5 px-[13px] py-3.5 rounded-[15px] box-border bg-[#fbae88]`}
       onClick={(e) => onClick(typeOfPrompt)}
     >
       <img src={iconUrl} alt="" className="hidden md:block w-[30px] h-[30px]" />

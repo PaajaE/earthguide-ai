@@ -10,6 +10,7 @@ import { ChatLoader } from "./ChatLoader";
 interface Props {
   message: Message;
   messageIsStreaming?: boolean;
+  streamingFinished?: boolean;
   lightMode: "light" | "dark";
   onAnotherPromptClick?: (typeOfPrompt: TypeOfPrompt, id: string) => void;
   onSend?: (message: Message) => void;
@@ -21,6 +22,7 @@ export const ChatMessage: FC<Props> = ({
   message,
   lightMode,
   messageIsStreaming = false,
+  streamingFinished = false,
   onSend,
   onAnotherPromptClick,
   onSampleClick,
@@ -28,7 +30,7 @@ export const ChatMessage: FC<Props> = ({
 }) => {
   return (
     <>
-      {message.role === "assistant" || message.role === "earth.guide" ? (
+      {/* {message.role === "assistant" || message.role === "earth.guide" ? (
         <div className="text-black font-semibold lg:pl-4 mt-4 mb-2">
           {message.role === "assistant"
             ? "Answer from ChatGPT:"
@@ -36,16 +38,16 @@ export const ChatMessage: FC<Props> = ({
         </div>
       ) : (
         <></>
-      )}
+      )} */}
       <div
-        className={`flex flex-row justify-start items-start gap-2.5 w-100 px-[17px] py-3 mb-3 box-border ${
+        className={`flex flex-row justify-start items-start gap-2.5 mb-3 pb-5 w-100 box-border ${
           message.role === "assistant" || message.role === "starter"
-            ? "bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8"
+            ? "bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 px-[17px] py-3 mb-3"
             : ""
         }
         ${
           message.role === "user"
-            ? "bg-[rgba(255,86,0,1)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8"
+            ? "bg-[rgba(255,86,0,1)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[17px] py-3 mb-3"
             : ""
         }
         ${
@@ -54,8 +56,11 @@ export const ChatMessage: FC<Props> = ({
             : ""
         }
         ${
+          message.role === "earth.guide" && streamingFinished ? "after:content-['✓'] after:absolute after:bottom-1 after:right-2 after:text-slate-200" : ""
+        }
+        ${
           message.role === "sample"
-            ? "bg-white rounded-t-[10px] rounded-r-[10px]"
+            ? "bg-white rounded-t-[10px] rounded-r-[10px] px-[17px] py-3 mb-3"
             : ""
         }
         `}
@@ -70,7 +75,7 @@ export const ChatMessage: FC<Props> = ({
         }}
       >
         <div
-          className={`border-[#000000ff] leading-6 w-full  font-plus jakarta sans  font-[400]
+          className={`border-[#000000ff] leading-6 flex flex-col w-full  font-plus jakarta sans  font-[400]
       ${
         message.role === "assistant" ||
         message.role === "sample" ||
@@ -142,7 +147,7 @@ export const ChatMessage: FC<Props> = ({
         </div>
       </div>
       {message.role === "earth.guide" && !messageIsStreaming && (
-        <div className="flex mt-4 mb-2">
+        <div className="flex flex-col lg:flex-row mt-3 mb-6">
           <Button
             text="More places like these"
             iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"

@@ -206,7 +206,8 @@ export const Chat: FC<Props> = ({
                     message={message}
                     lightMode={lightMode}
                     onAnotherPromptClick={onAnotherPromptClick}
-                    messageIsStreaming={messageIsStreaming}
+                    messageIsStreaming={messageIsStreaming && index === conversation.messages.length - 1}
+                    streamingFinished={!messageIsStreaming && index === conversation.messages.length - 1}
                     onSend={(message) => {
                       setCurrentMessage(message);
                       onSend(message, false);

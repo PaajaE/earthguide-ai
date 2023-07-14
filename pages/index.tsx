@@ -1,3 +1,4 @@
+import {usePathname} from 'next/navigation'
 import { Chat } from "@/components/EG_Chat/Chat";
 import { Navbar } from "@/components/Mobile/Navbar";
 import {
@@ -58,10 +59,16 @@ export default function Home() {
   const [panelData, setPanelData] = useState<PanelData | null>(null);
   const [panelDataLoading, setPanelDataLoading] = useState<boolean>(false);
   const [showPanelData, setShowPanelData] = useState<boolean>(true);
-  const [showMobilePanelData, setShowMobilePanelData] = useState<boolean>(false);
+  const [showMobilePanelData, setShowMobilePanelData] =
+    useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
+  const [newSession, setNewSession] = useState<boolean>(true);
+  const [specificAirlines, setSpecificAirlines] = useState<string>('');
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
+
+  const pathname = usePathname()
+  console.log(pathname)
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -98,49 +105,52 @@ export default function Home() {
             text += data.formatted_text;
             // console.log(JSON.stringify(text));
 
-            if (isWsFirst) {
-              isWsFirst = false;
-              const updatedMessages: Message[] = [
-                ...updatedConversation.messages,
-                {
-                  role: "earth.guide",
-                  content: data.formatted_text,
-                  id: data.id_answer,
-                },
-              ];
+            if (text.length > 0) {
+              if (isWsFirst) {
+                isWsFirst = false;
+                const updatedMessages: Message[] = [
+                  ...updatedConversation.messages,
+                  {
+                    role: "earth.guide",
+                    content: data.formatted_text,
+                    id: data.id_answer,
+                  },
+                ];
 
-              updatedConversation = {
-                ...updatedConversation,
-                messages: updatedMessages,
-              };
+                updatedConversation = {
+                  ...updatedConversation,
+                  messages: updatedMessages,
+                };
 
-              setSelectedConversation(updatedConversation);
-            } else {
-              const updatedMessages: Message[] =
-                updatedConversation.messages.map((message, index) => {
-                  if (index === updatedConversation.messages.length - 1) {
-                    return {
-                      ...message,
-                      content: text,
-                    };
-                  }
+                setSelectedConversation(updatedConversation);
+              } else {
+                const updatedMessages: Message[] =
+                  updatedConversation.messages.map((message, index) => {
+                    if (index === updatedConversation.messages.length - 1) {
+                      return {
+                        ...message,
+                        content: text,
+                      };
+                    }
 
-                  return message;
-                });
+                    return message;
+                  });
 
-              updatedConversation = {
-                ...updatedConversation,
-                messages: updatedMessages,
-              };
+                updatedConversation = {
+                  ...updatedConversation,
+                  messages: updatedMessages,
+                };
 
-              setSelectedConversation(updatedConversation);
+                setSelectedConversation(updatedConversation);
 
-              if (
-                json.done ||
-                data.formatted_text.includes("Answer successfully finished.")
-              ) {
-                setMessageIsStreaming(false);
+                if (data.end_of_bubble) {
+                  text = "";
+                  isWsFirst = true;
+                }
               }
+            }
+            if (data.done) {
+              setMessageIsStreaming(false);
             }
           }
         };
@@ -159,8 +169,12 @@ export default function Home() {
             city_of_user: ipData?.city || "",
             gps: ipData?.gps || "",
             type_of_device: deviceType,
+            new_session: newSession,
+            specific_airlines: specificAirlines,
           })
         );
+
+        setNewSession(false)
       };
 
       ws.onclose = (e) => {
@@ -194,28 +208,6 @@ export default function Home() {
     }
 
     setModels(data);
-  };
-
-  const handleNewConversation = () => {
-    const lastConversation = conversations[conversations.length - 1];
-
-    const newConversation: Conversation = {
-      id: lastConversation ? lastConversation.id + 1 : 1,
-      name: `Conversation ${lastConversation ? lastConversation.id + 1 : 1}`,
-      messages: [],
-      model: OpenAIModels[OpenAIModelID.GPT_3_5],
-      prompt: DEFAULT_SYSTEM_PROMPT,
-    };
-
-    const updatedConversations = [...conversations, newConversation];
-
-    setSelectedConversation(newConversation);
-    setConversations(updatedConversations);
-
-    saveConversation(newConversation);
-    saveConversations(updatedConversations);
-
-    setLoading(false);
   };
 
   const handleUpdateConversation = (
@@ -500,19 +492,19 @@ export default function Home() {
                           </div>
                         </div>
                         <div className="p-0 lg:p-6 space-y-6 w-full h-full">
-                            <div className="w-full h-full flex">
-                              <RightSidebarMobile
-                                loading={panelDataLoading}
-                                data={panelData}
-                                lightMode="light"
-                                onAnotherPromptClick={handleAnotherPromptClick}
-                                onSend={(message: Message, isResend: boolean) => {
-                                  setShowMobilePanelData(false)
-                                  handleSend(message, isResend)
-                                }}
-                                onDisplayGallery={handleDisplayGallery}
-                              />
-                            </div>
+                          <div className="w-full h-full flex">
+                            <RightSidebarMobile
+                              loading={panelDataLoading}
+                              data={panelData}
+                              lightMode="light"
+                              onAnotherPromptClick={handleAnotherPromptClick}
+                              onSend={(message: Message, isResend: boolean) => {
+                                setShowMobilePanelData(false);
+                                handleSend(message, isResend);
+                              }}
+                              onDisplayGallery={handleDisplayGallery}
+                            />
+                          </div>
                         </div>
                       </div>
                     </div>
