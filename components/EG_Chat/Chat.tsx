@@ -1,3 +1,4 @@
+import { usePathname } from "next/navigation";
 import {
   Conversation,
   KeyValuePair,
@@ -30,6 +31,14 @@ interface Props {
   onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
 }
 
+interface IDefaultMessages {
+  [key: string]: string;
+}
+
+const defaultMessages: IDefaultMessages = {
+  austrian: "Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Austrian Airlines. After being properly implemented with Austrian Airlines' specific features, I can offer much more."
+}
+
 export const Chat: FC<Props> = ({
   conversation,
   models,
@@ -44,6 +53,8 @@ export const Chat: FC<Props> = ({
   onAnotherPromptClick,
   onDisplayGallery,
 }) => {
+  const path = usePathname()?.substring(1)
+
   const [currentMessage, setCurrentMessage] = useState<Message>();
   const [autoScrollEnabled, setAutoScrollEnabled] = useState<boolean>(true);
 
@@ -153,7 +164,7 @@ export const Chat: FC<Props> = ({
               key="starter-message"
               message={{
                 role: "starter",
-                content:
+                content: path ? defaultMessages[path] :
                   "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect flight tickets to your dream destinations.",
               }}
               lightMode={lightMode}
@@ -206,7 +217,8 @@ export const Chat: FC<Props> = ({
                     message={message}
                     lightMode={lightMode}
                     onAnotherPromptClick={onAnotherPromptClick}
-                    messageIsStreaming={messageIsStreaming}
+                    messageIsStreaming={messageIsStreaming && index === conversation.messages.length - 1}
+                    streamingFinished={!messageIsStreaming && index === conversation.messages.length - 1}
                     onSend={(message) => {
                       setCurrentMessage(message);
                       onSend(message, false);

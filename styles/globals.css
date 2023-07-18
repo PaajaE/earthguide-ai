@@ -16,17 +16,17 @@ pre {
 .gallery {
   display: flex;
   overflow-x: auto;
-  margin: 1rem 0;
-  padding-bottom: 5px;
+  margin: 0;
+  border-radius: 0.5rem;
 }
 
 .gallery img {
-  width: 150px;
-  height: 150px;
+  width: 100%;
+  height: 33vh;
+  min-width: 100%;
   object-fit: cover;
   object-position: center;
-  margin-right: 0.5rem;
-  border-radius: 0.5rem;
+  margin-right: 0;
   cursor: pointer;
 }
 
@@ -39,23 +39,20 @@ pre {
     display: flex;
     overflow-x: auto;
     /* height: calc(100% / 3); */
-    margin: 1rem 0;
-    padding-bottom: 5px;
   }
   
   .gallery img {
     /* min-width: calc((65vw - 260px) / 3); */
-    width: calc((65vw - 260px) / 3);
-    height: calc((65vw - 260px) / 3);
+    width: calc((65vw - 260px) / 2.75);
+    height: calc((65vw - 260px) / 2.75);
+    min-width: unset;
     object-fit: cover;
     object-position: center;
-    margin-right: 0.5rem;
-    border-radius: 0.5rem;
     cursor: pointer;
   }
 }
 
-.inline-flights {
+/* .inline-flights {
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
@@ -65,7 +62,7 @@ pre {
     margin-top: 0;
     margin-left: 1rem;
   }
-}
+} */
 
 .outer-link {
   line-height: 1.1rem;
@@ -104,7 +101,7 @@ strong.flights {
 
 .no-photos {
   font-size: small;
-  margin: 0.5rem 0 0.5rem 0;
+  margin: 0;
   width: 100%;
   line-height: 1.3em;
 }
@@ -121,12 +118,28 @@ strong.flights {
   margin-top: -0.33rem;
 }
 
-@media only screen and (min-width: 768px) {
-  .no-photos {
-    padding-left: 1rem;
-  }
-}
-
 ol li {
   margin: 1rem 0;
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 5px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }

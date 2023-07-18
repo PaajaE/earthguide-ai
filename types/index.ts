@@ -85,7 +85,9 @@ export interface EarthGuideQuestionResponse {
   "formatted_text": string,
   "id_answer": string,
   "part_id": number,
-  "where_to_display": WhereToDisplay
+  "where_to_display": WhereToDisplay,
+  done?: boolean,
+  end_of_bubble?: boolean;
 }
 
 export interface IpData {
