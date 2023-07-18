@@ -62,7 +62,6 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
     elements.forEach((elem) => {
       elem.addEventListener('click', handleImgClick)
     })
-    console.log(elements)
   })
   return (
     <ReactMarkdown
@@ -73,30 +72,23 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
         },
         code({ node, inline, className, children, ...props }) {
           const div = String(children).replace(/\n$/, "");
-          // if (div.includes(`data-type="flight"`)) {
-          //   return (
-          //     <div
-          //       className="w-100 inline pb-2"
-          //       dangerouslySetInnerHTML={{ __html: div }}
-          //     ></div>
-          //   );
-          // }
+
           if (div.includes(`class="gallery"`)) {
             console.log(div)
             return (
-              <div className="" dangerouslySetInnerHTML={{ __html: div }}></div>
+              <div className="order-first" dangerouslySetInnerHTML={{ __html: div }}></div>
             );
           } else if (div.includes(`class="no-photos"`)) {
             return (
               <div
-                className="w-100"
+                className="w-100 order-last px-[17px] mt-2"
                 dangerouslySetInnerHTML={{ __html: div }}
               ></div>
             );
           } else if (div.includes(`class="inline-flights"`)) {
             return (
               <div
-                className="w-100"
+                className="w-100 px-[17px] mt-1 mb-1"
                 dangerouslySetInnerHTML={{ __html: div }}
               ></div>
             );
@@ -174,6 +166,13 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
           return (
             <div className="my-1 px-1">
               <img src={ref.src} alt={ref.alt} className="rounded-[10px]" />
+            </div>
+          );
+        },
+        p({children}) {
+          return (
+            <div className="my-1 px-[17px] mt-4 mb-2">
+              {children}
             </div>
           );
         },

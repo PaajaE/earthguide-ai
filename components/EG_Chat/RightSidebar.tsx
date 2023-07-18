@@ -35,7 +35,7 @@ export const RightSidebar: FC<Props> = ({
       <div className="w-auto rounded-md overflow-y-auto">
         <div className="text-black mt-4 mb-2 pt-0">
           {showSample && (
-            <div className="flex flex-col mt-2">
+            <div className="flex flex-col mt-2 px-4">
               <h2 className="font-bold mb-4">Examples</h2>
               <ChatMessage
                 message={{
