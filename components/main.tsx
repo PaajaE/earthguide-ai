@@ -268,8 +268,7 @@ export default function Main({
             }
 
             if (
-              json.done ||
-              data.formatted_text.includes("Answer successfully finished.")
+              data.done
             ) {
               setPanelDataLoading(false);
             }
@@ -353,7 +352,7 @@ export default function Main({
         city: data.city.name,
         ip: data.ip,
         gps: `${data.location.latitude},${data.location.longitude}`,
-        country: data.country.iso_code,
+        country: data.country.name,
         state: data.state.name
       });
     });

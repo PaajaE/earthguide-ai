@@ -138,7 +138,7 @@ export const Chat: FC<Props> = ({
   }, [messagesEndRef]);
 
   return (
-    <div className="relative flex flex-col justify-between w-auto h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full lg:max-w-[70%] bg-[#FAFAFA] lg:px-4">
+    <div className="relative flex flex-col justify-between w-auto h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full lg:max-w-[60%] bg-[#FAFAFA]">
       {modelError ? (
         <div className="flex flex-col justify-center mx-auto h-full w-full space-y-6">
           <div className="text-center text-red-500">Error fetching models.</div>
@@ -153,7 +153,7 @@ export const Chat: FC<Props> = ({
       ) : (
         <>
           <div
-            className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_10rem)] p-4 lg:p-0"
+            className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_10rem)] p-4 lg:py-0 lg:px-4"
             ref={chatContainerRef}
             onScroll={handleScroll}
           >
@@ -219,6 +219,7 @@ export const Chat: FC<Props> = ({
                     onAnotherPromptClick={onAnotherPromptClick}
                     messageIsStreaming={messageIsStreaming && index === conversation.messages.length - 1}
                     streamingFinished={!messageIsStreaming && index === conversation.messages.length - 1}
+                    pathExists={!!path}
                     onSend={(message) => {
                       setCurrentMessage(message);
                       onSend(message, false);

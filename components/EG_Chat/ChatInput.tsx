@@ -70,7 +70,7 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model, textar
 
   return (
     <>
-      <div className="sticky lg:w-[calc(66vw_-_5rem)] px-4 lg:px-0 pb-12 lg:pb-8 bg-[#FAFAFA]">
+      <div className="sticky lg:w-[calc(60vw_-_2rem)] px-4 pb-12 lg:pb-8 bg-[#FAFAFA]">
         <textarea
           ref={textareaRef}
           className="pl-4 pr-8 pt-[0.8rem] pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-black drop-shadow-md"

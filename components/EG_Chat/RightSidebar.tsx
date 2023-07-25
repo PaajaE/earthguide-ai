@@ -122,7 +122,7 @@ export const RightSidebar: FC<Props> = ({
             </>
           )}
         </div>
-        {data && (
+        {data && !loading && (
           <div className="flex mt-4 mb-2 px-4">
             <Button
               text="Similar places"

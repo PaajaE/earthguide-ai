@@ -1,10 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
-import { Message, PanelData, TypeOfPrompt, WhereToDisplay } from "@/types";
+import { Message, PanelData, TypeOfPrompt } from "@/types";
 import { EarthGuideReactMarkdown } from "./EarthGuideReactMarkdown";
-import { Toggle } from "../Shared/Toggle";
-import { IconArrowBarLeft } from "@tabler/icons-react";
 import { FC } from "react";
-import { ChatMessage } from "./ChatMessage";
 import { Button } from "../Shared/Button";
 import { ChatLoader } from "./ChatLoader";
 
@@ -64,7 +61,7 @@ export const RightSidebarMobile: FC<Props> = ({
             </>
           )}
         </div>
-        {data && (
+        {data && !loading && (
           <div className="flex my-4 px-4">
             <Button
               text="Similar places"

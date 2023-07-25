@@ -12,6 +12,7 @@ interface Props {
   messageIsStreaming?: boolean;
   streamingFinished?: boolean;
   lightMode: "light" | "dark";
+  pathExists?: boolean;
   onAnotherPromptClick?: (typeOfPrompt: TypeOfPrompt, id: string) => void;
   onSend?: (message: Message) => void;
   onSampleClick?: (content: string) => void;
@@ -23,6 +24,7 @@ export const ChatMessage: FC<Props> = ({
   lightMode,
   messageIsStreaming = false,
   streamingFinished = false,
+  pathExists = false,
   onSend,
   onAnotherPromptClick,
   onSampleClick,
@@ -47,7 +49,7 @@ export const ChatMessage: FC<Props> = ({
         }
         ${
           message.role === "user"
-            ? "bg-[rgba(255,86,0,1)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[17px] py-3 mb-3"
+            ? "bg-[rgba(255,86,0,1)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[17px] py-5 mb-3"
             : ""
         }
         ${
@@ -56,7 +58,9 @@ export const ChatMessage: FC<Props> = ({
             : ""
         }
         ${
-          message.role === "earth.guide" && streamingFinished ? "after:content-['✓'] after:absolute after:bottom-1 after:right-2 after:text-slate-200" : ""
+          message.role === "earth.guide" && streamingFinished
+            ? "after:content-['✓'] after:absolute after:bottom-1 after:right-2 after:text-slate-200"
+            : ""
         }
         ${
           message.role === "sample"
@@ -163,21 +167,23 @@ export const ChatMessage: FC<Props> = ({
                 });
             }}
           />
-          <Button
-            text="Show me lesser-known places"
-            iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
-            bgColor="#d4845c"
-            typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
-            onClick={(typeOfPrompt: TypeOfPrompt) => {
-              onSend &&
-                onSend({
-                  role: "user",
-                  content: "Show me lesser-known places",
-                  typeOfPrompt,
-                  id: message.id ?? "",
-                });
-            }}
-          />
+          {!pathExists && (
+            <Button
+              text="Show me lesser-known places"
+              iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
+              bgColor="#d4845c"
+              typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
+              onClick={(typeOfPrompt: TypeOfPrompt) => {
+                onSend &&
+                  onSend({
+                    role: "user",
+                    content: "Show me lesser-known places",
+                    typeOfPrompt,
+                    id: message.id ?? "",
+                  });
+              }}
+            />
+          )}
         </div>
       )}
     </>

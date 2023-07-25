@@ -5,6 +5,7 @@
 body {
   height: 100vh; 
   overflow: hidden;
+  font-size: 1.05rem;
 }
 
 pre {
@@ -43,8 +44,8 @@ pre {
   
   .gallery img {
     /* min-width: calc((65vw - 260px) / 3); */
-    width: calc((65vw - 260px) / 2.75);
-    height: calc((65vw - 260px) / 2.75);
+    width: calc((65vw - 260px) / 2.5);
+    height: calc((65vw - 260px) / 2.5);
     min-width: unset;
     object-fit: cover;
     object-position: center;
@@ -79,8 +80,10 @@ pre {
 }
 
 .outer-link a img {
+  width: 16px;
+  height: 16px;
   margin-left: 0.4rem;
-  margin-top: -0.33rem;
+  margin-top: -0.13rem;
 }
 
 @media only screen and (min-width: 768px) {
@@ -124,8 +127,8 @@ ol li {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 7.5px;
+  height: 7.5px;
 }
 
 /* Track */
