@@ -160,6 +160,8 @@ export default function Main({
             language_of_browser: language,
             city_of_user: ipData?.city || "",
             gps: ipData?.gps || "",
+            country: ipData?.country || "",
+            state: ipData?.state || "",
             type_of_device: deviceType,
             new_session: newSession,
             specific_airlines: specificAirlines,
@@ -282,6 +284,8 @@ export default function Main({
             language_of_browser: language,
             city_of_user: ipData?.city || "",
             gps: ipData?.gps || "",
+            country: ipData?.country || "",
+            state: ipData?.state || "",
             type_of_device: deviceType,
           })
         );
@@ -349,6 +353,8 @@ export default function Main({
         city: data.city.name,
         ip: data.ip,
         gps: `${data.location.latitude},${data.location.longitude}`,
+        country: data.country.iso_code,
+        state: data.state.name
       });
     });
     const language = getLanguage();

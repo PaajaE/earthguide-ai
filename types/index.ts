@@ -94,6 +94,8 @@ export interface IpData {
   ip: string;
   city: string;
   gps: string;
+  country: string;
+  state: string;
 }
 
 export enum DeviceTypes {
