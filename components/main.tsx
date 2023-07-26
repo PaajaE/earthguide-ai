@@ -29,11 +29,14 @@ import { LeftSidebar } from "@/components/EG_Chat/LeftSidebar";
 import { isValidJSON } from "@/utils/app/misc";
 import { Gallery } from "@/components/EG_Chat/Gallery";
 import { RightSidebarMobile } from "@/components/EG_Chat/RightSidebarMobile";
+import { IAirlineDataItem } from "@/utils/data/airlines";
 
 export default function Main({
   specificAirlines = "",
+  airlineData,
 }: {
   specificAirlines?: string;
+  airlineData: IAirlineDataItem;
 }) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] =
@@ -386,7 +389,7 @@ export default function Main({
                 <div className="flex justify-end p-2">
                   <button
                     type="button"
-                    className="text-white flex justify-center align-center h-[40px] w-[40px] rounded-full bg-white/30 lg:bg-black/70 hover:bg-white/20 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                    className="text-[var(--primary-text)] flex justify-center align-center h-[40px] w-[40px] rounded-full bg-white/30 lg:bg-black/70 hover:bg-white/20 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-[var(--primary-text)]"
                     onClick={() => setShowModal(false)}
                   >
                     x<span className="sr-only">Close modal</span>
@@ -410,11 +413,11 @@ export default function Main({
       {selectedConversation && (
         <>
           <div
-            className={`hidden lg:flex flex-col h-screen w-100 text-white ${lightMode}`}
+            className={`hidden lg:flex flex-col h-screen w-100 text-[var(--primary-text)] ${lightMode}`}
           >
             <div className="h-full w-100 p-2">
               <div className="flex h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
-                <LeftSidebar lightMode="light" />
+                <LeftSidebar lightMode="light" logoPath={airlineData.logo} />
 
                 <Chat
                   conversation={selectedConversation}
@@ -424,6 +427,8 @@ export default function Main({
                   models={models}
                   loading={loading}
                   lightMode={lightMode}
+                  logoPath={airlineData.logo}
+                  starterMessage={airlineData.starterMessage}
                   onSend={handleSend}
                   onUpdateConversation={handleUpdateConversation}
                   onAnotherPromptClick={handleAnotherPromptClick}
@@ -448,7 +453,7 @@ export default function Main({
           </div>
 
           <div
-            className={`flex lg:hidden flex-col justify-start h-screen w-full text-white ${lightMode}`}
+            className={`flex lg:hidden flex-col justify-start h-screen w-full text-[var(--primary-text)] ${lightMode}`}
           >
             <div className="h-full w-100">
               <div className="flex flex-col h-screen lg:h-full bg-[#FAFAFA] rounded-md">
@@ -460,6 +465,8 @@ export default function Main({
                   models={models}
                   loading={loading}
                   lightMode={lightMode}
+                  logoPath={airlineData.logo}
+                  starterMessage={airlineData.starterMessage}
                   onSend={handleSend}
                   onUpdateConversation={handleUpdateConversation}
                   onAnotherPromptClick={handleAnotherPromptClick}
@@ -481,7 +488,7 @@ export default function Main({
                           <div className="flex justify-end p-2">
                             <button
                               type="button"
-                              className="text-black flex justify-center align-center h-[40px] w-[40px] rounded-full bg-black/30 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-white"
+                              className="text-[var(--secondary-text)] flex justify-center align-center h-[40px] w-[40px] rounded-full bg-black/30 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-[var(--primary-text)]"
                               onClick={() => setShowMobilePanelData(false)}
                             >
                               x<span className="sr-only">Close modal</span>

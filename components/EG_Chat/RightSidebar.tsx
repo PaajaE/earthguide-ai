@@ -33,7 +33,7 @@ export const RightSidebar: FC<Props> = ({
       style={{width: "-webkit-fill-available, fill-available, -moz-fill-available"}}
     >
       <div className="w-auto rounded-md overflow-y-auto">
-        <div className="text-black mt-4 mb-2 pt-0">
+        <div className="text-[var(--tertiary-text)] mt-4 mb-2 pt-0">
           {showSample && (
             <div className="flex flex-col mt-2 px-4">
               <h2 className="font-bold mb-4">Examples</h2>
@@ -127,7 +127,7 @@ export const RightSidebar: FC<Props> = ({
             <Button
               text="Similar places"
               iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
-              bgColor="#d4845c"
+              bgColor="var(--tertiary)"
               typeOfPrompt={TypeOfPrompt.MORE_LIKE}
               onClick={(typeOfPrompt: TypeOfPrompt) => {
                 onSend &&

@@ -21,7 +21,7 @@ export const Toggle: FC<Props> = ({ items }) => {
         style={{
           backgroundColor: `${
             selected === items[0].type
-              ? "rgba(255,86,0,1)"
+              ? "var(--primary)"
               : "rgba(255,255,255,1)"
           }`,
           cursor: `${selected === items[0].type ? "default" : "pointer"}`,
@@ -37,7 +37,7 @@ export const Toggle: FC<Props> = ({ items }) => {
         style={{
           backgroundColor: `${
             selected === items[1].type
-              ? "rgba(255,86,0,1)"
+              ? "var(--primary)"
               : "rgba(255,255,255,1)"
           }`,
           cursor: `${selected === items[1].type ? "default" : "pointer"}`,
@@ -68,7 +68,7 @@ export const Toggle: FC<Props> = ({ items }) => {
               {items[0].label}
             </p>
           </div>
-          <div className="flex items-center px-[20px] py-[10px] rounded-[40px] box-border  bg-[rgba(255,86,0,1)]">
+          <div className="flex items-center px-[20px] py-[10px] rounded-[40px] box-border  bg-[var(--primary)]">
             <p className="  text-sm  leading-[14px]  font-commissioner  font-[700]">
               {items[1].label}
             </p>

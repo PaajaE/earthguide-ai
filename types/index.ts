@@ -26,7 +26,7 @@ export interface Message {
   id?: string;
 }
 
-export type Role = "assistant" | "user" | "earth.guide" | "sample" | "starter";
+export type Role = "user" | "earth.guide" | "sample" | "starter";
 
 export interface Conversation {
   id: number;

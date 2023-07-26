@@ -14,7 +14,7 @@ export const ModelSelect: FC<Props> = ({ model, models, onModelChange }) => {
         Model
       </label>
       <select
-        className="w-full p-3 dark:text-white dark:bg-[#343541] border border-neutral-500 rounded-lg appearance-none focus:shadow-outline text-neutral-900 cursor-pointer"
+        className="w-full p-3 dark:text-[var(--primary-text)] dark:bg-[#343541] border border-neutral-500 rounded-lg appearance-none focus:shadow-outline text-neutral-900 cursor-pointer"
         placeholder="Select a model"
         value={model.id}
         onChange={(e) => {

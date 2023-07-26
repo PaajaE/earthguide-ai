@@ -53,7 +53,7 @@ export const Conversations: FC<Props> = ({ loading, conversations, selectedConve
 
           {isRenaming && selectedConversation.id === conversation.id ? (
             <input
-              className="flex-1 bg-transparent border-b border-neutral-400 focus:border-neutral-100 text-left overflow-hidden overflow-ellipsis pr-1 outline-none text-white"
+              className="flex-1 bg-transparent border-b border-neutral-400 focus:border-neutral-100 text-left overflow-hidden overflow-ellipsis pr-1 outline-none text-[var(--primary-text)]"
               type="text"
               value={renameValue}
               onChange={(e) => setRenameValue(e.target.value)}

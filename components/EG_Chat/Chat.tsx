@@ -22,6 +22,8 @@ interface Props {
   loading: boolean;
   lightMode: "light" | "dark";
   isMobile: boolean;
+  logoPath: string;
+  starterMessage: string;
   onSend: (message: Message, isResend: boolean) => void;
   onUpdateConversation: (
     conversation: Conversation,
@@ -29,14 +31,6 @@ interface Props {
   ) => void;
   onAnotherPromptClick: (typeOfPrompt: TypeOfPrompt, id: string) => void;
   onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
-}
-
-interface IDefaultMessages {
-  [key: string]: string;
-}
-
-const defaultMessages: IDefaultMessages = {
-  austrian: "Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Austrian Airlines. After being properly implemented with Austrian Airlines' specific features, I can offer much more."
 }
 
 export const Chat: FC<Props> = ({
@@ -48,6 +42,8 @@ export const Chat: FC<Props> = ({
   loading,
   lightMode,
   isMobile,
+  logoPath,
+  starterMessage,
   onSend,
   onUpdateConversation,
   onAnotherPromptClick,
@@ -158,20 +154,19 @@ export const Chat: FC<Props> = ({
             onScroll={handleScroll}
           >
             {isMobile && (
-              <LeftSidebar lightMode="light"/>
+              <LeftSidebar lightMode="light" logoPath={logoPath}/>
             )}
             <ChatMessage
               key="starter-message"
               message={{
                 role: "starter",
-                content: path ? defaultMessages[path] :
-                  "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect flight tickets to your dream destinations.",
+                content: starterMessage
               }}
               lightMode={lightMode}
             />
 
             <div className="flex lg:hidden flex-col mt-6">
-              <h2 className="text-black font-bold mb-4">Examples</h2>
+              <h2 className="text-[var(--tertiary-text)] font-bold mb-4">Examples</h2>
               <ChatMessage
                 message={{
                   role: "sample",
@@ -234,13 +229,7 @@ export const Chat: FC<Props> = ({
           </div>
 
           {messageError ? (
-            <Regenerate
-              onRegenerate={() => {
-                if (currentMessage) {
-                  onSend(currentMessage, true);
-                }
-              }}
-            />
+            <></>
           ) : (
             <ChatInput
               messageIsStreaming={messageIsStreaming}

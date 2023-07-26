@@ -31,7 +31,7 @@ export const CodeBlock: FC<Props> = ({ language, value, lightMode }) => {
       </SyntaxHighlighter>
 
       <button
-        className="absolute top-2 right-2 text-white bg-blue-600 py-1 px-2 rounded focus:outline-none hover:bg-blue-700 text-sm"
+        className="absolute top-2 right-2 text-[var(--primary-text)] bg-blue-600 py-1 px-2 rounded focus:outline-none hover:bg-blue-700 text-sm"
         onClick={copyToClipboard}
       >
         {buttonText}

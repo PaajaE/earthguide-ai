@@ -1,7 +1,8 @@
 import Main from '@/components/main'
+import { airlinesData } from '@/utils/data/airlines';
 
 export default function Home() {
   return (
-    <Main />
+    <Main airlineData={airlinesData.default} />
   );
 }

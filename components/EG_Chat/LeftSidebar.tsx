@@ -3,9 +3,10 @@ import { FC } from "react";
 
 interface Props {
   lightMode: "light" | "dark";
+  logoPath: string;
 }
 
-export const LeftSidebar: FC<Props> = ({ lightMode }) => {
+export const LeftSidebar: FC<Props> = ({ lightMode, logoPath }) => {
   return (
     <div
       className={`relative flex flex-col bg-[#FAFAFA] min-w-full sm:min-w-[150px] sm:max-w-[320px] sm:w-[320px] z-10 top-4 lg:top-0 lg:bottom-0 mb-8 lg:mb-0`}
@@ -13,7 +14,7 @@ export const LeftSidebar: FC<Props> = ({ lightMode }) => {
       <div className="overflow-auto flex flex-row-reverse lg:flex-col">
         <div className="flex justify-end items-start lg:justify-center w-[50%] lg:w-full lg:max-w-[180px]">
           <img
-            src="/earth-guide.svg"
+            src={logoPath}
             alt="Your travel guide"
             className="w-full"
           />

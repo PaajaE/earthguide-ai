@@ -105,7 +105,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
         },
         th({ children }) {
           return (
-            <th className="border border-black dark:border-white break-words py-1 px-3 bg-gray-500 text-white">
+            <th className="border border-black dark:border-white break-words py-1 px-3 bg-gray-500 text-[var(--primary-text)]">
               {children}
             </th>
           );
@@ -139,7 +139,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
                       );
                   }
                 }}
-                className="text-[#FF5600] cursor-pointer no-underline border-b border-[#FF5600]"
+                className="text-[var(--primary)] cursor-pointer no-underline border-b border-[var(--primary)]"
               >
                 {children}
               </button>
@@ -148,7 +148,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
             return (
               <a
                 href={href}
-                className="text-[#FF5600] cursor-pointer no-underline border-b border-[#FF5600]"
+                className="text-[var(--primary)] cursor-pointer no-underline border-b border-[var(--primary)]"
               >
                 {children}
               </a>
