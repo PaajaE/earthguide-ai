@@ -28,7 +28,7 @@ export const Key: FC<Props> = ({ apiKey, onApiKeyChange }) => {
       <IconKey size={16} />
 
       <input
-        className="ml-2 flex-1 bg-transparent border-b border-neutral-400 focus:border-neutral-100 text-left overflow-hidden overflow-ellipsis pr-1 outline-none text-white"
+        className="ml-2 flex-1 bg-transparent border-b border-neutral-400 focus:border-neutral-100 text-left overflow-hidden overflow-ellipsis pr-1 outline-none text-[var(--primary-text)]"
         type="password"
         value={newKey}
         onChange={(e) => setNewKey(e.target.value)}

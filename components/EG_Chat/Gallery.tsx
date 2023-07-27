@@ -35,7 +35,7 @@ export const Gallery: FC<Props> = ({ galleryItems, curIndex }) => {
       },
       control: {
         base: "inline-flex h-8 w-8 items-center justify-center rounded-full bg-black/50 group-hover:bg-black/70 group-focus:outline-none sm:h-10 sm:w-10",
-        icon: "h-5 w-5 text-white dark:text-gray-800 sm:h-6 sm:w-6"
+        icon: "h-5 w-5 text-[var(--primary-text)] dark:text-gray-800 sm:h-6 sm:w-6"
       },
     },
   };

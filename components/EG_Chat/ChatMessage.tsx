@@ -12,6 +12,7 @@ interface Props {
   messageIsStreaming?: boolean;
   streamingFinished?: boolean;
   lightMode: "light" | "dark";
+  pathExists?: boolean;
   onAnotherPromptClick?: (typeOfPrompt: TypeOfPrompt, id: string) => void;
   onSend?: (message: Message) => void;
   onSampleClick?: (content: string) => void;
@@ -23,6 +24,7 @@ export const ChatMessage: FC<Props> = ({
   lightMode,
   messageIsStreaming = false,
   streamingFinished = false,
+  pathExists = false,
   onSend,
   onAnotherPromptClick,
   onSampleClick,
@@ -30,33 +32,26 @@ export const ChatMessage: FC<Props> = ({
 }) => {
   return (
     <>
-      {/* {message.role === "assistant" || message.role === "earth.guide" ? (
-        <div className="text-black font-semibold lg:pl-4 mt-4 mb-2">
-          {message.role === "assistant"
-            ? "Answer from ChatGPT:"
-            : "Answer from Earth.Guide:"}
-        </div>
-      ) : (
-        <></>
-      )} */}
       <div
         className={`flex flex-row justify-start items-start gap-2.5 mb-5 pb-5 w-100 box-border ${
-          message.role === "assistant" || message.role === "starter"
+          message.role === "starter"
             ? "bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 px-[17px] py-3 mb-3"
             : ""
         }
         ${
           message.role === "user"
-            ? "bg-[rgba(255,86,0,1)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[17px] py-3 mb-3"
+            ? "bg-[var(--primary)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[17px] py-5 mb-3"
             : ""
         }
         ${
           message.role === "earth.guide"
-            ? "bg-[#3000FF] rounded-t-[10px] rounded-r-[10px] lg:mr-8"
+            ? "bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8"
             : ""
         }
         ${
-          message.role === "earth.guide" && streamingFinished ? "after:content-['✓'] after:absolute after:bottom-1 after:right-2 after:text-slate-200" : ""
+          message.role === "earth.guide" && streamingFinished
+            ? "after:content-['✓'] after:absolute after:bottom-1 after:right-2 after:text-slate-200"
+            : ""
         }
         ${
           message.role === "sample"
@@ -77,62 +72,18 @@ export const ChatMessage: FC<Props> = ({
         <div
           className={`border-[#000000ff] leading-6 flex flex-col w-full  font-plus jakarta sans  font-[400]
       ${
-        message.role === "assistant" ||
-        message.role === "sample" ||
-        message.role === "starter"
-          ? "text-black"
-          : "text-white"
+        message.role === "earth.guide"
+          ? "text-[var(--secondary-text)]"
+          : "text-[var(--primary-text)]"
+      } 
+      ${
+        (message.role === "sample" || message.role === "starter") &&
+        "text-[var(--tertiary-text)]"
       }`}
         >
           {message.role === "user" && <>{message.content}</>}
           {message.role === "sample" && <>{message.content}</>}
           {message.role === "starter" && <>{message.content}</>}
-          {message.role === "assistant" && (
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm]}
-              components={{
-                code({ node, inline, className, children, ...props }) {
-                  const match = /language-(\w+)/.exec(className || "");
-                  return !inline && match ? (
-                    <CodeBlock
-                      key={Math.random()}
-                      language={match[1]}
-                      value={String(children).replace(/\n$/, "")}
-                      lightMode={lightMode}
-                      {...props}
-                    />
-                  ) : (
-                    <code className={className} {...props}>
-                      {children}
-                    </code>
-                  );
-                },
-                table({ children }) {
-                  return (
-                    <table className="border-collapse border border-black dark:border-white py-1 px-3">
-                      {children}
-                    </table>
-                  );
-                },
-                th({ children }) {
-                  return (
-                    <th className="border border-black dark:border-white break-words py-1 px-3 bg-gray-500 text-white">
-                      {children}
-                    </th>
-                  );
-                },
-                td({ children }) {
-                  return (
-                    <td className="border border-black dark:border-white break-words py-1 px-3">
-                      {children}
-                    </td>
-                  );
-                },
-              }}
-            >
-              {message.content}
-            </ReactMarkdown>
-          )}
           {message.role === "earth.guide" && (
             <>
               <EarthGuideReactMarkdown
@@ -151,7 +102,7 @@ export const ChatMessage: FC<Props> = ({
           <Button
             text="More places like these"
             iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
-            bgColor="#d4845c"
+            bgColor="var(--tertiary)"
             typeOfPrompt={TypeOfPrompt.MORE_PLACES}
             onClick={(typeOfPrompt: TypeOfPrompt) => {
               onSend &&
@@ -163,21 +114,23 @@ export const ChatMessage: FC<Props> = ({
                 });
             }}
           />
-          <Button
-            text="Show me lesser-known places"
-            iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
-            bgColor="#d4845c"
-            typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
-            onClick={(typeOfPrompt: TypeOfPrompt) => {
-              onSend &&
-                onSend({
-                  role: "user",
-                  content: "Show me lesser-known places",
-                  typeOfPrompt,
-                  id: message.id ?? "",
-                });
-            }}
-          />
+          {!pathExists && (
+            <Button
+              text="Show me lesser-known places"
+              iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
+              bgColor="var(--tertiary)"
+              typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
+              onClick={(typeOfPrompt: TypeOfPrompt) => {
+                onSend &&
+                  onSend({
+                    role: "user",
+                    content: "Show me lesser-known places",
+                    typeOfPrompt,
+                    id: message.id ?? "",
+                  });
+              }}
+            />
+          )}
         </div>
       )}
     </>

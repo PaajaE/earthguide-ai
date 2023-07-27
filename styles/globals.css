@@ -2,9 +2,19 @@
 @tailwind components;
 @tailwind utilities;
 
+:root {
+  --primary: #ff5600;
+  --secondary: #3000FF;
+  --tertiary: #fbae88;
+  --primary-text: white;
+  --secondary-text: white;
+  --tertiary-text: black;
+}
+
 body {
   height: 100vh; 
   overflow: hidden;
+  font-size: 1.05rem;
 }
 
 pre {
@@ -52,18 +62,6 @@ pre {
   }
 }
 
-/* .inline-flights {
-  margin-top: 1rem;
-  margin-bottom: 1rem;
-}
-
-@media only screen and (min-width: 768px) {
-  .inline-flights {
-    margin-top: 0;
-    margin-left: 1rem;
-  }
-} */
-
 .outer-link {
   line-height: 1.1rem;
   margin-right: 0.5rem;
@@ -74,13 +72,40 @@ pre {
   display: inline-flex;
   align-items: center;
   cursor: pointer;
-  border-bottom: 1px solid #ff5600;
-  color: #ff5600;
+  border-bottom: 1px solid var(--primary);
+  color: var(--primary);
+}
+
+.outer-link a::after {
+  content: "";
+  /* Color */
+    background-color: var(--primary);
+
+    /* Store the SVG in a variable so it's easy to re-use */
+    --svg: url("/flight_icon.svg");
+
+    /* Assign the SVG variable */
+    background-image: var(--svg);
+    /* Chrome, still requires prefix in 2022 */
+    -webkit-mask: var(--svg);
+
+    /* Firefox and Safari */
+    mask: var(--svg);
+  width: 16px;
+  height: 16px;
+  position: relative;
+  color: var(--primary);
+  top: 0;
+  right: 0;
+  margin-left: 0.4rem;
 }
 
 .outer-link a img {
+  display: none;
+  /* width: 16px;
+  height: 16px;
   margin-left: 0.4rem;
-  margin-top: -0.33rem;
+  margin-top: -0.13rem; */
 }
 
 @media only screen and (min-width: 768px) {
@@ -96,7 +121,7 @@ p.flights {
 }
 
 strong.flights {
-  color: #ff5600;
+  color: var(--primary);
 }
 
 .no-photos {
@@ -107,8 +132,8 @@ strong.flights {
 }
 
 .no-photos a {
-  color: #ff5600;
-  border-bottom: 1px solid #ff5600;
+  color: var(--primary);
+  border-bottom: 1px solid var(--primary);
 }
 
 .no-photos a img {
@@ -124,8 +149,8 @@ ol li {
 
 /* width */
 ::-webkit-scrollbar {
-  width: 5px;
-  height: 5px;
+  width: 7.5px;
+  height: 7.5px;
 }
 
 /* Track */
@@ -142,4 +167,8 @@ ol li {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
   background: #555;
+}
+
+svg {
+  fill: currentColor;
 }

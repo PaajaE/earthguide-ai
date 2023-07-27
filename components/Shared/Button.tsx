@@ -19,11 +19,11 @@ export const Button: FC<Props> = ({
 }) => {
   return (
     <div
-      className={`flex flex-row justify-center lg:justify-start mb-3 lg:mb-0 w-full lg:w-auto items-center first-of-type:mr-2 cursor-pointer items-start gap-2.5 px-[13px] py-3.5 rounded-[15px] box-border bg-[#fbae88]`}
+      className={`flex flex-row justify-center lg:justify-start mb-3 lg:mb-0 w-full lg:w-auto items-center first-of-type:mr-2 cursor-pointer items-start gap-2.5 px-[13px] py-3.5 rounded-[15px] box-border bg-[var(--tertiary)]`}
       onClick={(e) => onClick(typeOfPrompt)}
     >
       <img src={iconUrl} alt="" className="hidden md:block w-[30px] h-[30px]" />
-      <p className="text-white leading-6 font-plus jakarta sans font-[400]">
+      <p className="text-[var(--primary-text)] leading-6 font-plus jakarta sans font-[400]">
         {text}
       </p>
     </div>
