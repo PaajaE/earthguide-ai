@@ -101,3 +101,11 @@ You should be able to start chatting.
 ## Contact
 
 If you have any questions, feel free to reach out to me on [Twitter](https://twitter.com/mckaywrigley).
+
+
+### Build
+https://docs.digitalocean.com/developer-center/deploying-a-next.js-application-on-a-digitalocean-droplet/
+
+
+### SSL
+https://www.digitalocean.com/community/tutorials/how-to-secure-nginx-with-let-s-encrypt-on-ubuntu-22-04
