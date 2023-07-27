@@ -1,10 +1,12 @@
+import { v4 } from 'uuid';
+
 export default function getMachineId() {
-    let machineId = localStorage.getItem("MachineId");
+  let machineId = localStorage.getItem('MachineId');
 
-    if (!machineId) {
-        machineId = crypto.randomUUID();
-        localStorage.setItem("MachineId", machineId);
-    }
+  if (!machineId) {
+    machineId = v4();
+    localStorage.setItem('MachineId', machineId ?? '');
+  }
 
-    return machineId;
+  return machineId;
 }
