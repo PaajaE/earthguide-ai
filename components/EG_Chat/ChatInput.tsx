@@ -73,7 +73,7 @@ export const ChatInput: FC<Props> = ({ onSend, messageIsStreaming, model, textar
       <div className="sticky lg:w-[calc(60vw_-_2rem)] px-4 pb-12 lg:pb-8 bg-[#FAFAFA]">
         <textarea
           ref={textareaRef}
-          className="pl-4 pr-8 pt-[0.8rem] pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-[var(--secondary-text)] drop-shadow-md"
+          className="pl-4 pr-8 pt-[0.8rem] pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-[var(--tertiary-text)] drop-shadow-md"
           style={{
             resize: "none",
             bottom: `${textareaRef?.current?.scrollHeight}px`,
