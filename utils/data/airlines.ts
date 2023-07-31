@@ -5,6 +5,7 @@ interface IAirlinesData {
 export interface IAirlineDataItem {
     title: string;
     starterMessage: string;
+    flightIcon: string;
     logo: string;
     styles: IStyles[]
 }
@@ -17,6 +18,7 @@ interface IStyles {
 export const airlinesData: IAirlinesData = {
     default: {
         title: "Earth Guide",
+        flightIcon: "/flight_icon.svg",
         logo: "/earth-guide.svg",
         starterMessage: "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect flight tickets to your dream destinations.",
         styles: [
@@ -48,6 +50,7 @@ export const airlinesData: IAirlinesData = {
       },
   austrian: {
     title: "Austrian",
+    flightIcon: "/flight_icon_austrian.svg",
     logo: "/austrian-logo.svg",
     starterMessage: "Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Austrian Airlines. After being properly implemented with Austrian Airlines' specific features, I can offer much more.",
     styles: [
@@ -79,6 +82,7 @@ export const airlinesData: IAirlinesData = {
   },
   kiwi: {
     title: "Kiwi",
+    flightIcon: "/flight_icon_kiwi.svg",
     logo: "/kiwi-logo.svg",
     starterMessage: "Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect flight tickets to your dream destinations.",
     styles: [
