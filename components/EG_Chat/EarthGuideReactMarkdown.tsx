@@ -1,5 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import { TypeOfPrompt } from "@/types";
+import { airlinesData } from "@/utils/data/airlines";
+import { usePathname } from "next/navigation";
 import { FC, ReactNode, useEffect } from "react";
 import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
@@ -17,6 +19,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
   onAnotherPromptClick,
   onDisplayGallery,
 }) => {
+  const path = usePathname()?.substring(1)
 
   const getAllImgSrc = (elem: HTMLDivElement): string[] => {
     const srcArr: string[] = []
@@ -74,7 +77,6 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
           const div = String(children).replace(/\n$/, "");
 
           if (div.includes(`class="gallery"`)) {
-            console.log(div)
             return (
               <div className="order-first" dangerouslySetInnerHTML={{ __html: div }}></div>
             );
@@ -86,10 +88,12 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
               ></div>
             );
           } else if (div.includes(`class="inline-flights"`)) {
+            const iconPath = path ? airlinesData[path].flightIcon : airlinesData.default.flightIcon
+            const replacedIconDiv = div.replaceAll('/flight_icon.svg', iconPath)
             return (
               <div
                 className="w-100 px-[17px] mt-1 mb-1"
-                dangerouslySetInnerHTML={{ __html: div }}
+                dangerouslySetInnerHTML={{ __html: replacedIconDiv }}
               ></div>
             );
           } else {

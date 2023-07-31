@@ -76,36 +76,11 @@ pre {
   color: var(--primary);
 }
 
-.outer-link a::after {
-  content: "";
-  /* Color */
-    background-color: var(--primary);
-
-    /* Store the SVG in a variable so it's easy to re-use */
-    --svg: url("/flight_icon.svg");
-
-    /* Assign the SVG variable */
-    background-image: var(--svg);
-    /* Chrome, still requires prefix in 2022 */
-    -webkit-mask: var(--svg);
-
-    /* Firefox and Safari */
-    mask: var(--svg);
+.outer-link a img {
   width: 16px;
   height: 16px;
-  position: relative;
-  color: var(--primary);
-  top: 0;
-  right: 0;
   margin-left: 0.4rem;
-}
-
-.outer-link a img {
-  display: none;
-  /* width: 16px;
-  height: 16px;
-  margin-left: 0.4rem;
-  margin-top: -0.13rem; */
+  margin-top: -0.13rem;
 }
 
 @media only screen and (min-width: 768px) {
