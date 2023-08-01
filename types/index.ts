@@ -50,10 +50,10 @@ export interface KeyValuePair {
 
 // keep track of local storage schema
 export interface LocalStorage {
-  apiKey: string;
   conversationHistory: Conversation[];
   selectedConversation: Conversation;
   theme: "light" | "dark";
+  MachineId: string;
 }
 
 export interface EarthGuideQuestionBody {

@@ -42,13 +42,10 @@ export default function Main({
   const [selectedConversation, setSelectedConversation] =
     useState<Conversation>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [models, setModels] = useState<OpenAIModel[]>([]);
   const [lightMode, setLightMode] = useState<"dark" | "light">("dark");
   const [messageIsStreaming, setMessageIsStreaming] = useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState<boolean>(true);
-  const [apiKey, setApiKey] = useState<string>("");
   const [messageError, setMessageError] = useState<boolean>(false);
-  const [modelError, setModelError] = useState<boolean>(false);
   const [machineId, setMachineId] = useState<string>("");
   const [ipData, setIpData] = useState<IpData | null>(null);
   const [language, setLanguage] = useState<string>("en");
@@ -181,32 +178,6 @@ export default function Main({
     }
   };
 
-  const fetchModels = async (key: string) => {
-    const response = await fetch("/api/models", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        key,
-      }),
-    });
-
-    if (!response.ok) {
-      setModelError(true);
-      return;
-    }
-
-    const data = await response.json();
-
-    if (!data) {
-      setModelError(true);
-      return;
-    }
-
-    setModels(data);
-  };
-
   const handleUpdateConversation = (
     conversation: Conversation,
     data: KeyValuePair
@@ -305,11 +276,6 @@ export default function Main({
       setLightMode(theme as "dark" | "light");
     }
 
-    const apiKey = localStorage.getItem("apiKey") || "";
-    if (apiKey) {
-      setApiKey(apiKey);
-    }
-
     if (window.innerWidth < 640) {
       setShowSidebar(false);
     }
@@ -341,8 +307,6 @@ export default function Main({
         prompt: DEFAULT_SYSTEM_PROMPT,
       });
     }
-
-    fetchModels(apiKey);
   }, []);
 
   useEffect(() => {
@@ -422,9 +386,7 @@ export default function Main({
                 <Chat
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
-                  modelError={modelError}
                   messageError={messageError}
-                  models={models}
                   loading={loading}
                   lightMode={lightMode}
                   logoPath={airlineData.logo}
@@ -460,9 +422,7 @@ export default function Main({
                 <Chat
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
-                  modelError={modelError}
                   messageError={messageError}
-                  models={models}
                   loading={loading}
                   lightMode={lightMode}
                   logoPath={airlineData.logo}
