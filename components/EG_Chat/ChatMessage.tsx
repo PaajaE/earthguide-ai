@@ -120,13 +120,18 @@ export const ChatMessage: FC<Props> = ({
           {(!selectedFeedback ||
             selectedFeedback === FeedbackEnum.OK) && (
             <button
-              className={`p-1 rounded-md hover:bg-gray-100 hover:text-gray-700 ${
+              className={`p-1 rounded-md ${
                 selectedFeedback === FeedbackEnum.OK
                   ? 'dark:text-[var(--primary)]'
                   : 'dark:text-gray-400'
-              } dark:hover:bg-gray-400 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400`}
+              }
+              ${
+                !selectedFeedback
+                  ? 'cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-400 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400'
+                  : 'cursor-auto'
+              }`}
               onClick={() => {
-                if (onRateAnswer && message.id) {
+                if (!selectedFeedback && onRateAnswer && message.id) {
                   setSelectedFeedback(FeedbackEnum.OK);
                   onRateAnswer({
                     id_answer: message.id,
@@ -155,13 +160,17 @@ export const ChatMessage: FC<Props> = ({
           {(!selectedFeedback ||
             selectedFeedback === FeedbackEnum.NOT_OK) && (
             <button
-              className={`p-1 rounded-md hover:bg-gray-100 hover:text-gray-700 ${
+              className={`p-1 rounded-md ${
                 selectedFeedback === FeedbackEnum.NOT_OK
                   ? 'dark:text-[var(--primary)]'
                   : 'dark:text-gray-400'
-              } dark:hover:bg-gray-400 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400`}
+              } ${
+                !selectedFeedback
+                  ? 'cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-400 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400'
+                  : 'cursor-auto'
+              }`}
               onClick={() => {
-                if (onRateAnswer && message.id) {
+                if (!selectedFeedback && onRateAnswer && message.id) {
                   setSelectedFeedback(FeedbackEnum.NOT_OK);
                   onRateAnswer({
                     id_answer: message.id,
