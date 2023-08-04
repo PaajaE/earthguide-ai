@@ -24,6 +24,7 @@ export interface Message {
   content: string;
   typeOfPrompt?: TypeOfPrompt;
   id?: string;
+  part_id?: number;
 }
 
 export type Role = "user" | "earth.guide" | "sample" | "starter";
@@ -113,4 +114,15 @@ export interface PanelData {
 export interface ToggleItem {
   type: WhereToDisplay;
   label: string;
+}
+
+export enum FeedbackEnum {
+  OK = '+',
+  NOT_OK = '-',
+}
+
+export interface IRateAnswer {
+  id_answer: string;
+  feedback: FeedbackEnum;
+  part_id?: number;
 }

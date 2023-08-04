@@ -1,5 +1,10 @@
-import { Message, TypeOfPrompt } from '@/types';
-import { FC, ReactNode } from 'react';
+import {
+  FeedbackEnum,
+  IRateAnswer,
+  Message,
+  TypeOfPrompt,
+} from '@/types';
+import { FC, ReactNode, useState } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import { CodeBlock } from '../Markdown/CodeBlock';
@@ -19,6 +24,7 @@ interface Props {
     id: string
   ) => void;
   onSend?: (message: Message) => void;
+  onRateAnswer?: (feedback: IRateAnswer) => void;
   onSampleClick?: (content: string) => void;
   onDisplayGallery?: (imgSrcs: string[], curIndex: number) => void;
 }
@@ -30,26 +36,30 @@ export const ChatMessage: FC<Props> = ({
   streamingFinished = false,
   pathExists = false,
   onSend,
+  onRateAnswer,
   onAnotherPromptClick,
   onSampleClick,
   onDisplayGallery,
 }) => {
+  const [selectedFeedback, setSelectedFeedback] = useState<
+    FeedbackEnum | undefined
+  >(undefined);
   return (
     <>
       <div
-        className={`flex flex-row justify-start items-start gap-2.5 mb-5 pb-5 w-100 box-border ${
+        className={`flex flex-row justify-start items-start gap-2.5 pb-5 w-100 box-border ${
           message.role === 'starter'
-            ? 'bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 px-[17px] py-3 mb-3'
+            ? 'bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 px-[17px] py-3 mb-5'
             : ''
         }
         ${
           message.role === 'user'
-            ? 'bg-[var(--primary)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[17px] py-5 mb-3'
+            ? 'bg-[var(--primary)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[17px] py-5 mb-5'
             : ''
         }
         ${
           message.role === 'earth.guide'
-            ? 'bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8'
+            ? 'bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 mb-1'
             : ''
         }
         ${
@@ -59,7 +69,7 @@ export const ChatMessage: FC<Props> = ({
         }
         ${
           message.role === 'sample'
-            ? 'bg-white rounded-t-[10px] rounded-r-[10px] px-[17px] py-3 mb-3'
+            ? 'bg-white rounded-t-[10px] rounded-r-[10px] px-[17px] py-3 mb-5'
             : ''
         }
         `}
@@ -105,6 +115,80 @@ export const ChatMessage: FC<Props> = ({
           )}
         </div>
       </div>
+      {message.role === 'earth.guide' && (
+        <div className="flex gap-1 mb-5 justify-end lg:mr-8">
+          {(!selectedFeedback ||
+            selectedFeedback === FeedbackEnum.OK) && (
+            <button
+              className={`p-1 rounded-md hover:bg-gray-100 hover:text-gray-700 ${
+                selectedFeedback === FeedbackEnum.OK
+                  ? 'dark:text-[var(--primary)]'
+                  : 'dark:text-gray-400'
+              } dark:hover:bg-gray-400 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400`}
+              onClick={() => {
+                if (onRateAnswer && message.id) {
+                  setSelectedFeedback(FeedbackEnum.OK);
+                  onRateAnswer({
+                    id_answer: message.id,
+                    part_id: message.part_id,
+                    feedback: FeedbackEnum.OK,
+                  });
+                }
+              }}
+            >
+              <svg
+                stroke="currentColor"
+                fill="none"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4"
+                height="1em"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"></path>
+              </svg>
+            </button>
+          )}
+          {(!selectedFeedback ||
+            selectedFeedback === FeedbackEnum.NOT_OK) && (
+            <button
+              className={`p-1 rounded-md hover:bg-gray-100 hover:text-gray-700 ${
+                selectedFeedback === FeedbackEnum.NOT_OK
+                  ? 'dark:text-[var(--primary)]'
+                  : 'dark:text-gray-400'
+              } dark:hover:bg-gray-400 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400`}
+              onClick={() => {
+                if (onRateAnswer && message.id) {
+                  setSelectedFeedback(FeedbackEnum.NOT_OK);
+                  onRateAnswer({
+                    id_answer: message.id,
+                    part_id: message.part_id,
+                    feedback: FeedbackEnum.NOT_OK,
+                  });
+                }
+              }}
+            >
+              <svg
+                stroke="currentColor"
+                fill="none"
+                strokeWidth="2"
+                viewBox="0 0 24 24"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                className="h-4 w-4"
+                height="1em"
+                width="1em"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h2.67A2.31 2.31 0 0 1 22 4v7a2.31 2.31 0 0 1-2.33 2H17"></path>
+              </svg>
+            </button>
+          )}
+        </div>
+      )}
       {message.role === 'earth.guide' && streamingFinished && (
         <>
           <div

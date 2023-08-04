@@ -1,6 +1,7 @@
 import { usePathname } from 'next/navigation';
 import {
   Conversation,
+  IRateAnswer,
   KeyValuePair,
   Message,
   TypeOfPrompt,
@@ -21,6 +22,7 @@ interface Props {
   logoPath: string;
   starterMessage: string;
   onSend: (message: Message, isResend: boolean) => void;
+  onRateAnswer: (feedback: IRateAnswer) => void;
   onUpdateConversation: (
     conversation: Conversation,
     data: KeyValuePair
@@ -42,7 +44,7 @@ export const Chat: FC<Props> = ({
   logoPath,
   starterMessage,
   onSend,
-  onUpdateConversation,
+  onRateAnswer,
   onAnotherPromptClick,
   onDisplayGallery,
 }) => {
@@ -213,6 +215,7 @@ export const Chat: FC<Props> = ({
                     setCurrentMessage(message);
                     onSend(message, false);
                   }}
+                  onRateAnswer={onRateAnswer}
                   onDisplayGallery={onDisplayGallery}
                 />
               ))}

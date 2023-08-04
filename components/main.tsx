@@ -3,6 +3,7 @@ import {
   Conversation,
   DeviceTypes,
   EarthGuideQuestionResponse,
+  IRateAnswer,
   IpData,
   KeyValuePair,
   Message,
@@ -122,6 +123,9 @@ export default function Main({
                       return {
                         ...message,
                         content: text,
+                        part_id: data.end_of_bubble
+                          ? data.part_id
+                          : undefined,
                       };
                     }
 
@@ -177,6 +181,16 @@ export default function Main({
       };
     }
   };
+
+  const handleRateAnswer = (message: IRateAnswer) => {
+    const ws = new WebSocket(process.env.NEXT_PUBLIC_EG_WSS_URL ?? "");
+    ws.onopen = () => {
+      ws.send(
+        JSON.stringify(message)
+      );
+      ws.close()
+    }
+  }
 
   const handleUpdateConversation = (
     conversation: Conversation,
@@ -335,7 +349,10 @@ export default function Main({
       <Head>
         <title>Chatbot UI</title>
         <meta name="description" content="ChatGPT but better." />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1"
+        />
         <link rel="icon" href="/favicon.ico" />
       </Head>
       {showModal && (
@@ -344,7 +361,7 @@ export default function Main({
           tabIndex={-1}
           aria-hidden="true"
           className={`fixed top-0 left-0 right-0 bottom-0 z-40 ${
-            showModal ? "" : "hidden"
+            showModal ? '' : 'hidden'
           } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#4d4d4d]`}
         >
           <div className="relative w-full h-full max-h-full">
@@ -381,7 +398,10 @@ export default function Main({
           >
             <div className="h-full w-100 p-2">
               <div className="flex h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
-                <LeftSidebar lightMode="light" logoPath={airlineData.logo} />
+                <LeftSidebar
+                  lightMode="light"
+                  logoPath={airlineData.logo}
+                />
 
                 <Chat
                   conversation={selectedConversation}
@@ -392,6 +412,7 @@ export default function Main({
                   logoPath={airlineData.logo}
                   starterMessage={airlineData.starterMessage}
                   onSend={handleSend}
+                  onRateAnswer={handleRateAnswer}
                   onUpdateConversation={handleUpdateConversation}
                   onAnotherPromptClick={handleAnotherPromptClick}
                   onDisplayGallery={handleDisplayGallery}
@@ -401,7 +422,9 @@ export default function Main({
                   <>
                     <RightSidebar
                       loading={panelDataLoading}
-                      showSample={selectedConversation.messages.length === 0}
+                      showSample={
+                        selectedConversation.messages.length === 0
+                      }
                       data={panelData}
                       lightMode="light"
                       onAnotherPromptClick={handleAnotherPromptClick}
@@ -428,6 +451,7 @@ export default function Main({
                   logoPath={airlineData.logo}
                   starterMessage={airlineData.starterMessage}
                   onSend={handleSend}
+                  onRateAnswer={handleRateAnswer}
                   onUpdateConversation={handleUpdateConversation}
                   onAnotherPromptClick={handleAnotherPromptClick}
                   onDisplayGallery={handleDisplayGallery}
@@ -439,7 +463,7 @@ export default function Main({
                     tabIndex={-1}
                     aria-hidden="true"
                     className={`fixed top-0 left-0 right-0 bottom-0 z-20 ${
-                      showMobilePanelData ? "" : "hidden"
+                      showMobilePanelData ? '' : 'hidden'
                     } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#4d4d4d]`}
                   >
                     <div className="relative w-full h-full max-h-full">
@@ -449,9 +473,14 @@ export default function Main({
                             <button
                               type="button"
                               className="text-[var(--secondary-text)] flex justify-center align-center h-[40px] w-[40px] rounded-full bg-black/30 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-[var(--primary-text)]"
-                              onClick={() => setShowMobilePanelData(false)}
+                              onClick={() =>
+                                setShowMobilePanelData(false)
+                              }
                             >
-                              x<span className="sr-only">Close modal</span>
+                              x
+                              <span className="sr-only">
+                                Close modal
+                              </span>
                             </button>
                           </div>
                         </div>
@@ -461,8 +490,13 @@ export default function Main({
                               loading={panelDataLoading}
                               data={panelData}
                               lightMode="light"
-                              onAnotherPromptClick={handleAnotherPromptClick}
-                              onSend={(message: Message, isResend: boolean) => {
+                              onAnotherPromptClick={
+                                handleAnotherPromptClick
+                              }
+                              onSend={(
+                                message: Message,
+                                isResend: boolean
+                              ) => {
                                 setShowMobilePanelData(false);
                                 handleSend(message, isResend);
                               }}
