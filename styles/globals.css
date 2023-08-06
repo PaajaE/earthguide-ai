@@ -4,15 +4,15 @@
 
 :root {
   --primary: #ff5600;
-  --secondary: #3000FF;
+  --secondary: #ECECEC;
   --tertiary: #fbae88;
   --primary-text: white;
-  --secondary-text: white;
+  --secondary-text: black;
   --tertiary-text: black;
 }
 
 body {
-  height: 100vh; 
+  height: 100vh;
   overflow: hidden;
   font-size: 1.05rem;
 }
@@ -50,7 +50,7 @@ pre {
     overflow-x: auto;
     /* height: calc(100% / 3); */
   }
-  
+
   .gallery img {
     /* min-width: calc((65vw - 260px) / 3); */
     width: calc((65vw - 260px) / 2.75);
