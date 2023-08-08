@@ -1,8 +1,12 @@
-import { Chat } from "@/components/EG_Chat/Chat";
+import { jsonrepair } from 'jsonrepair';
+import removeMarkdown from 'markdown-to-text';
+import { Chat } from '@/components/EG_Chat/Chat';
 import {
   Conversation,
   DeviceTypes,
   EarthGuideQuestionResponse,
+  IMapDataConverted,
+  IMapDataObtained,
   IRateAnswer,
   IpData,
   KeyValuePair,
@@ -13,48 +17,58 @@ import {
   PanelData,
   TypeOfPrompt,
   WhereToDisplay,
-} from "@/types";
+} from '@/types';
 import {
   cleanConversationHistory,
   cleanSelectedConversation,
-} from "@/utils/app/clean";
-import { DEFAULT_SYSTEM_PROMPT } from "@/utils/app/const";
-import { updateConversation } from "@/utils/app/conversation";
-import getMachineId from "@/utils/app/machineId";
-import { getLanguage, getDeviceType } from "@/utils/app/browserInfo";
-import { fetchIpData } from "@/utils/server/requests";
-import Head from "next/head";
-import { useEffect, useState } from "react";
-import { RightSidebar } from "@/components/EG_Chat/RightSidebar";
-import { LeftSidebar } from "@/components/EG_Chat/LeftSidebar";
-import { isValidJSON } from "@/utils/app/misc";
-import { Gallery } from "@/components/EG_Chat/Gallery";
-import { RightSidebarMobile } from "@/components/EG_Chat/RightSidebarMobile";
-import { IAirlineDataItem } from "@/utils/data/airlines";
+} from '@/utils/app/clean';
+import { DEFAULT_SYSTEM_PROMPT } from '@/utils/app/const';
+import { updateConversation } from '@/utils/app/conversation';
+import getMachineId from '@/utils/app/machineId';
+import { getLanguage, getDeviceType } from '@/utils/app/browserInfo';
+import { fetchIpData } from '@/utils/server/requests';
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
+import { RightSidebar } from '@/components/EG_Chat/RightSidebar';
+import { LeftSidebar } from '@/components/EG_Chat/LeftSidebar';
+import {
+  isValidJSON,
+  extractSrcAttributesFromHTML,
+  extractGpsCoordinates,
+} from '@/utils/app/misc';
+import { Gallery } from '@/components/EG_Chat/Gallery';
+import { RightSidebarMobile } from '@/components/EG_Chat/RightSidebarMobile';
+import { IAirlineDataItem } from '@/utils/data/airlines';
 
 export default function Main({
-  specificAirlines = "",
+  specificAirlines = '',
   airlineData,
 }: {
   specificAirlines?: string;
   airlineData: IAirlineDataItem;
 }) {
-  const [conversations, setConversations] = useState<Conversation[]>([]);
+  const [conversations, setConversations] = useState<Conversation[]>(
+    []
+  );
   const [selectedConversation, setSelectedConversation] =
     useState<Conversation>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [lightMode, setLightMode] = useState<"dark" | "light">("dark");
-  const [messageIsStreaming, setMessageIsStreaming] = useState<boolean>(false);
+  const [lightMode, setLightMode] = useState<'dark' | 'light'>(
+    'dark'
+  );
+  const [messageIsStreaming, setMessageIsStreaming] =
+    useState<boolean>(false);
   const [showSidebar, setShowSidebar] = useState<boolean>(true);
   const [messageError, setMessageError] = useState<boolean>(false);
-  const [machineId, setMachineId] = useState<string>("");
+  const [machineId, setMachineId] = useState<string>('');
   const [ipData, setIpData] = useState<IpData | null>(null);
-  const [language, setLanguage] = useState<string>("en");
+  const [language, setLanguage] = useState<string>('en');
   const [deviceType, setDeviceType] = useState<DeviceTypes>(
     DeviceTypes.COMPUTER
   );
   const [panelData, setPanelData] = useState<PanelData | null>(null);
-  const [panelDataLoading, setPanelDataLoading] = useState<boolean>(false);
+  const [panelDataLoading, setPanelDataLoading] =
+    useState<boolean>(false);
   const [showPanelData, setShowPanelData] = useState<boolean>(true);
   const [showMobilePanelData, setShowMobilePanelData] =
     useState<boolean>(false);
@@ -62,6 +76,7 @@ export default function Main({
   const [newSession, setNewSession] = useState<boolean>(true);
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
+  const [mapData, setMapData] = useState<IMapDataConverted[]>([])
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -83,20 +98,46 @@ export default function Main({
       setSelectedConversation(updatedConversation);
 
       const lastMessage =
-        updatedConversation.messages[updatedConversation.messages.length - 1];
+        updatedConversation.messages[
+          updatedConversation.messages.length - 1
+        ];
 
-      const ws = new WebSocket(process.env.NEXT_PUBLIC_EG_WSS_URL ?? "");
+      const ws = new WebSocket(
+        process.env.NEXT_PUBLIC_EG_WSS_URL ?? ''
+      );
       ws.onopen = () => {
-        let text = "";
+        let text = '';
         let isWsFirst = true;
+        let convertedMapData: IMapDataConverted[]
         ws.onmessage = (event) => {
           const json = event.data;
-          // console.log(json)
           if (isValidJSON(json)) {
-            // console.log(json)
             let data: EarthGuideQuestionResponse = JSON.parse(json);
             text += data.formatted_text;
-            // console.log(JSON.stringify(text));
+
+            if (data.additional_data) {
+              const replacedString = data.additional_data.replaceAll('"', '\\"').replaceAll('\'', '"').replaceAll('\\"', '\'')
+              const fixedData = jsonrepair(replacedString);
+              if (data.json_type === 'all_other_types_all_locations') {
+                const mapDataObtained: IMapDataObtained[] = JSON.parse(fixedData);
+                convertedMapData = mapDataObtained.map(
+                  (mapLocation) => {
+                    const { id, gps, location, photos } = mapLocation;
+                    const locationString = removeMarkdown(location);
+                    const photosArr =
+                      extractSrcAttributesFromHTML(photos);
+                    const gpsObject = extractGpsCoordinates(gps);
+
+                    return {
+                      id,
+                      gps: gpsObject,
+                      photos: photosArr,
+                      locationTitle: locationString,
+                    };
+                  }
+                );
+              }
+            }
 
             if (text.length > 0) {
               if (isWsFirst) {
@@ -104,7 +145,7 @@ export default function Main({
                 const updatedMessages: Message[] = [
                   ...updatedConversation.messages,
                   {
-                    role: "earth.guide",
+                    role: 'earth.guide',
                     content: data.formatted_text,
                     id: data.id_answer,
                   },
@@ -116,21 +157,31 @@ export default function Main({
                 };
 
                 setSelectedConversation(updatedConversation);
+
+                if (data.end_of_bubble) {
+                  text = '';
+                  isWsFirst = true;
+                }
               } else {
                 const updatedMessages: Message[] =
-                  updatedConversation.messages.map((message, index) => {
-                    if (index === updatedConversation.messages.length - 1) {
-                      return {
-                        ...message,
-                        content: text,
-                        part_id: data.end_of_bubble
-                          ? data.part_id
-                          : undefined,
-                      };
-                    }
+                  updatedConversation.messages.map(
+                    (message, index) => {
+                      if (
+                        index ===
+                        updatedConversation.messages.length - 1
+                      ) {
+                        return {
+                          ...message,
+                          content: text,
+                          part_id: data.end_of_bubble
+                            ? data.part_id
+                            : undefined,
+                        };
+                      }
 
-                    return message;
-                  });
+                      return message;
+                    }
+                  );
 
                 updatedConversation = {
                   ...updatedConversation,
@@ -140,13 +191,14 @@ export default function Main({
                 setSelectedConversation(updatedConversation);
 
                 if (data.end_of_bubble) {
-                  text = "";
+                  text = '';
                   isWsFirst = true;
                 }
               }
             }
             if (data.done) {
               setMessageIsStreaming(false);
+              setMapData(convertedMapData);
             }
           }
         };
@@ -162,10 +214,10 @@ export default function Main({
                 : lastMessage.id,
             user_identification: machineId,
             language_of_browser: language,
-            city_of_user: ipData?.city || "",
-            gps: ipData?.gps || "",
-            country: ipData?.country || "",
-            state: ipData?.state || "",
+            city_of_user: ipData?.city || '',
+            gps: ipData?.gps || '',
+            country: ipData?.country || '',
+            state: ipData?.state || '',
             type_of_device: deviceType,
             new_session: newSession,
             specific_airlines: specificAirlines,
@@ -177,20 +229,20 @@ export default function Main({
 
       ws.onclose = (e) => {
         console.log(e);
-        console.log("WebSocket closed");
+        console.log('WebSocket closed');
       };
     }
   };
 
   const handleRateAnswer = (message: IRateAnswer) => {
-    const ws = new WebSocket(process.env.NEXT_PUBLIC_EG_WSS_URL ?? "");
+    const ws = new WebSocket(
+      process.env.NEXT_PUBLIC_EG_WSS_URL ?? ''
+    );
     ws.onopen = () => {
-      ws.send(
-        JSON.stringify(message)
-      );
-      ws.close()
-    }
-  }
+      ws.send(JSON.stringify(message));
+      ws.close();
+    };
+  };
 
   const handleUpdateConversation = (
     conversation: Conversation,
@@ -210,13 +262,19 @@ export default function Main({
     setConversations(all);
   };
 
-  const handleDisplayGallery = (imgSrcs: string[], curIndex: number) => {
+  const handleDisplayGallery = (
+    imgSrcs: string[],
+    curIndex: number
+  ) => {
     setShowModal(true);
     setGalleryItems(imgSrcs);
     setGalleryIndex(curIndex);
   };
 
-  const handleAnotherPromptClick = (typeOfPrompt: TypeOfPrompt, id: string) => {
+  const handleAnotherPromptClick = (
+    typeOfPrompt: TypeOfPrompt,
+    id: string
+  ) => {
     if (
       typeOfPrompt === TypeOfPrompt.CLICK_ON_LOCATION ||
       typeOfPrompt === TypeOfPrompt.CLICK_ON_PRICE
@@ -226,9 +284,11 @@ export default function Main({
     }
 
     if (selectedConversation) {
-      const ws = new WebSocket(process.env.NEXT_PUBLIC_EG_WSS_URL ?? "");
+      const ws = new WebSocket(
+        process.env.NEXT_PUBLIC_EG_WSS_URL ?? ''
+      );
       ws.onopen = () => {
-        let text = "";
+        let text = '';
         ws.onmessage = (event) => {
           const json = event.data;
           if (isValidJSON(json)) {
@@ -236,7 +296,8 @@ export default function Main({
             // console.log("valid json", data);
 
             if (
-              data.where_to_display === WhereToDisplay.PANEL_DESTINATION ||
+              data.where_to_display ===
+                WhereToDisplay.PANEL_DESTINATION ||
               data.where_to_display === WhereToDisplay.PANEL_FLIGHTS
             ) {
               text += data.formatted_text;
@@ -255,9 +316,7 @@ export default function Main({
               };
             }
 
-            if (
-              data.done
-            ) {
+            if (data.done) {
               setPanelDataLoading(false);
             }
           }
@@ -269,45 +328,51 @@ export default function Main({
             text: `${id}`,
             user_identification: machineId,
             language_of_browser: language,
-            city_of_user: ipData?.city || "",
-            gps: ipData?.gps || "",
-            country: ipData?.country || "",
-            state: ipData?.state || "",
+            city_of_user: ipData?.city || '',
+            gps: ipData?.gps || '',
+            country: ipData?.country || '',
+            state: ipData?.state || '',
             type_of_device: deviceType,
           })
         );
       };
       ws.onclose = (e) => {
         console.log(e);
-        console.log("WebSocket closed");
+        console.log('WebSocket closed');
       };
     }
   };
 
   useEffect(() => {
-    const theme = localStorage.getItem("theme");
+    const theme = localStorage.getItem('theme');
     if (theme) {
-      setLightMode(theme as "dark" | "light");
+      setLightMode(theme as 'dark' | 'light');
     }
 
     if (window.innerWidth < 640) {
       setShowSidebar(false);
     }
 
-    const conversationHistory = localStorage.getItem("conversationHistory");
+    const conversationHistory = localStorage.getItem(
+      'conversationHistory'
+    );
     if (conversationHistory) {
-      const parsedConversationHistory: Conversation[] =
-        JSON.parse(conversationHistory);
+      const parsedConversationHistory: Conversation[] = JSON.parse(
+        conversationHistory
+      );
       const cleanedConversationHistory = cleanConversationHistory(
         parsedConversationHistory
       );
       setConversations(cleanedConversationHistory);
     }
 
-    const selectedConversation = localStorage.getItem("selectedConversation");
+    const selectedConversation = localStorage.getItem(
+      'selectedConversation'
+    );
     if (selectedConversation) {
-      const parsedSelectedConversation: Conversation =
-        JSON.parse(selectedConversation);
+      const parsedSelectedConversation: Conversation = JSON.parse(
+        selectedConversation
+      );
       const cleanedSelectedConversation = cleanSelectedConversation(
         parsedSelectedConversation
       );
@@ -315,7 +380,7 @@ export default function Main({
     } else {
       setSelectedConversation({
         id: 1,
-        name: "New conversation",
+        name: 'New conversation',
         messages: [],
         model: OpenAIModels[OpenAIModelID.GPT_3_5],
         prompt: DEFAULT_SYSTEM_PROMPT,
@@ -334,7 +399,7 @@ export default function Main({
         ip: data.ip,
         gps: `${data.location.latitude},${data.location.longitude}`,
         country: data.country.name,
-        state: data.state.name
+        state: data.state.name,
       });
     });
     const language = getLanguage();
@@ -406,6 +471,7 @@ export default function Main({
                 <Chat
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
+                  mapData={mapData}
                   messageError={messageError}
                   loading={loading}
                   lightMode={lightMode}
@@ -445,6 +511,7 @@ export default function Main({
                 <Chat
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
+                  mapData={mapData}
                   messageError={messageError}
                   loading={loading}
                   lightMode={lightMode}

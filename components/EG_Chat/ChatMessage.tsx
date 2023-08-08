@@ -1,5 +1,6 @@
 import {
   FeedbackEnum,
+  IMapDataConverted,
   IRateAnswer,
   Message,
   TypeOfPrompt,
@@ -17,6 +18,7 @@ interface Props {
   message: Message;
   messageIsStreaming?: boolean;
   streamingFinished?: boolean;
+  mapData?: IMapDataConverted[];
   lightMode: 'light' | 'dark';
   pathExists?: boolean;
   onAnotherPromptClick?: (
@@ -34,6 +36,7 @@ export const ChatMessage: FC<Props> = ({
   lightMode,
   messageIsStreaming = false,
   streamingFinished = false,
+  mapData,
   pathExists = false,
   onSend,
   onRateAnswer,
@@ -44,6 +47,7 @@ export const ChatMessage: FC<Props> = ({
   const [selectedFeedback, setSelectedFeedback] = useState<
     FeedbackEnum | undefined
   >(undefined);
+
   return (
     <>
       <div
@@ -200,15 +204,17 @@ export const ChatMessage: FC<Props> = ({
       )}
       {message.role === 'earth.guide' && streamingFinished && (
         <>
-          <div
-            className={`flex flex-row justify-start items-start gap-2.5 mb-5 w-100 box-border rounded-[10px]`}
-          >
+          {mapData && mapData.length > 0 && (
             <div
-              className={`border-[#000000ff] leading-6 flex flex-col w-full  font-plus jakarta sans  font-[400] text-[var(--secondary-text)] rounded-[10px]`}
+              className={`flex flex-row justify-start items-start gap-2.5 mb-5 w-100 box-border rounded-[10px]`}
             >
-              <MapboxMap />
+              <div
+                className={`border-[#000000ff] leading-6 flex flex-col relative w-full h-[50vh] font-plus jakarta sans  font-[400] text-[var(--secondary-text)] rounded-[10px]`}
+              >
+                <MapboxMap mapData={mapData} />
+              </div>
             </div>
-          </div>
+          )}
           <div className="flex flex-col lg:flex-row mt-3 mb-6">
             <Button
               text="More places like these"

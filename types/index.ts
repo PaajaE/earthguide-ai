@@ -89,6 +89,8 @@ export interface EarthGuideQuestionResponse {
   "where_to_display": WhereToDisplay,
   done?: boolean,
   end_of_bubble?: boolean;
+  json_type?: string;
+  additional_data?: string;
 }
 
 export interface IpData {
@@ -125,4 +127,20 @@ export interface IRateAnswer {
   id_answer: string;
   feedback: FeedbackEnum;
   part_id?: number;
+}
+
+export interface IMapDataObtained {
+  comment: { chunks: string[] };
+  flightickets: string;
+  gps: string;
+  id: string;
+  location: string;
+  photos: string;
+}
+
+export interface IMapDataConverted {
+  gps: { latitude: number, longitude: number};
+  id: string;
+  locationTitle: string;
+  photos: string[];
 }
