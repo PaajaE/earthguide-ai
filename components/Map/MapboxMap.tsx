@@ -20,7 +20,7 @@ const MapboxMap: React.FC<Props> = ({mapData}) => {
         style: 'mapbox://styles/mapbox/streets-v11',
         center: [0, 0],
         zoom: 1,
-        scrollZoom: false,
+        // scrollZoom: false,
         attributionControl: false,
       });
 
@@ -32,19 +32,42 @@ const MapboxMap: React.FC<Props> = ({mapData}) => {
         const el = document.createElement('div');
         el.className = 'marker';
 
-        el.style.width = `64px`;
-        el.style.height = `64px`;
+        // el.style.width = `64px`;
+        el.style.minHeight = `120px`;
+        el.style.minWidth = `160px`;
 
-        el.style.backgroundImage = `url(${destination.photos[0]})`;
+
+        el.style.backgroundColor = '#e2e2e2';
+        el.style.backgroundImage = `linear-gradient(to top, rgba(78, 78, 78, 0.43) 0%, rgba(255, 255, 255, 0) 40%), url(${
+          destination.photos[0] ??
+          'https://fakeimg.pl/160x120/cccccc/909090?text=~'
+        })`;
         el.style.backgroundRepeat = 'no-repeat';
         el.style.backgroundPosition = 'center';
         el.style.backgroundSize = 'cover';
         el.style.cursor = 'pointer';
         el.style.border = `5px solid`;
         el.style.borderRadius = `10px`;
-        el.style.borderColor = '#e4aa5f';
+        el.style.borderColor = 'var(--tertiary)';
+        el.style.display = 'flex'
+        el.style.alignItems = 'end'
+        el.style.padding = '2px 6px'
 
-        new mapboxgl.Marker(el)
+        var foot = document.createElement('div');
+        foot.className = 'foot';
+        el.appendChild(foot);
+
+
+        const price = 'CZK 3500'
+
+        const elChild = `<div style='display: block;'><div style='color: var(--primary-text); font-weight: 700; line-height: 1em;'>${destination.locationTitle}</div><div style='color: var(--primary-text);'>${price}</div></div>`;
+
+        el.innerHTML += elChild;
+
+        new mapboxgl.Marker(el, {
+          anchor: 'bottom',
+          offset: [0, -5]
+        })
           .setLngLat([destination.gps.longitude, destination.gps.latitude])
           .addTo(map);
 

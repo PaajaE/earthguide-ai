@@ -147,3 +147,16 @@ ol li {
 svg {
   fill: currentColor;
 }
+
+.foot {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid var(--tertiary);
+  /* Adjust color as needed */
+  position: absolute;
+  bottom:-10px;
+  left: 50%;
+  transform: translateX(-50%);
+}
