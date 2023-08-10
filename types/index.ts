@@ -136,6 +136,7 @@ export interface IMapDataObtained {
   id: string;
   location: string;
   photos: string;
+  price: string;
 }
 
 export interface IMapDataConverted {
@@ -143,4 +144,41 @@ export interface IMapDataConverted {
   id: string;
   locationTitle: string;
   photos: string[];
+  price: string;
+}
+
+export enum FLIGHT_TYPES {
+  ONEWAY = 'oneway',
+  ROUNDTRIP = 'round'
+}
+
+export interface IFlightParamsObtained {
+  curr: string;
+  date_from: string;
+  date_to: string;
+  departure_airport: string;
+  flight_type: FLIGHT_TYPES;
+  fly_from_lat: string;
+  fly_from_lon: string;
+  fly_from_radius: string;
+  nights_in_dst_from: string;
+  nights_in_dst_to: string;
+  return_from: string;
+  return_to: string;
+}
+
+export interface IFlightParamsConverted {
+  curr: string;
+  date_from?: string;
+  date_to?: string;
+  departure_airport?: string;
+  departure_airport_set: boolean;
+  flight_type: FLIGHT_TYPES;
+  fly_from_lat: number;
+  fly_from_lon: number;
+  fly_from_radius: number;
+  nights_in_dst_from?: number;
+  nights_in_dst_to?: number;
+  return_from?: string;
+  return_to?: string;
 }

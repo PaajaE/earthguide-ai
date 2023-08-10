@@ -1,6 +1,7 @@
 import { usePathname } from 'next/navigation';
 import {
   Conversation,
+  IFlightParamsConverted,
   IMapDataConverted,
   IRateAnswer,
   KeyValuePair,
@@ -17,6 +18,7 @@ interface Props {
   conversation: Conversation;
   messageIsStreaming: boolean;
   mapData: IMapDataConverted[];
+  flightParameters?: IFlightParamsConverted;
   messageError: boolean;
   loading: boolean;
   lightMode: 'light' | 'dark';
@@ -40,6 +42,7 @@ export const Chat: FC<Props> = ({
   conversation,
   messageIsStreaming,
   mapData,
+  flightParameters,
   messageError,
   loading,
   lightMode,
@@ -214,6 +217,7 @@ export const Chat: FC<Props> = ({
                     index === conversation.messages.length - 1
                   }
                   mapData={mapData}
+                  flightParameters={flightParameters}
                   pathExists={!!path}
                   onSend={(message) => {
                     setCurrentMessage(message);

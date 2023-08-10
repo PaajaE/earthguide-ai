@@ -44,6 +44,10 @@ pre {
   margin-right: 0;
 }
 
+    .gallery-small img {
+      height: 15vh;
+    }
+
 @media only screen and (min-width: 768px) {
   .gallery {
     display: flex;
@@ -59,6 +63,11 @@ pre {
     object-fit: cover;
     object-position: center;
     cursor: pointer;
+  }
+
+  .gallery-small img {
+    width: calc((65vw - 260px) / 5.75);
+    height: calc((65vw - 260px) / 5.75);
   }
 }
 

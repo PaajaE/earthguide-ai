@@ -78,7 +78,17 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
 
           if (div.includes(`class="gallery"`)) {
             return (
-              <div className="order-first" dangerouslySetInnerHTML={{ __html: div }}></div>
+              <div
+                className="order-first"
+                dangerouslySetInnerHTML={{ __html: div }}
+              ></div>
+            );
+          } else if (div.includes(`class="gallery gallery-small"`)) {
+            return (
+              <div
+                className="w-100 px-[17px] mt-2"
+                dangerouslySetInnerHTML={{ __html: div }}
+              ></div>
             );
           } else if (div.includes(`class="no-photos"`)) {
             return (
@@ -88,8 +98,13 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
               ></div>
             );
           } else if (div.includes(`class="inline-flights"`)) {
-            const iconPath = path ? airlinesData[path].flightIcon : airlinesData.default.flightIcon
-            const replacedIconDiv = div.replaceAll('/flight_icon.svg', iconPath)
+            const iconPath = path
+              ? airlinesData[path].flightIcon
+              : airlinesData.default.flightIcon;
+            const replacedIconDiv = div.replaceAll(
+              '/flight_icon.svg',
+              iconPath
+            );
             return (
               <div
                 className="w-100 px-[17px] mt-1 mb-1"

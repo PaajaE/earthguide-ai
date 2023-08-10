@@ -5,6 +5,8 @@ import {
   Conversation,
   DeviceTypes,
   EarthGuideQuestionResponse,
+  IFlightParamsConverted,
+  IFlightParamsObtained,
   IMapDataConverted,
   IMapDataObtained,
   IRateAnswer,
@@ -77,6 +79,7 @@ export default function Main({
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
   const [mapData, setMapData] = useState<IMapDataConverted[]>([])
+  const [flightParams, setFlightParams] = useState<IFlightParamsConverted | undefined>(undefined);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -109,6 +112,7 @@ export default function Main({
         let text = '';
         let isWsFirst = true;
         let convertedMapData: IMapDataConverted[]
+        let flightParametersData: IFlightParamsConverted
         ws.onmessage = (event) => {
           const json = event.data;
           if (isValidJSON(json)) {
@@ -122,7 +126,7 @@ export default function Main({
                 const mapDataObtained: IMapDataObtained[] = JSON.parse(fixedData);
                 convertedMapData = mapDataObtained.map(
                   (mapLocation) => {
-                    const { id, gps, location, photos } = mapLocation;
+                    const { id, gps, location, photos, price } = mapLocation;
                     const locationString = removeMarkdown(location);
                     const photosArr =
                       extractSrcAttributesFromHTML(photos);
@@ -133,9 +137,54 @@ export default function Main({
                       gps: gpsObject,
                       photos: photosArr,
                       locationTitle: locationString,
+                      price,
                     };
                   }
                 );
+              } else if (data.json_type === 'Flight_parameters') {
+                const fp: IFlightParamsObtained = JSON.parse(fixedData);
+                flightParametersData = {
+                  curr: fp.curr,
+                  date_from:
+                    fp.date_from.length > 0
+                      ? fp.date_from
+                      : undefined,
+                  date_to:
+                    fp.date_from.length > 0
+                      ? fp.date_from
+                      : undefined,
+                  departure_airport: fp.departure_airport.includes(
+                    'Your position:'
+                  )
+                    ? undefined
+                    : fp.departure_airport,
+                  departure_airport_set:
+                    fp.departure_airport.includes('Your position:')
+                      ? false
+                      : true,
+                  flight_type: fp.flight_type,
+                  fly_from_lat: +fp.fly_from_lat,
+                  fly_from_lon: +fp.fly_from_lon,
+                  fly_from_radius: +fp.fly_from_radius,
+                  nights_in_dst_from:
+                    fp.nights_in_dst_from.length > 0
+                      ? +fp.nights_in_dst_from
+                      : undefined,
+                  nights_in_dst_to:
+                    fp.nights_in_dst_to.length > 0
+                      ? +fp.nights_in_dst_to
+                      : undefined,
+                  return_from:
+                    fp.return_from.length > 0
+                      ? fp.return_from
+                      : undefined,
+                  return_to:
+                    fp.return_to.length > 0
+                      ? fp.return_to
+                      : undefined,
+                };
+                console.log({flightParametersData})
+
               }
             }
 
@@ -199,6 +248,7 @@ export default function Main({
             if (data.done) {
               setMessageIsStreaming(false);
               setMapData(convertedMapData);
+              setFlightParams(flightParametersData)
             }
           }
         };
@@ -472,6 +522,7 @@ export default function Main({
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
                   mapData={mapData}
+                  flightParameters={flightParams}
                   messageError={messageError}
                   loading={loading}
                   lightMode={lightMode}
@@ -512,6 +563,7 @@ export default function Main({
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
                   mapData={mapData}
+                  flightParameters={flightParams}
                   messageError={messageError}
                   loading={loading}
                   lightMode={lightMode}

@@ -1,24 +1,25 @@
 import {
+  FLIGHT_TYPES,
   FeedbackEnum,
+  IFlightParamsConverted,
   IMapDataConverted,
   IRateAnswer,
   Message,
   TypeOfPrompt,
 } from '@/types';
-import { FC, ReactNode, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import remarkGfm from 'remark-gfm';
-import { CodeBlock } from '../Markdown/CodeBlock';
+import { FC, useState } from 'react';
 import { Button } from '../Shared/Button';
 import { EarthGuideReactMarkdown } from './EarthGuideReactMarkdown';
 import { ChatLoader } from './ChatLoader';
 import MapboxMap from '../Map/MapboxMap';
+import { getDepartureLocation, getFlightDateString, getNightsInDestination } from '@/utils/app/flight';
 
 interface Props {
   message: Message;
   messageIsStreaming?: boolean;
   streamingFinished?: boolean;
   mapData?: IMapDataConverted[];
+  flightParameters?: IFlightParamsConverted;
   lightMode: 'light' | 'dark';
   pathExists?: boolean;
   onAnotherPromptClick?: (
@@ -37,6 +38,7 @@ export const ChatMessage: FC<Props> = ({
   messageIsStreaming = false,
   streamingFinished = false,
   mapData,
+  flightParameters,
   pathExists = false,
   onSend,
   onRateAnswer,
@@ -202,6 +204,56 @@ export const ChatMessage: FC<Props> = ({
           )}
         </div>
       )}
+      {message.role === 'earth.guide' &&
+        flightParameters &&
+        streamingFinished && (
+          <div
+            className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 mb-5`}
+          >
+            <div
+              className={`border-[#000000ff] leading-6 flex flex-col relative w-full font-plus jakarta sans px-[17px] mt-4 mb-2 font-[400] text-[var(--secondary-text)]`}
+            >
+              <span className="font-semibold">
+                Departure location:
+              </span>{' '}
+              {getDepartureLocation(
+                flightParameters.departure_airport_set,
+                flightParameters.fly_from_lon,
+                flightParameters.fly_from_lat,
+                flightParameters.fly_from_radius,
+                flightParameters.departure_airport
+              )}{' '}
+              <br />
+              <span className="font-semibold">
+                Departure dates:
+              </span>{' '}
+              {getFlightDateString(
+                flightParameters.date_from,
+                flightParameters.date_to
+              )}
+              <br />
+              {flightParameters.flight_type ===
+                FLIGHT_TYPES.ROUNDTRIP && (
+                <>
+                  <span className="font-semibold">Return dates:</span>{' '}
+                  {getFlightDateString(
+                    flightParameters.return_from,
+                    flightParameters.return_to
+                  )}
+                  <br />
+                </>
+              )}
+              <span className="font-semibold">
+                Nights in destination:
+              </span>{' '}
+              {getNightsInDestination(
+                flightParameters.nights_in_dst_from,
+                flightParameters.nights_in_dst_to
+              )}
+              <br />
+            </div>
+          </div>
+        )}
       {message.role === 'earth.guide' && streamingFinished && (
         <>
           {mapData && mapData.length > 0 && (
