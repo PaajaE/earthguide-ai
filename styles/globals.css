@@ -4,15 +4,15 @@
 
 :root {
   --primary: #ff5600;
-  --secondary: #3000FF;
+  --secondary: #ECECEC;
   --tertiary: #fbae88;
   --primary-text: white;
-  --secondary-text: white;
+  --secondary-text: black;
   --tertiary-text: black;
 }
 
 body {
-  height: 100vh; 
+  height: 100vh;
   overflow: hidden;
   font-size: 1.05rem;
 }
@@ -44,13 +44,17 @@ pre {
   margin-right: 0;
 }
 
+    .gallery-small img {
+      height: 15vh;
+    }
+
 @media only screen and (min-width: 768px) {
   .gallery {
     display: flex;
     overflow-x: auto;
     /* height: calc(100% / 3); */
   }
-  
+
   .gallery img {
     /* min-width: calc((65vw - 260px) / 3); */
     width: calc((65vw - 260px) / 2.75);
@@ -59,6 +63,11 @@ pre {
     object-fit: cover;
     object-position: center;
     cursor: pointer;
+  }
+
+  .gallery-small img {
+    width: calc((65vw - 260px) / 5.75);
+    height: calc((65vw - 260px) / 5.75);
   }
 }
 
@@ -146,4 +155,17 @@ ol li {
 
 svg {
   fill: currentColor;
+}
+
+.foot {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-top: 10px solid var(--tertiary);
+  /* Adjust color as needed */
+  position: absolute;
+  bottom:-10px;
+  left: 50%;
+  transform: translateX(-50%);
 }

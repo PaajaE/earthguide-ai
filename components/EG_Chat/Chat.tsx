@@ -1,6 +1,9 @@
 import { usePathname } from 'next/navigation';
 import {
   Conversation,
+  IFlightParamsConverted,
+  IMapDataConverted,
+  IRateAnswer,
   KeyValuePair,
   Message,
   TypeOfPrompt,
@@ -14,6 +17,8 @@ import { LeftSidebar } from './LeftSidebar';
 interface Props {
   conversation: Conversation;
   messageIsStreaming: boolean;
+  mapData: IMapDataConverted[];
+  flightParameters?: IFlightParamsConverted;
   messageError: boolean;
   loading: boolean;
   lightMode: 'light' | 'dark';
@@ -21,6 +26,7 @@ interface Props {
   logoPath: string;
   starterMessage: string;
   onSend: (message: Message, isResend: boolean) => void;
+  onRateAnswer: (feedback: IRateAnswer) => void;
   onUpdateConversation: (
     conversation: Conversation,
     data: KeyValuePair
@@ -35,6 +41,8 @@ interface Props {
 export const Chat: FC<Props> = ({
   conversation,
   messageIsStreaming,
+  mapData,
+  flightParameters,
   messageError,
   loading,
   lightMode,
@@ -42,7 +50,7 @@ export const Chat: FC<Props> = ({
   logoPath,
   starterMessage,
   onSend,
-  onUpdateConversation,
+  onRateAnswer,
   onAnotherPromptClick,
   onDisplayGallery,
 }) => {
@@ -208,11 +216,14 @@ export const Chat: FC<Props> = ({
                     !messageIsStreaming &&
                     index === conversation.messages.length - 1
                   }
+                  mapData={mapData}
+                  flightParameters={flightParameters}
                   pathExists={!!path}
                   onSend={(message) => {
                     setCurrentMessage(message);
                     onSend(message, false);
                   }}
+                  onRateAnswer={onRateAnswer}
                   onDisplayGallery={onDisplayGallery}
                 />
               ))}
