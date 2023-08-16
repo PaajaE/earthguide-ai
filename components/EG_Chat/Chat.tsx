@@ -25,7 +25,7 @@ interface Props {
   isMobile: boolean;
   logoPath: string;
   starterMessage: string;
-  onSend: (message: Message, isResend: boolean) => void;
+  onSend: (message: Message) => void;
   onRateAnswer: (feedback: IRateAnswer) => void;
   onUpdateConversation: (
     conversation: Conversation,
@@ -36,6 +36,10 @@ interface Props {
     id: string
   ) => void;
   onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
+  onFormSubmit: (
+    data: IFlightParamsConverted,
+    messageId: string
+  ) => void;
 }
 
 export const Chat: FC<Props> = ({
@@ -53,6 +57,7 @@ export const Chat: FC<Props> = ({
   onRateAnswer,
   onAnotherPromptClick,
   onDisplayGallery,
+  onFormSubmit,
 }) => {
   const path = usePathname()?.substring(1);
 
@@ -157,6 +162,7 @@ export const Chat: FC<Props> = ({
               content: starterMessage,
             }}
             lightMode={lightMode}
+            onFormSubmit={onFormSubmit}
           />
 
           <div className="flex lg:hidden flex-col mt-6">
@@ -171,8 +177,9 @@ export const Chat: FC<Props> = ({
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
-                onSend({ role: 'user', content }, false);
+                onSend({ role: 'user', content });
               }}
+              onFormSubmit={onFormSubmit}
             />
             <ChatMessage
               message={{
@@ -182,8 +189,9 @@ export const Chat: FC<Props> = ({
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
-                onSend({ role: 'user', content }, false);
+                onSend({ role: 'user', content });
               }}
+              onFormSubmit={onFormSubmit}
             />
             <ChatMessage
               message={{
@@ -193,8 +201,9 @@ export const Chat: FC<Props> = ({
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
-                onSend({ role: 'user', content }, false);
+                onSend({ role: 'user', content });
               }}
+              onFormSubmit={onFormSubmit}
             />
           </div>
 
@@ -221,10 +230,11 @@ export const Chat: FC<Props> = ({
                   pathExists={!!path}
                   onSend={(message) => {
                     setCurrentMessage(message);
-                    onSend(message, false);
+                    onSend(message);
                   }}
                   onRateAnswer={onRateAnswer}
                   onDisplayGallery={onDisplayGallery}
+                  onFormSubmit={onFormSubmit}
                 />
               ))}
 
@@ -243,7 +253,7 @@ export const Chat: FC<Props> = ({
             messageIsStreaming={messageIsStreaming}
             onSend={(message) => {
               setCurrentMessage(message);
-              onSend(message, false);
+              onSend(message);
             }}
             textareaRef={textareaRef}
             model={conversation.model}

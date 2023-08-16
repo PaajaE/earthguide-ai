@@ -5,6 +5,7 @@ import {
   Conversation,
   DeviceTypes,
   EarthGuideQuestionResponse,
+  FLIGHT_TYPES,
   IFlightParamsConverted,
   IFlightParamsObtained,
   IMapDataConverted,
@@ -41,6 +42,12 @@ import {
 import { Gallery } from '@/components/EG_Chat/Gallery';
 import { RightSidebarMobile } from '@/components/EG_Chat/RightSidebarMobile';
 import { IAirlineDataItem } from '@/utils/data/airlines';
+import {
+  formatDateToYYYYMMDD,
+  getNightsInDestination,
+  getNightsInDestinationTolerance,
+  parseLocation,
+} from '@/utils/app/flight';
 
 export default function Main({
   specificAirlines = '',
@@ -78,8 +85,10 @@ export default function Main({
   const [newSession, setNewSession] = useState<boolean>(true);
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
-  const [mapData, setMapData] = useState<IMapDataConverted[]>([])
-  const [flightParams, setFlightParams] = useState<IFlightParamsConverted | undefined>(undefined);
+  const [mapData, setMapData] = useState<IMapDataConverted[]>([]);
+  const [flightParams, setFlightParams] = useState<
+    IFlightParamsConverted | undefined
+  >(undefined);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -88,7 +97,52 @@ export default function Main({
     }
   }, [selectedConversation]);
 
-  const handleSend = async (message: Message, isResend: boolean) => {
+  const handleFlightParamsSubmit = (
+    data: IFlightParamsConverted,
+    messageId: string
+  ) => {
+    const { latitude, longitude, cityName } = parseLocation(
+      data.locality ?? ''
+    );
+
+    const fp = {
+      date_from: formatDateToYYYYMMDD(data.date_from),
+      date_to: formatDateToYYYYMMDD(data.date_to),
+      departure_airport: cityName ?? '',
+      fly_from_lat: latitude?.toString() ?? '',
+      fly_from_lon: longitude?.toString() ?? '',
+      fly_from_radius: data.fly_from_radius.toString() ?? '',
+      nights_in_dst_from: data.nights_in_dst
+        ? (
+            data.nights_in_dst -
+            (data.nights_in_dst_tolerance ?? 0) / 2
+          ).toString()
+        : '',
+      nights_in_dst_to: data.nights_in_dst
+        ? (
+            data.nights_in_dst +
+            (data.nights_in_dst_tolerance ?? 0) / 2
+          ).toString()
+        : '',
+      return_from: formatDateToYYYYMMDD(data.return_from),
+      return_to: formatDateToYYYYMMDD(data.return_to),
+    };
+
+    handleSend(
+      {
+        role: 'user',
+        content: 'Please change flight preferences',
+        id: messageId,
+        typeOfPrompt: TypeOfPrompt.FT_BODY,
+      },
+      fp
+    );
+  };
+
+  const handleSend = async (
+    message: Message,
+    flightParams?: IFlightParamsObtained
+  ) => {
     if (selectedConversation) {
       setMessageIsStreaming(true);
       let updatedConversation: Conversation;
@@ -111,8 +165,8 @@ export default function Main({
       ws.onopen = () => {
         let text = '';
         let isWsFirst = true;
-        let convertedMapData: IMapDataConverted[]
-        let flightParametersData: IFlightParamsConverted
+        let convertedMapData: IMapDataConverted[];
+        let flightParametersData: IFlightParamsConverted;
         ws.onmessage = (event) => {
           const json = event.data;
           if (isValidJSON(json)) {
@@ -120,13 +174,20 @@ export default function Main({
             text += data.formatted_text;
 
             if (data.additional_data) {
-              const replacedString = data.additional_data.replaceAll('"', '\\"').replaceAll('\'', '"').replaceAll('\\"', '\'')
+              const replacedString = data.additional_data
+                .replaceAll('"', '\\"')
+                .replaceAll("'", '"')
+                .replaceAll('\\"', "'");
               const fixedData = jsonrepair(replacedString);
-              if (data.json_type === 'all_other_types_all_locations') {
-                const mapDataObtained: IMapDataObtained[] = JSON.parse(fixedData);
+              if (
+                data.json_type === 'all_other_types_all_locations'
+              ) {
+                const mapDataObtained: IMapDataObtained[] =
+                  JSON.parse(fixedData);
                 convertedMapData = mapDataObtained.map(
                   (mapLocation) => {
-                    const { id, gps, location, photos, price } = mapLocation;
+                    const { id, gps, location, photos, price } =
+                      mapLocation;
                     const locationString = removeMarkdown(location);
                     const photosArr =
                       extractSrcAttributesFromHTML(photos);
@@ -142,16 +203,20 @@ export default function Main({
                   }
                 );
               } else if (data.json_type === 'Flight_parameters') {
-                const fp: IFlightParamsObtained = JSON.parse(fixedData);
+                console.log({ fixedData });
+                const fp: IFlightParamsObtained =
+                  JSON.parse(fixedData);
+                console.log({ fp });
                 flightParametersData = {
-                  curr: fp.curr,
+                  comment: data.comment,
+                  curr: fp.curr ?? '',
                   date_from:
                     fp.date_from.length > 0
-                      ? fp.date_from
+                      ? new Date(fp.date_from)
                       : undefined,
                   date_to:
-                    fp.date_from.length > 0
-                      ? fp.date_from
+                    fp.date_to.length > 0
+                      ? new Date(fp.date_to)
                       : undefined,
                   departure_airport: fp.departure_airport.includes(
                     'Your position:'
@@ -162,29 +227,47 @@ export default function Main({
                     fp.departure_airport.includes('Your position:')
                       ? false
                       : true,
-                  flight_type: fp.flight_type,
-                  fly_from_lat: +fp.fly_from_lat,
-                  fly_from_lon: +fp.fly_from_lon,
-                  fly_from_radius: +fp.fly_from_radius,
-                  nights_in_dst_from:
-                    fp.nights_in_dst_from.length > 0
-                      ? +fp.nights_in_dst_from
+                  flight_type:
+                    fp.flight_type ?? FLIGHT_TYPES.ROUNDTRIP,
+                  fly_from_lat:
+                    fp.fly_from_lat && fp.fly_from_lat.length > 0
+                      ? +fp.fly_from_lat
                       : undefined,
-                  nights_in_dst_to:
+                  fly_from_lon:
+                    fp.fly_from_lon && fp.fly_from_lon.length > 0
+                      ? +fp.fly_from_lon
+                      : undefined,
+                  locality:
+                    !fp.departure_airport.includes(
+                      'Your position:'
+                    ) && fp.departure_airport
+                      ? fp.departure_airport
+                      : `${fp.fly_from_lat}, ${fp.fly_from_lon}`,
+                  fly_from_radius: +fp.fly_from_radius,
+                  nights_in_dst:
+                    fp.nights_in_dst_from.length > 0
+                      ? getNightsInDestination(
+                          +fp.nights_in_dst_from,
+                          +fp.nights_in_dst_to
+                        )
+                      : undefined,
+                  nights_in_dst_tolerance:
                     fp.nights_in_dst_to.length > 0
-                      ? +fp.nights_in_dst_to
+                      ? getNightsInDestinationTolerance(
+                          +fp.nights_in_dst_from,
+                          +fp.nights_in_dst_to
+                        )
                       : undefined,
                   return_from:
                     fp.return_from.length > 0
-                      ? fp.return_from
+                      ? new Date(fp.return_from)
                       : undefined,
                   return_to:
                     fp.return_to.length > 0
-                      ? fp.return_to
+                      ? new Date(fp.return_to)
                       : undefined,
                 };
-                console.log({flightParametersData})
-
+                console.log({ flightParametersData });
               }
             }
 
@@ -248,7 +331,7 @@ export default function Main({
             if (data.done) {
               setMessageIsStreaming(false);
               setMapData(convertedMapData);
-              setFlightParams(flightParametersData)
+              setFlightParams(flightParametersData);
             }
           }
         };
@@ -271,6 +354,7 @@ export default function Main({
             type_of_device: deviceType,
             new_session: newSession,
             specific_airlines: specificAirlines,
+            flight_params: flightParams ? flightParams : undefined,
           })
         );
 
@@ -534,6 +618,7 @@ export default function Main({
                   onAnotherPromptClick={handleAnotherPromptClick}
                   onDisplayGallery={handleDisplayGallery}
                   isMobile={false}
+                  onFormSubmit={handleFlightParamsSubmit}
                 />
                 {showPanelData && (
                   <>
@@ -575,6 +660,7 @@ export default function Main({
                   onAnotherPromptClick={handleAnotherPromptClick}
                   onDisplayGallery={handleDisplayGallery}
                   isMobile={true}
+                  onFormSubmit={handleFlightParamsSubmit}
                 />
                 {showMobilePanelData && (
                   <div
@@ -612,12 +698,9 @@ export default function Main({
                               onAnotherPromptClick={
                                 handleAnotherPromptClick
                               }
-                              onSend={(
-                                message: Message,
-                                isResend: boolean
-                              ) => {
+                              onSend={(message: Message) => {
                                 setShowMobilePanelData(false);
-                                handleSend(message, isResend);
+                                handleSend(message);
                               }}
                               onDisplayGallery={handleDisplayGallery}
                             />

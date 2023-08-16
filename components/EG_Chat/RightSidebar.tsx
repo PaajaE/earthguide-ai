@@ -1,20 +1,28 @@
 /* eslint-disable @next/next/no-img-element */
-import { Message, PanelData, TypeOfPrompt, WhereToDisplay } from "@/types";
-import { EarthGuideReactMarkdown } from "./EarthGuideReactMarkdown";
-import { Toggle } from "../Shared/Toggle";
-import { IconArrowBarLeft } from "@tabler/icons-react";
-import { FC } from "react";
-import { ChatMessage } from "./ChatMessage";
-import { Button } from "../Shared/Button";
-import { ChatLoader } from "./ChatLoader";
+import {
+  Message,
+  PanelData,
+  TypeOfPrompt,
+  WhereToDisplay,
+} from '@/types';
+import { EarthGuideReactMarkdown } from './EarthGuideReactMarkdown';
+import { Toggle } from '../Shared/Toggle';
+import { IconArrowBarLeft } from '@tabler/icons-react';
+import { FC } from 'react';
+import { ChatMessage } from './ChatMessage';
+import { Button } from '../Shared/Button';
+import { ChatLoader } from './ChatLoader';
 
 interface Props {
   data: PanelData | null;
   loading: boolean;
-  lightMode: "light" | "dark";
+  lightMode: 'light' | 'dark';
   showSample: boolean;
-  onAnotherPromptClick: (typeOfPrompt: TypeOfPrompt, id: string) => void;
-  onSend: (message: Message, isResend: boolean) => void;
+  onAnotherPromptClick: (
+    typeOfPrompt: TypeOfPrompt,
+    id: string
+  ) => void;
+  onSend: (message: Message) => void;
   onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
 }
 
@@ -30,7 +38,10 @@ export const RightSidebar: FC<Props> = ({
   return (
     <div
       className={`relative flex flex-col w-[30%] shrink-1 z-10 rounded-md bg-[#F4F4F4]`}
-      style={{width: "-webkit-fill-available, fill-available, -moz-fill-available"}}
+      style={{
+        width:
+          '-webkit-fill-available, fill-available, -moz-fill-available',
+      }}
     >
       <div className="w-auto rounded-md overflow-y-auto">
         <div className="text-[var(--tertiary-text)] mt-4 mb-2 pt-0">
@@ -39,54 +50,59 @@ export const RightSidebar: FC<Props> = ({
               <h2 className="font-bold mb-4">Examples</h2>
               <ChatMessage
                 message={{
-                  role: "sample",
+                  role: 'sample',
                   content:
-                    "What are some affordable beach destinations in Europe with direct flights from Vienna? We want to fly in September. From 7 to 11 days.",
+                    'What are some affordable beach destinations in Europe with direct flights from Vienna? We want to fly in September. From 7 to 11 days.',
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
-                  onSend({ role: "user", content }, false);
+                  onSend({ role: 'user', content });
                 }}
+                onFormSubmit={() => {}}
               />
               <ChatMessage
                 message={{
-                  role: "sample",
+                  role: 'sample',
                   content:
                     "I'm looking for super cheap flights next weekend to destinations with good weather and accessible hiking trails.",
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
-                  onSend({ role: "user", content }, false);
+                  onSend({ role: 'user', content });
                 }}
+                onFormSubmit={() => {}}
               />
               <ChatMessage
                 message={{
-                  role: "sample",
+                  role: 'sample',
                   content:
                     "In November I'm planning a 14-day trip to Asia and looking for recommendations for hidden gem destinations with astonishing Buddhist monuments and opportunities for surfing.",
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
-                  onSend({ role: "user", content }, false);
+                  onSend({ role: 'user', content });
                 }}
+                onFormSubmit={() => {}}
               />
               <h2 className="font-bold mb-4 mt-2">Capabilities</h2>
               <ChatMessage
                 message={{
-                  role: "sample",
+                  role: 'sample',
                   content:
                     "My superpower is discovering destinations and flight tickets with just one request. Simply tell me your preferences, and I'll provide personalized recommendations.",
                 }}
                 lightMode={lightMode}
+                onFormSubmit={() => {}}
               />
               <h2 className="font-bold mb-4 mt-2">Coming soon</h2>
               <ChatMessage
                 message={{
-                  role: "sample",
+                  role: 'sample',
                   content:
                     "We're expanding our capabilities! Soon, you'll be able to discover and book flights, hotels, and car rentals all in one query.",
                 }}
                 lightMode={lightMode}
+                onFormSubmit={() => {}}
               />
             </div>
           )}
@@ -97,11 +113,11 @@ export const RightSidebar: FC<Props> = ({
                   items={[
                     {
                       type: WhereToDisplay.PANEL_DESTINATION,
-                      label: "Destination",
+                      label: 'Destination',
                     },
                     {
                       type: WhereToDisplay.PANEL_FLIGHTS,
-                      label: "Flights",
+                      label: 'Flights',
                     },
                   ]}
                 />
@@ -131,15 +147,12 @@ export const RightSidebar: FC<Props> = ({
               typeOfPrompt={TypeOfPrompt.MORE_LIKE}
               onClick={(typeOfPrompt: TypeOfPrompt) => {
                 onSend &&
-                  onSend(
-                    {
-                      role: "user",
-                      content: "Similar places like this",
-                      typeOfPrompt,
-                      id: `${data?.id ?? ""}`,
-                    },
-                    false
-                  );
+                  onSend({
+                    role: 'user',
+                    content: 'Similar places like this',
+                    typeOfPrompt,
+                    id: `${data?.id ?? ''}`,
+                  });
               }}
             />
           </div>

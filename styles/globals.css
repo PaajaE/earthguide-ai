@@ -169,3 +169,15 @@ svg {
   left: 50%;
   transform: translateX(-50%);
 }
+
+select, input {
+  appearance: none;
+  /* for Firefox */
+  -moz-appearance: none;
+  /* for Safari, Chrome, Opera */
+  -webkit-appearance: none;
+  outline: none !important;
+  background: none !important;
+  padding-right: 0 !important;
+  font-size: 1.05rem;
+}

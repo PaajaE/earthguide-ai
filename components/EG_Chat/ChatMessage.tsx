@@ -12,7 +12,12 @@ import { Button } from '../Shared/Button';
 import { EarthGuideReactMarkdown } from './EarthGuideReactMarkdown';
 import { ChatLoader } from './ChatLoader';
 import MapboxMap from '../Map/MapboxMap';
-import { getDepartureLocation, getFlightDateString, getNightsInDestination } from '@/utils/app/flight';
+import {
+  getDepartureLocation,
+  getFlightDateString,
+  getNightsInDestination,
+} from '@/utils/app/flight';
+import { FlightForm } from './FlightForm';
 
 interface Props {
   message: Message;
@@ -30,6 +35,10 @@ interface Props {
   onRateAnswer?: (feedback: IRateAnswer) => void;
   onSampleClick?: (content: string) => void;
   onDisplayGallery?: (imgSrcs: string[], curIndex: number) => void;
+  onFormSubmit: (
+    data: IFlightParamsConverted,
+    messageId: string
+  ) => void;
 }
 
 export const ChatMessage: FC<Props> = ({
@@ -45,6 +54,7 @@ export const ChatMessage: FC<Props> = ({
   onAnotherPromptClick,
   onSampleClick,
   onDisplayGallery,
+  onFormSubmit,
 }) => {
   const [selectedFeedback, setSelectedFeedback] = useState<
     FeedbackEnum | undefined
@@ -213,44 +223,11 @@ export const ChatMessage: FC<Props> = ({
             <div
               className={`border-[#000000ff] leading-6 flex flex-col relative w-full font-plus jakarta sans px-[17px] mt-4 mb-2 font-[400] text-[var(--secondary-text)]`}
             >
-              <span className="font-semibold">
-                Departure location:
-              </span>{' '}
-              {getDepartureLocation(
-                flightParameters.departure_airport_set,
-                flightParameters.fly_from_lon,
-                flightParameters.fly_from_lat,
-                flightParameters.fly_from_radius,
-                flightParameters.departure_airport
-              )}{' '}
-              <br />
-              <span className="font-semibold">
-                Departure dates:
-              </span>{' '}
-              {getFlightDateString(
-                flightParameters.date_from,
-                flightParameters.date_to
-              )}
-              <br />
-              {flightParameters.flight_type ===
-                FLIGHT_TYPES.ROUNDTRIP && (
-                <>
-                  <span className="font-semibold">Return dates:</span>{' '}
-                  {getFlightDateString(
-                    flightParameters.return_from,
-                    flightParameters.return_to
-                  )}
-                  <br />
-                </>
-              )}
-              <span className="font-semibold">
-                Nights in destination:
-              </span>{' '}
-              {getNightsInDestination(
-                flightParameters.nights_in_dst_from,
-                flightParameters.nights_in_dst_to
-              )}
-              <br />
+              <FlightForm
+                flightParameters={flightParameters}
+                messageId={message.id ?? ''}
+                onFormSubmit={onFormSubmit}
+              />
             </div>
           </div>
         )}
