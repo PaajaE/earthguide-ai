@@ -1,27 +1,29 @@
 interface IAirlinesData {
-    [key: string]: IAirlineDataItem
+  [key: string]: IAirlineDataItem;
 }
 
 export interface IAirlineDataItem {
-    title: string;
-    starterMessage: string;
-    flightIcon: string;
-    logo: string;
-    styles: IStyles[]
+  title: string;
+  starterMessage: string;
+  flightIcon: string;
+  logo: string;
+  icon: string;
+  styles: IStyles[];
 }
 
 interface IStyles {
-    key: string;
-    value: string;
+  key: string;
+  value: string;
 }
 
 export const airlinesData: IAirlinesData = {
   default: {
-    title: 'Earth Guide',
+    title: 'Earth.Guide',
     flightIcon: '/flight_icon.svg',
     logo: '/earth-guide.svg',
+    icon: '/favicon.ico',
     starterMessage:
-      'Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect flight tickets to your dream destinations.',
+      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
     styles: [
       {
         key: '--primary',
@@ -50,9 +52,10 @@ export const airlinesData: IAirlinesData = {
     ],
   },
   austrian: {
-    title: 'Austrian',
+    title: 'Austrian AI Advisor',
     flightIcon: '/flight_icon_austrian.svg',
     logo: '/austrian-logo.svg',
+    icon: '/austrian-logo.svg',
     starterMessage:
       "Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Austrian Airlines. After being properly implemented with Austrian Airlines' specific features, I can offer much more.",
     styles: [
@@ -83,11 +86,12 @@ export const airlinesData: IAirlinesData = {
     ],
   },
   kiwi: {
-    title: 'Kiwi',
+    title: 'Kiwi AI Advisor',
     flightIcon: '/flight_icon_kiwi.svg',
     logo: '/kiwi-logo.svg',
+    icon: '/kiwi-logo.svg',
     starterMessage:
-      'Hello, I am your AI travel advisor. With my help, you can quickly discover the perfect flight tickets to your dream destinations.',
+      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
     styles: [
       {
         key: '--primary',

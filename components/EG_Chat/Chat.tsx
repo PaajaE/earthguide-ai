@@ -173,7 +173,7 @@ export const Chat: FC<Props> = ({
               message={{
                 role: 'sample',
                 content:
-                  'What are some affordable beach destinations in Europe with direct flights from Vienna? We want to fly in September. From 7 to 11 days.',
+                  'Affordable beach destinations in Europe. We want to fly in September. For 7 days.',
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
@@ -185,7 +185,7 @@ export const Chat: FC<Props> = ({
               message={{
                 role: 'sample',
                 content:
-                  "I'm looking for super cheap flights next weekend to destinations with good weather and accessible hiking trails.",
+                  'Flight to UNESCO site. City break for 4 days, November, warm weather',
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
@@ -197,7 +197,7 @@ export const Chat: FC<Props> = ({
               message={{
                 role: 'sample',
                 content:
-                  "In November I'm planning a 14-day trip to Asia and looking for recommendations for hidden gem destinations with astonishing Buddhist monuments and opportunities for surfing.",
+                  'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.',
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {

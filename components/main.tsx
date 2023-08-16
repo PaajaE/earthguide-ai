@@ -546,13 +546,13 @@ export default function Main({
   return (
     <>
       <Head>
-        <title>Chatbot UI</title>
-        <meta name="description" content="ChatGPT but better." />
+        <title>{airlineData.title}</title>
+        <meta name="description" content="Your AI travel advisor" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href={airlineData.icon} />
       </Head>
       {showModal && (
         <div
