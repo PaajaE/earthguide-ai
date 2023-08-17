@@ -12,11 +12,6 @@ import { Button } from '../Shared/Button';
 import { EarthGuideReactMarkdown } from './EarthGuideReactMarkdown';
 import { ChatLoader } from './ChatLoader';
 import MapboxMap from '../Map/MapboxMap';
-import {
-  getDepartureLocation,
-  getFlightDateString,
-  getNightsInDestination,
-} from '@/utils/app/flight';
 import { FlightForm } from './FlightForm';
 
 interface Props {

@@ -151,14 +151,14 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
                 onClick={() => {
                   if (children) {
                     // console.log(children.toString());
-                    onAnotherPromptClick &&
+                    !airlinesData[path] && onAnotherPromptClick &&
                       onAnotherPromptClick(
                         TypeOfPrompt.CLICK_ON_LOCATION,
                         children.toString()
                       );
                   }
                 }}
-                className="text-[var(--primary)] cursor-pointer no-underline border-b border-[var(--primary)]"
+                className={`text-[var(--primary)] ${!airlinesData[path] ? 'cursor-pointer' : 'cursor-default'} no-underline border-b border-[var(--primary)]`}
               >
                 {children}
               </button>

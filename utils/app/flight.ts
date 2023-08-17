@@ -46,12 +46,14 @@ export const parseLocation = (
   cityName?: string;
 } => {
   // Regular expression to match various delimiters with optional spaces: , or - or ; or space
-  const delimiterRegex = /[,;\s-]*/;
+  const delimiterRegex = /[,\s;]+/;
 
   const parts = input
     .split(delimiterRegex)
     .map((part) => part.trim());
 
+
+  console.log({parts})
   // Check if the input looks like GPS coordinates
   if (
     parts.length === 2 &&
