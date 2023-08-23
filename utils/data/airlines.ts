@@ -119,4 +119,38 @@ export const airlinesData: IAirlinesData = {
       },
     ],
   },
+  wizzair: {
+    title: 'Wizzair AI Advisor',
+    flightIcon: '/flight_icon_wizzair.svg',
+    logo: '/wizzair-logo.png',
+    icon: '/wizzair-favicon.png',
+    starterMessage:
+      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
+    styles: [
+      {
+        key: '--primary',
+        value: '#c6007e',
+      },
+      {
+        key: '--secondary',
+        value: '#f2f2f2',
+      },
+      {
+        key: '--tertiary',
+        value: '#06038d',
+      },
+      {
+        key: '--primary-text',
+        value: 'white',
+      },
+      {
+        key: '--secondary-text',
+        value: 'black',
+      },
+      {
+        key: '--tertiary-text',
+        value: 'black',
+      },
+    ],
+  },
 };
