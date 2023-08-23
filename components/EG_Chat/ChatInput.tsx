@@ -1,4 +1,9 @@
-import { Message, OpenAIModel, OpenAIModelID } from '@/types';
+import {
+  Message,
+  OpenAIModel,
+  OpenAIModelID,
+  TypeOfMessage,
+} from '@/types';
 import { IconSend } from '@tabler/icons-react';
 import {
   FC,
@@ -50,7 +55,11 @@ export const ChatInput: FC<Props> = ({
       return;
     }
 
-    onSend({ role: 'user', content });
+    onSend({
+      role: 'user',
+      typeOfMessage: TypeOfMessage.TEXT,
+      content,
+    });
     setContent('');
 
     if (textareaRef && textareaRef.current) {
