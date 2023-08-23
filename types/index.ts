@@ -22,12 +22,21 @@ export const OpenAIModels: Record<OpenAIModelID, OpenAIModel> = {
 export interface Message {
   role: Role;
   content: string;
+  typeOfMessage: TypeOfMessage;
   typeOfPrompt?: TypeOfPrompt;
   id?: string;
   part_id?: number;
+  flightParams?: IFlightParamsConverted;
+  mapData?: IMapDataConverted[];
 }
 
 export type Role = 'user' | 'earth.guide' | 'sample' | 'starter';
+
+export enum TypeOfMessage {
+  TEXT = 'text',
+  FLIGHT_PARAMS = 'flightParams',
+  MAP = 'map',
+}
 
 export interface Conversation {
   id: number;

@@ -2,6 +2,7 @@
 import {
   Message,
   PanelData,
+  TypeOfMessage,
   TypeOfPrompt,
   WhereToDisplay,
 } from '@/types';
@@ -51,36 +52,51 @@ export const RightSidebar: FC<Props> = ({
               <ChatMessage
                 message={{
                   role: 'sample',
+                  typeOfMessage: TypeOfMessage.TEXT,
                   content:
                     'Affordable beach destinations in Europe. We want to fly in September. For 7 days.',
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
-                  onSend({ role: 'user', content });
+                  onSend({
+                    role: 'user',
+                    typeOfMessage: TypeOfMessage.TEXT,
+                    content,
+                  });
                 }}
                 onFormSubmit={() => {}}
               />
               <ChatMessage
                 message={{
                   role: 'sample',
+                  typeOfMessage: TypeOfMessage.TEXT,
                   content:
                     'Flight to UNESCO site. City break for 4 days, November, warm weather',
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
-                  onSend({ role: 'user', content });
+                  onSend({
+                    role: 'user',
+                    typeOfMessage: TypeOfMessage.TEXT,
+                    content,
+                  });
                 }}
                 onFormSubmit={() => {}}
               />
               <ChatMessage
                 message={{
                   role: 'sample',
+                  typeOfMessage: TypeOfMessage.TEXT,
                   content:
                     'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.',
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
-                  onSend({ role: 'user', content });
+                  onSend({
+                    role: 'user',
+                    typeOfMessage: TypeOfMessage.TEXT,
+                    content,
+                  });
                 }}
                 onFormSubmit={() => {}}
               />
@@ -88,6 +104,7 @@ export const RightSidebar: FC<Props> = ({
               <ChatMessage
                 message={{
                   role: 'sample',
+                  typeOfMessage: TypeOfMessage.TEXT,
                   content:
                     "My superpower is discovering destinations and flight tickets with just one request. Simply tell me your preferences, and I'll provide personalized recommendations.",
                 }}
@@ -140,6 +157,7 @@ export const RightSidebar: FC<Props> = ({
                   onSend({
                     role: 'user',
                     content: 'Similar places like this',
+                    typeOfMessage: TypeOfMessage.TEXT,
                     typeOfPrompt,
                     id: `${data?.id ?? ''}`,
                   });

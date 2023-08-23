@@ -6,6 +6,7 @@ import {
   IRateAnswer,
   KeyValuePair,
   Message,
+  TypeOfMessage,
   TypeOfPrompt,
 } from '@/types';
 import { FC, useCallback, useEffect, useRef, useState } from 'react';
@@ -17,8 +18,6 @@ import { LeftSidebar } from './LeftSidebar';
 interface Props {
   conversation: Conversation;
   messageIsStreaming: boolean;
-  mapData: IMapDataConverted[];
-  flightParameters?: IFlightParamsConverted;
   messageError: boolean;
   loading: boolean;
   lightMode: 'light' | 'dark';
@@ -45,8 +44,6 @@ interface Props {
 export const Chat: FC<Props> = ({
   conversation,
   messageIsStreaming,
-  mapData,
-  flightParameters,
   messageError,
   loading,
   lightMode,
@@ -159,6 +156,7 @@ export const Chat: FC<Props> = ({
             key="starter-message"
             message={{
               role: 'starter',
+              typeOfMessage: TypeOfMessage.TEXT,
               content: starterMessage,
             }}
             lightMode={lightMode}
@@ -172,36 +170,51 @@ export const Chat: FC<Props> = ({
             <ChatMessage
               message={{
                 role: 'sample',
+                typeOfMessage: TypeOfMessage.TEXT,
                 content:
                   'Affordable beach destinations in Europe. We want to fly in September. For 7 days.',
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
-                onSend({ role: 'user', content });
+                onSend({
+                  role: 'user',
+                  typeOfMessage: TypeOfMessage.TEXT,
+                  content,
+                });
               }}
               onFormSubmit={onFormSubmit}
             />
             <ChatMessage
               message={{
                 role: 'sample',
+                typeOfMessage: TypeOfMessage.TEXT,
                 content:
                   'Flight to UNESCO site. City break for 4 days, November, warm weather',
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
-                onSend({ role: 'user', content });
+                onSend({
+                  role: 'user',
+                  typeOfMessage: TypeOfMessage.TEXT,
+                  content,
+                });
               }}
               onFormSubmit={onFormSubmit}
             />
             <ChatMessage
               message={{
                 role: 'sample',
+                typeOfMessage: TypeOfMessage.TEXT,
                 content:
                   'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.',
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
-                onSend({ role: 'user', content });
+                onSend({
+                  role: 'user',
+                  typeOfMessage: TypeOfMessage.TEXT,
+                  content,
+                });
               }}
               onFormSubmit={onFormSubmit}
             />
@@ -225,8 +238,6 @@ export const Chat: FC<Props> = ({
                     !messageIsStreaming &&
                     index === conversation.messages.length - 1
                   }
-                  mapData={mapData}
-                  flightParameters={flightParameters}
                   pathExists={!!path}
                   onSend={(message) => {
                     setCurrentMessage(message);

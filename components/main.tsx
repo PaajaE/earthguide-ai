@@ -18,6 +18,7 @@ import {
   OpenAIModelID,
   OpenAIModels,
   PanelData,
+  TypeOfMessage,
   TypeOfPrompt,
   WhereToDisplay,
 } from '@/types';
@@ -85,10 +86,9 @@ export default function Main({
   const [newSession, setNewSession] = useState<boolean>(true);
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
-  const [mapData, setMapData] = useState<IMapDataConverted[]>([]);
-  const [flightParams, setFlightParams] = useState<
-    IFlightParamsConverted | undefined
-  >(undefined);
+  // const [flightParams, setFlightParams] = useState<
+  //   IFlightParamsConverted | undefined
+  // >(undefined);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -104,40 +104,52 @@ export default function Main({
     const { latitude, longitude, cityName } = parseLocation(
       data.locality ?? ''
     );
-    console.log({latitude, longitude, cityName})
+    console.log({ latitude, longitude, cityName });
 
-    const fp = {
-      date_from: formatDateToYYYYMMDD(data.date_from),
-      date_to: formatDateToYYYYMMDD(data.date_to),
-      departure_airport: (cityName ? cityName : flightParams?.departure_airport) ?? '',
-      fly_from_lat: (latitude ? latitude?.toString() : (flightParams?.fly_from_lat ? flightParams?.fly_from_lat.toString() : ipData?.gps.split(',')[0])) ?? '',
-      fly_from_lon: (longitude ? longitude?.toString() : (flightParams?.fly_from_lon ? flightParams?.fly_from_lon.toString() : ipData?.gps.split(',')[1])) ?? '',
-      fly_from_radius: data.fly_from_radius.toString() ?? '',
-      nights_in_dst_from: data.nights_in_dst
-        ? (
-            data.nights_in_dst -
-            (data.nights_in_dst_tolerance ?? 0) / 2
-          ).toString()
-        : '',
-      nights_in_dst_to: data.nights_in_dst
-        ? (
-            data.nights_in_dst +
-            (data.nights_in_dst_tolerance ?? 0) / 2
-          ).toString()
-        : '',
-      return_from: formatDateToYYYYMMDD(data.return_from),
-      return_to: formatDateToYYYYMMDD(data.return_to),
-    };
+    // const fp = {
+    //   date_from: formatDateToYYYYMMDD(data.date_from),
+    //   date_to: formatDateToYYYYMMDD(data.date_to),
+    //   departure_airport:
+    //     (cityName ? cityName : flightParams?.departure_airport) ?? '',
+    //   fly_from_lat:
+    //     (latitude
+    //       ? latitude?.toString()
+    //       : flightParams?.fly_from_lat
+    //       ? flightParams?.fly_from_lat.toString()
+    //       : ipData?.gps.split(',')[0]) ?? '',
+    //   fly_from_lon:
+    //     (longitude
+    //       ? longitude?.toString()
+    //       : flightParams?.fly_from_lon
+    //       ? flightParams?.fly_from_lon.toString()
+    //       : ipData?.gps.split(',')[1]) ?? '',
+    //   fly_from_radius: data.fly_from_radius.toString() ?? '',
+    //   nights_in_dst_from: data.nights_in_dst
+    //     ? (
+    //         data.nights_in_dst -
+    //         (data.nights_in_dst_tolerance ?? 0) / 2
+    //       ).toString()
+    //     : '',
+    //   nights_in_dst_to: data.nights_in_dst
+    //     ? (
+    //         data.nights_in_dst +
+    //         (data.nights_in_dst_tolerance ?? 0) / 2
+    //       ).toString()
+    //     : '',
+    //   return_from: formatDateToYYYYMMDD(data.return_from),
+    //   return_to: formatDateToYYYYMMDD(data.return_to),
+    // };
 
-    handleSend(
-      {
-        role: 'user',
-        content: 'Please change flight preferences',
-        id: messageId,
-        typeOfPrompt: TypeOfPrompt.FT_BODY,
-      },
-      fp
-    );
+    // handleSend(
+    //   {
+    //     role: 'user',
+    //     content: 'Please change flight preferences',
+    //     id: messageId,
+    //     typeOfMessage: TypeOfMessage.TEXT,
+    //     typeOfPrompt: TypeOfPrompt.FT_BODY,
+    //   },
+    //   fp
+    // );
   };
 
   const handleSend = async (
@@ -203,6 +215,25 @@ export default function Main({
                     };
                   }
                 );
+
+                const updatedMessages: Message[] = [
+                  ...updatedConversation.messages,
+                  {
+                    role: 'earth.guide',
+                    content: '',
+                    typeOfMessage: TypeOfMessage.MAP,
+                    id: data.id_answer,
+                    mapData: convertedMapData,
+                  },
+                ];
+
+                updatedConversation = {
+                  ...updatedConversation,
+                  messages: updatedMessages,
+                };
+
+                setSelectedConversation(updatedConversation);
+                isWsFirst = true;
               } else if (data.json_type === 'Flight_parameters') {
                 console.log({ fixedData });
                 const fp: IFlightParamsObtained =
@@ -269,6 +300,25 @@ export default function Main({
                       : undefined,
                 };
                 console.log({ flightParametersData });
+
+                const updatedMessages: Message[] = [
+                  ...updatedConversation.messages,
+                  {
+                    role: 'earth.guide',
+                    content: '',
+                    typeOfMessage: TypeOfMessage.FLIGHT_PARAMS,
+                    id: data.id_answer,
+                    flightParams: flightParametersData,
+                  },
+                ];
+
+                updatedConversation = {
+                  ...updatedConversation,
+                  messages: updatedMessages,
+                };
+
+                setSelectedConversation(updatedConversation);
+                isWsFirst = true;
               }
             }
 
@@ -280,6 +330,7 @@ export default function Main({
                   {
                     role: 'earth.guide',
                     content: data.formatted_text,
+                    typeOfMessage: TypeOfMessage.TEXT,
                     id: data.id_answer,
                   },
                 ];
@@ -331,8 +382,6 @@ export default function Main({
             }
             if (data.done) {
               setMessageIsStreaming(false);
-              setMapData(convertedMapData);
-              setFlightParams(flightParametersData);
             }
           }
         };
@@ -606,8 +655,6 @@ export default function Main({
                 <Chat
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
-                  mapData={mapData}
-                  flightParameters={flightParams}
                   messageError={messageError}
                   loading={loading}
                   lightMode={lightMode}
@@ -648,8 +695,6 @@ export default function Main({
                 <Chat
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
-                  mapData={mapData}
-                  flightParameters={flightParams}
                   messageError={messageError}
                   loading={loading}
                   lightMode={lightMode}
