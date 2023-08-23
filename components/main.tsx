@@ -104,13 +104,14 @@ export default function Main({
     const { latitude, longitude, cityName } = parseLocation(
       data.locality ?? ''
     );
+    console.log({latitude, longitude, cityName})
 
     const fp = {
       date_from: formatDateToYYYYMMDD(data.date_from),
       date_to: formatDateToYYYYMMDD(data.date_to),
-      departure_airport: cityName ?? '',
-      fly_from_lat: latitude?.toString() ?? '',
-      fly_from_lon: longitude?.toString() ?? '',
+      departure_airport: (cityName ? cityName : flightParams?.departure_airport) ?? '',
+      fly_from_lat: (latitude ? latitude?.toString() : (flightParams?.fly_from_lat ? flightParams?.fly_from_lat.toString() : ipData?.gps.split(',')[0])) ?? '',
+      fly_from_lon: (longitude ? longitude?.toString() : (flightParams?.fly_from_lon ? flightParams?.fly_from_lon.toString() : ipData?.gps.split(',')[1])) ?? '',
       fly_from_radius: data.fly_from_radius.toString() ?? '',
       nights_in_dst_from: data.nights_in_dst
         ? (

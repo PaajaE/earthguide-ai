@@ -65,7 +65,7 @@ export const VacationLengthPicker: React.FC<
             })
           }
         >
-          {generateOptions(1, 100)}
+          {generateOptions(0, 100)}
         </select>
       </div>
       <span>(±</span>
