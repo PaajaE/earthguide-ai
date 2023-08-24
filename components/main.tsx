@@ -99,57 +99,62 @@ export default function Main({
 
   const handleFlightParamsSubmit = (
     data: IFlightParamsConverted,
-    messageId: string
+    messageId: string,
+    prevParams: IFlightParamsConverted
   ) => {
+    console.log({ data });
     const { latitude, longitude, cityName } = parseLocation(
       data.locality ?? ''
     );
     console.log({ latitude, longitude, cityName });
 
-    // const fp = {
-    //   date_from: formatDateToYYYYMMDD(data.date_from),
-    //   date_to: formatDateToYYYYMMDD(data.date_to),
-    //   departure_airport:
-    //     (cityName ? cityName : flightParams?.departure_airport) ?? '',
-    //   fly_from_lat:
-    //     (latitude
-    //       ? latitude?.toString()
-    //       : flightParams?.fly_from_lat
-    //       ? flightParams?.fly_from_lat.toString()
-    //       : ipData?.gps.split(',')[0]) ?? '',
-    //   fly_from_lon:
-    //     (longitude
-    //       ? longitude?.toString()
-    //       : flightParams?.fly_from_lon
-    //       ? flightParams?.fly_from_lon.toString()
-    //       : ipData?.gps.split(',')[1]) ?? '',
-    //   fly_from_radius: data.fly_from_radius.toString() ?? '',
-    //   nights_in_dst_from: data.nights_in_dst
-    //     ? (
-    //         data.nights_in_dst -
-    //         (data.nights_in_dst_tolerance ?? 0) / 2
-    //       ).toString()
-    //     : '',
-    //   nights_in_dst_to: data.nights_in_dst
-    //     ? (
-    //         data.nights_in_dst +
-    //         (data.nights_in_dst_tolerance ?? 0) / 2
-    //       ).toString()
-    //     : '',
-    //   return_from: formatDateToYYYYMMDD(data.return_from),
-    //   return_to: formatDateToYYYYMMDD(data.return_to),
-    // };
+    const fp = {
+      date_from: formatDateToYYYYMMDD(data.date_from),
+      date_to: formatDateToYYYYMMDD(data.date_to),
+      departure_airport:
+        (cityName ? cityName : prevParams?.departure_airport) ?? '',
+      fly_from_lat:
+        (latitude
+          ? latitude?.toString()
+          : prevParams?.fly_from_lat
+          ? prevParams?.fly_from_lat.toString()
+          : ipData?.gps.split(',')[0]) ?? '',
+      fly_from_lon:
+        (longitude
+          ? longitude?.toString()
+          : prevParams?.fly_from_lon
+          ? prevParams?.fly_from_lon.toString()
+          : ipData?.gps.split(',')[1]) ?? '',
+      fly_from_radius: data.fly_from_radius.toString() ?? '',
+      nights_in_dst_from: data.nights_in_dst_from
+        ? data.nights_in_dst_from.toString()
+        : '',
+      nights_in_dst_to: data.nights_in_dst_to
+        ? data.nights_in_dst_to.toString()
+        : '',
+      return_from: formatDateToYYYYMMDD(data.return_from),
+      return_to: formatDateToYYYYMMDD(data.return_to),
+      flight_type:
+        data.return_from || data.return_to
+          ? FLIGHT_TYPES.ROUNDTRIP
+          : FLIGHT_TYPES.ONEWAY,
+    };
 
-    // handleSend(
-    //   {
-    //     role: 'user',
-    //     content: 'Please change flight preferences',
-    //     id: messageId,
-    //     typeOfMessage: TypeOfMessage.TEXT,
-    //     typeOfPrompt: TypeOfPrompt.FT_BODY,
-    //   },
-    //   fp
-    // );
+    console.log({ flightType: fp.flight_type });
+
+    console.log({ inFp: prevParams });
+    console.log({ outFp: fp });
+
+    handleSend(
+      {
+        role: 'user',
+        content: 'Please change flight preferences',
+        id: messageId,
+        typeOfMessage: TypeOfMessage.TEXT,
+        typeOfPrompt: TypeOfPrompt.FT_BODY,
+      },
+      fp
+    );
   };
 
   const handleSend = async (
@@ -276,19 +281,13 @@ export default function Main({
                       ? fp.departure_airport
                       : `${fp.fly_from_lat}, ${fp.fly_from_lon}`,
                   fly_from_radius: +fp.fly_from_radius,
-                  nights_in_dst:
+                  nights_in_dst_from:
                     fp.nights_in_dst_from.length > 0
-                      ? getNightsInDestination(
-                          +fp.nights_in_dst_from,
-                          +fp.nights_in_dst_to
-                        )
+                      ? +fp.nights_in_dst_from
                       : undefined,
-                  nights_in_dst_tolerance:
+                  nights_in_dst_to:
                     fp.nights_in_dst_to.length > 0
-                      ? getNightsInDestinationTolerance(
-                          +fp.nights_in_dst_from,
-                          +fp.nights_in_dst_to
-                        )
+                      ? +fp.nights_in_dst_to
                       : undefined,
                   return_from:
                     fp.return_from.length > 0

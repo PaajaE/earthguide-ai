@@ -189,8 +189,8 @@ export interface IFlightParamsConverted {
   fly_from_lat?: number;
   fly_from_lon?: number;
   fly_from_radius: number;
-  nights_in_dst?: number;
-  nights_in_dst_tolerance?: number;
+  nights_in_dst_from?: number;
+  nights_in_dst_to?: number;
   return_from?: Date;
   return_to?: Date;
   comment?: string;

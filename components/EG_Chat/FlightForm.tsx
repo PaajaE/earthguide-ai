@@ -1,20 +1,20 @@
 import React, { useState } from 'react';
-import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 
 import { IFlightParamsConverted } from '@/types';
 import {
-  DateValComponent,
   LocationInput,
   VacationLengthPicker,
 } from './FlightForm/components';
+import { DepartureReturnDates } from './FlightForm/DepartureReturnDates';
 
 interface FormComponentProps {
   flightParameters: IFlightParamsConverted;
   messageId: string;
   onFormSubmit: (
     data: IFlightParamsConverted,
-    messageId: string
+    messageId: string,
+    prevParams: IFlightParamsConverted
   ) => void;
 }
 
@@ -25,19 +25,18 @@ export const FlightForm: React.FC<FormComponentProps> = ({
 }) => {
   const [formData, setFormData] =
     useState<IFlightParamsConverted>(flightParameters);
-  const [showCalendar, setShowCalendar] = useState<string | null>(
-    null
-  );
 
-  const handleDateChange = (name: string, date: Date) => {
+  const handleDateChange = ({
+    name,
+    val,
+  }: {
+    name: string;
+    val: Date;
+  }) => {
     setFormData({
       ...formData,
-      [name]: date,
+      [name]: val,
     });
-  };
-
-  const handleInputFocus = (inputName: string) => {
-    setShowCalendar(inputName);
   };
 
   const handleLocationChange = (val: string) => {
@@ -48,16 +47,19 @@ export const FlightForm: React.FC<FormComponentProps> = ({
   };
 
   const handleVacationLengthChange = ({
-    length,
-    tolerance,
+    from,
+    to,
   }: {
-    length: number;
-    tolerance: number;
-  }) => {
+    from?: number;
+    to?: number;
+  }): void => {
     setFormData({
       ...formData,
-      nights_in_dst_tolerance: tolerance,
-      nights_in_dst: length,
+      date_to: from ? undefined : formData.date_to,
+      return_from: from ? undefined : formData.return_from,
+      nights_in_dst_from: from,
+      nights_in_dst_to:
+        to && from && to <= (from ?? 0) ? from + 1 : to,
     });
   };
 
@@ -79,90 +81,56 @@ export const FlightForm: React.FC<FormComponentProps> = ({
         />
       </div>
       <div className="text-black mb-1">
-        <DateValComponent
-          atr={formData.date_from}
-          label="Earliest departure:"
-          onDateValClick={() => {
-            handleInputFocus('date_from');
-          }}
-        />
-        {showCalendar === 'date_from' && (
-          <Calendar
-            onChange={(date) => {
-              handleDateChange('date_from', date as Date);
-              setShowCalendar(null);
-            }}
-            value={formData.date_from}
-          />
-        )}
-      </div>
-      <div className="text-black mb-1">
-        <DateValComponent
-          atr={formData.date_to}
-          label="Latest departure:"
-          onDateValClick={() => {
-            handleInputFocus('date_to');
-          }}
-        />
-        {showCalendar === 'date_to' && (
-          <Calendar
-            onChange={(date) => {
-              handleDateChange('date_to', date as Date);
-              setShowCalendar(null);
-            }}
-            value={formData.date_to}
-          />
-        )}
-      </div>
-      <div className="text-black mb-1">
-        <DateValComponent
-          atr={formData.return_from}
-          label="Earliest return:"
-          onDateValClick={() => {
-            handleInputFocus('return_from');
-          }}
-        />
-        {showCalendar === 'return_from' && (
-          <Calendar
-            onChange={(date) => {
-              handleDateChange('return_from', date as Date);
-              setShowCalendar(null);
-            }}
-            value={formData.return_from}
-          />
-        )}
-      </div>
-      <div className="text-black mb-1">
-        <DateValComponent
-          atr={formData.return_to}
-          label="Latest return:"
-          onDateValClick={() => {
-            handleInputFocus('return_to');
-          }}
-        />
-        {showCalendar === 'return_to' && (
-          <Calendar
-            onChange={(date) => {
-              handleDateChange('return_to', date as Date);
-              setShowCalendar(null);
-            }}
-            value={formData.return_to}
-          />
-        )}
-      </div>
-      <div className="text-black mb-1">
         <VacationLengthPicker
-          length={formData.nights_in_dst}
-          tolerance={formData.nights_in_dst_tolerance}
+          from={formData.nights_in_dst_from}
+          to={formData.nights_in_dst_to}
           onVacationLengthChange={handleVacationLengthChange}
         />
       </div>
+      <div className="text-black mb-1">
+        <DepartureReturnDates
+          from={formData.date_from}
+          to={formData.date_to}
+          labelFrom="Earliest"
+          labelTo="Latest"
+          label="Departure:"
+          fromKey="date_from"
+          toKey="date_to"
+          showToPicker={
+            formData.nights_in_dst_from &&
+            formData.nights_in_dst_from > 0
+              ? false
+              : true
+          }
+          onDateChange={handleDateChange}
+        />
+      </div>
+
+      <div className="text-black mb-1">
+        <DepartureReturnDates
+          from={formData.return_from}
+          to={formData.return_to}
+          labelFrom="Earliest"
+          labelTo="Latest"
+          label="Return:"
+          fromKey="return_from"
+          toKey="return_to"
+          showFromPicker={
+            formData.nights_in_dst_from &&
+            formData.nights_in_dst_from > 0
+              ? false
+              : true
+          }
+          onDateChange={handleDateChange}
+        />
+      </div>
+
       <div>
         <button
           className="bg-transparent hover:bg-[var(--secondary)] text-[var(--primary)] border-2 border-[var(--primary)] font-bold py-2 px-4 mt-4 rounded-[15px]"
           onClick={(e) => {
             e.preventDefault();
-            onFormSubmit(formData, messageId);
+            onFormSubmit(formData, messageId, flightParameters);
           }}
         >
           Submit

@@ -33,7 +33,8 @@ interface Props {
   onDisplayGallery?: (imgSrcs: string[], curIndex: number) => void;
   onFormSubmit: (
     data: IFlightParamsConverted,
-    messageId: string
+    messageId: string,
+    prevParams: IFlightParamsConverted
   ) => void;
 }
 
