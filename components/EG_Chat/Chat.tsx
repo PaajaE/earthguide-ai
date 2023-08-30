@@ -173,7 +173,7 @@ export const Chat: FC<Props> = ({
                 role: 'sample',
                 typeOfMessage: TypeOfMessage.TEXT,
                 content:
-                  'Affordable beach destinations in Europe. We want to fly in September. For 7 days.',
+                  'Affordable beach destinations in Europe. We want to fly in October. For 7 days.',
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
