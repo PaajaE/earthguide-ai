@@ -38,10 +38,55 @@ export const FlightForm: React.FC<FormComponentProps> = ({
     name: string;
     val: Date;
   }) => {
-    setFormData({
-      ...formData,
-      [name]: val,
-    });
+    if (name === 'date_from') {
+      setFormData({
+        ...formData,
+        date_from: val,
+        date_to:
+          formData.date_to && formData.date_to < val
+            ? val
+            : formData.date_to,
+        return_from:
+          formData.return_from && formData.return_from < val
+            ? val
+            : formData.return_from,
+        return_to:
+          formData.return_to && formData.return_to < val
+            ? val
+            : formData.return_to,
+      });
+    } else if (name === 'date_to') {
+      setFormData({
+        ...formData,
+        date_to: val,
+        date_from:
+          formData.date_from && formData.date_from > val
+            ? val
+            : formData.date_from,
+        return_to:
+          formData.return_to && formData.return_to < val
+            ? val
+            : formData.return_to,
+      });
+    } else if (name === 'return_from') {
+      setFormData({
+        ...formData,
+        return_from: val,
+        return_to:
+          formData.return_to && formData.return_to < val
+            ? val
+            : formData.return_to,
+      });
+    } else if (name === 'return_to') {
+      setFormData({
+        ...formData,
+        return_to: val,
+        return_from:
+          formData.return_from && formData.return_from > val
+            ? val
+            : formData.return_from,
+      });
+    }
   };
 
   const handleChange = (val: string, name: string) => {
@@ -186,7 +231,15 @@ export const FlightForm: React.FC<FormComponentProps> = ({
             }
             minDateFrom={formData.date_from}
             minDateTo={
-              formData.date_to ? formData.date_to : formData.date_from
+              new Date(
+                Math.max(
+                  formData.date_from?.getTime() ??
+                    new Date().getTime(),
+                  formData.date_to?.getTime() ?? new Date().getTime(),
+                  formData.return_from?.getTime() ??
+                    new Date().getTime()
+                )
+              )
             }
             onDateChange={handleDateChange}
           />
