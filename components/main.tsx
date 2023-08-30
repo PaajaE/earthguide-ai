@@ -161,17 +161,19 @@ export default function Main({
       setMessageIsStreaming(true);
       let updatedConversation: Conversation;
 
-      updatedConversation = {
-        ...selectedConversation,
-        messages: [...selectedConversation.messages, message],
-      };
+      if (!flightParams) {
+        updatedConversation = {
+          ...selectedConversation,
+          messages: [...selectedConversation.messages, message],
+        };
+        setSelectedConversation(updatedConversation);
+      } else {
+        updatedConversation = {
+          ...selectedConversation,
+        };
+      }
 
-      setSelectedConversation(updatedConversation);
-
-      const lastMessage =
-        updatedConversation.messages[
-          updatedConversation.messages.length - 1
-        ];
+      const lastMessage = message;
 
       const ws = new WebSocket(
         process.env.NEXT_PUBLIC_EG_WSS_URL ?? ''

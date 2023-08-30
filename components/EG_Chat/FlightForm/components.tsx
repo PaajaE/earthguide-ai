@@ -43,7 +43,7 @@ export const VacationLengthPicker: React.FC<
       <div className="font-semibold text-sm mb-[0.1rem]">
         Vacation length:
       </div>
-      <div className="flex items-center space-x-1">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center space-x-1">
         <div className="relative">
           <select
             className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"

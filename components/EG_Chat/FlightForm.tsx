@@ -133,7 +133,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
   return (
     <form>
       <h3 className="font-bold mb-2">Flights’ set-up:</h3>
-      <div className="mb-4">{flightParameters.comment}</div>
+      {/* <div className="mb-4">{flightParameters.comment}</div> */}
       <div className="text-black mb-2 text-sm">
         <FlightTypePicker
           selected={formData.flight_type}
@@ -190,19 +190,14 @@ export const FlightForm: React.FC<FormComponentProps> = ({
         <DepartureReturnDates
           from={formData.date_from}
           to={formData.date_to}
-          label={
-            formData.flight_type === FLIGHT_TYPES.ONEWAY
-              ? 'Departure'
-              : formData.nights_in_dst_from
-              ? 'Earliest departure'
-              : 'Earliest and latest departure'
-          }
+          labelFrom="Departure earliest"
+          labelTo="Departure latest"
           fromKey="date_from"
           toKey="date_to"
           showToPicker={
-            formData.flight_type === FLIGHT_TYPES.ONEWAY ||
-            (formData.nights_in_dst_from &&
-              formData.nights_in_dst_from > 0)
+            formData.nights_in_dst_from &&
+            formData.nights_in_dst_from > 0 &&
+            formData.flight_type === FLIGHT_TYPES.ROUNDTRIP
               ? false
               : true
           }
@@ -216,11 +211,8 @@ export const FlightForm: React.FC<FormComponentProps> = ({
           <DepartureReturnDates
             from={formData.return_from}
             to={formData.return_to}
-            label={
-              formData.nights_in_dst_from
-                ? 'Latest return'
-                : 'Earliest and latest return'
-            }
+            labelFrom="Return earliest"
+            labelTo="Return latest"
             fromKey="return_from"
             toKey="return_to"
             showFromPicker={

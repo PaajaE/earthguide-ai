@@ -35,10 +35,11 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
         // el.style.width = `64px`;
         el.style.minHeight = `120px`;
         el.style.minWidth = `160px`;
+        el.style.maxWidth = `200px`;
 
         el.style.backgroundColor = '#e2e2e2';
         el.style.backgroundImage = `linear-gradient(to top, rgba(78, 78, 78, 0.43) 0%, rgba(255, 255, 255, 0) 40%), url(${
-          destination.photos[0] ?? '/plane.jpg'
+          destination.photos[0] ?? '/plane.jpg '
         })`;
         el.style.backgroundRepeat = 'no-repeat';
         el.style.backgroundPosition = 'center';

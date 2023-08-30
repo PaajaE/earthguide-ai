@@ -74,11 +74,11 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
 
   return (
     <>
-      <div className="text-black text-sm font-semibold mb-[0.1rem]">
-        From:
-      </div>
-      <div className="flex items-center">
+      <div className="flex flex-col lg:flex-row items-start lg:items-center">
         <div className="relative w-[50vw] lg:w-[300px]">
+          <div className="text-black text-sm font-semibold mb-[0.1rem]">
+            From:
+          </div>
           <input
             type="text"
             value={inputValue}
@@ -112,17 +112,18 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
             </ul>
           )}
         </div>
-        <label className="text-black px-2">
-          include airports within
-        </label>
-        <input
-          type="text"
-          className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-          size={radius.toString().length}
-          value={radius}
-          onChange={handleRadiusChange}
-        />
-        <span className="text-black pl-2">km.</span>
+        <div className="lg:ml-4">
+          <div className="text-black text-sm font-semibold mb-[0.1rem] mt-2 lg:mt-0">
+            Airports within:
+          </div>
+          <input
+            type="text"
+            className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] pl-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
+            size={radius.toString().length + 3}
+            value={`${radius} km`}
+            onChange={handleRadiusChange}
+          />
+        </div>
       </div>
     </>
   );
