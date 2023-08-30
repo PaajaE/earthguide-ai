@@ -465,7 +465,6 @@ export default function Main({
           const json = event.data;
           if (isValidJSON(json)) {
             const data: EarthGuideQuestionResponse = JSON.parse(json);
-            // console.log("valid json", data);
 
             if (
               data.where_to_display ===
