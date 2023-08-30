@@ -62,12 +62,12 @@ export const ChatMessage: FC<Props> = ({
           <div
             className={`flex flex-row justify-start items-start gap-2.5 pb-5 w-100 box-border ${
               message.role === 'starter'
-                ? 'bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 px-[17px] py-3 mb-5'
+                ? 'bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 px-[1rem] py-3 mb-5'
                 : ''
             }
         ${
           message.role === 'user'
-            ? 'bg-[var(--primary)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[17px] py-5 mb-5'
+            ? 'bg-[var(--primary)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[1rem] py-5 mb-5'
             : ''
         }
         ${
@@ -82,7 +82,7 @@ export const ChatMessage: FC<Props> = ({
         }
         ${
           message.role === 'sample'
-            ? 'bg-white rounded-t-[10px] rounded-r-[10px] px-[17px] py-3 mb-5'
+            ? 'bg-white rounded-t-[10px] rounded-r-[10px] px-[1rem] py-3 mb-5'
             : ''
         }
         `}
@@ -229,7 +229,7 @@ export const ChatMessage: FC<Props> = ({
             className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 mb-5`}
           >
             <div
-              className={`border-[#000000ff] leading-6 flex flex-col relative w-full font-plus jakarta sans px-[17px] mt-4 mb-2 font-[400] text-[var(--secondary-text)]`}
+              className={`border-[#000000ff] leading-6 flex flex-col relative w-full font-plus jakarta sans px-[1rem] mt-4 mb-2 font-[400] text-[var(--secondary-text)]`}
             >
               <FlightForm
                 flightParameters={message.flightParams}

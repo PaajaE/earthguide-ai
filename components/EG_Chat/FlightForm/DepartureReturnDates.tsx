@@ -35,7 +35,7 @@ export const DepartureReturnDates: React.FC<
   return (
     <div className="flex flex-col lg:flex-row items-start lg:items-center lg:space-x-1">
       {showFromPicker ? (
-        <div className="mr-4">
+        <div className="lg:mr-4 w-full lg:w-auto">
           <div className="font-semibold text-sm mb-[0.1rem]">
             {labelFrom}
           </div>
@@ -45,7 +45,7 @@ export const DepartureReturnDates: React.FC<
                 onDateChange({ name: fromKey, val: date as Date });
               }}
               dateFormat="dd/MM/yyyy"
-              className="px-2 py-1 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] text-[1.05rem] text-[var(--primary)] rounded-[5px]"
+              className="px-2 py-1 bg-white w-full border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] text-[1.05rem] text-[var(--primary)] rounded-[5px]"
               selected={from}
               placeholderText="Select date"
               minDate={minDateFrom ? minDateFrom : new Date()}
@@ -66,7 +66,7 @@ export const DepartureReturnDates: React.FC<
                 onDateChange({ name: toKey, val: date as Date });
               }}
               dateFormat="dd/MM/yyyy"
-              className="px-2 py-1 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] text-[1.05rem] text-[var(--primary)] rounded-[5px]"
+              className="px-2 py-1 bg-white w-full border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] text-[1.05rem] text-[var(--primary)] rounded-[5px]"
               selected={to}
               placeholderText="Select date"
               minDate={minDateTo ? minDateTo : new Date()}
