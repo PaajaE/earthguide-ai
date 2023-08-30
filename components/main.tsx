@@ -103,41 +103,42 @@ export default function Main({
     prevParams: IFlightParamsConverted
   ) => {
     console.log({ data });
-    const { latitude, longitude, cityName } = parseLocation(
-      data.locality ?? ''
-    );
-    console.log({ latitude, longitude, cityName });
+    // const { latitude, longitude, cityName } = parseLocation(
+    //   data.locality ?? ''
+    // );
+    // console.log({ latitude, longitude, cityName });
 
     const fp = {
       date_from: formatDateToYYYYMMDD(data.date_from),
       date_to: formatDateToYYYYMMDD(data.date_to),
       departure_airport:
-        (cityName ? cityName : prevParams?.departure_airport) ?? '',
+        data.departure_airport ?? prevParams.departure_airport,
       fly_from_lat:
-        (latitude
-          ? latitude?.toString()
+        (data.fly_from_lat
+          ? data.fly_from_lat.toString()
           : prevParams?.fly_from_lat
           ? prevParams?.fly_from_lat.toString()
-          : ipData?.gps.split(',')[0]) ?? '',
+          : ipData?.gps.split(',')[0]) ?? undefined,
       fly_from_lon:
-        (longitude
-          ? longitude?.toString()
+        (data.fly_from_lon
+          ? data.fly_from_lon.toString()
           : prevParams?.fly_from_lon
           ? prevParams?.fly_from_lon.toString()
-          : ipData?.gps.split(',')[1]) ?? '',
-      fly_from_radius: data.fly_from_radius.toString() ?? '',
+          : ipData?.gps.split(',')[1]) ?? undefined,
+      fly_from_radius: data.fly_from_radius.toString() ?? undefined,
       nights_in_dst_from: data.nights_in_dst_from
         ? data.nights_in_dst_from.toString()
-        : '',
+        : undefined,
       nights_in_dst_to: data.nights_in_dst_to
         ? data.nights_in_dst_to.toString()
-        : '',
+        : undefined,
       return_from: formatDateToYYYYMMDD(data.return_from),
       return_to: formatDateToYYYYMMDD(data.return_to),
       flight_type:
         data.return_from || data.return_to
           ? FLIGHT_TYPES.ROUNDTRIP
           : FLIGHT_TYPES.ONEWAY,
+      curr: data.curr ?? undefined,
     };
 
     console.log({ flightType: fp.flight_type });
@@ -248,22 +249,14 @@ export default function Main({
                   comment: data.comment,
                   curr: fp.curr ?? '',
                   date_from:
-                    fp.date_from.length > 0
+                    fp.date_from && fp.date_from.length > 0
                       ? new Date(fp.date_from)
                       : undefined,
                   date_to:
-                    fp.date_to.length > 0
+                    fp.date_to && fp.date_to.length > 0
                       ? new Date(fp.date_to)
                       : undefined,
-                  departure_airport: fp.departure_airport.includes(
-                    'Your position:'
-                  )
-                    ? undefined
-                    : fp.departure_airport,
-                  departure_airport_set:
-                    fp.departure_airport.includes('Your position:')
-                      ? false
-                      : true,
+                  departure_airport: fp.departure_airport,
                   flight_type:
                     fp.flight_type ?? FLIGHT_TYPES.ROUNDTRIP,
                   fly_from_lat:
@@ -274,27 +267,23 @@ export default function Main({
                     fp.fly_from_lon && fp.fly_from_lon.length > 0
                       ? +fp.fly_from_lon
                       : undefined,
-                  locality:
-                    !fp.departure_airport.includes(
-                      'Your position:'
-                    ) && fp.departure_airport
-                      ? fp.departure_airport
-                      : `${fp.fly_from_lat}, ${fp.fly_from_lon}`,
-                  fly_from_radius: +fp.fly_from_radius,
+                  fly_from_radius: +(fp.fly_from_radius ?? 0),
                   nights_in_dst_from:
+                    fp.nights_in_dst_from &&
                     fp.nights_in_dst_from.length > 0
                       ? +fp.nights_in_dst_from
                       : undefined,
                   nights_in_dst_to:
+                    fp.nights_in_dst_to &&
                     fp.nights_in_dst_to.length > 0
                       ? +fp.nights_in_dst_to
                       : undefined,
                   return_from:
-                    fp.return_from.length > 0
+                    fp.return_from && fp.return_from.length > 0
                       ? new Date(fp.return_from)
                       : undefined,
                   return_to:
-                    fp.return_to.length > 0
+                    fp.return_to && fp.return_to.length > 0
                       ? new Date(fp.return_to)
                       : undefined,
                 };

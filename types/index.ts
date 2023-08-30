@@ -165,17 +165,17 @@ export enum FLIGHT_TYPES {
 
 export interface IFlightParamsObtained {
   curr?: string;
-  date_from: string;
-  date_to: string;
-  departure_airport: string;
+  date_from?: string;
+  date_to?: string;
+  departure_airport?: string;
   flight_type?: FLIGHT_TYPES;
-  fly_from_lat: string;
-  fly_from_lon: string;
-  fly_from_radius: string;
-  nights_in_dst_from: string;
-  nights_in_dst_to: string;
-  return_from: string;
-  return_to: string;
+  fly_from_lat?: string;
+  fly_from_lon?: string;
+  fly_from_radius?: string;
+  nights_in_dst_from?: string;
+  nights_in_dst_to?: string;
+  return_from?: string;
+  return_to?: string;
 }
 
 export interface IFlightParamsConverted {
@@ -183,7 +183,7 @@ export interface IFlightParamsConverted {
   date_from?: Date;
   date_to?: Date;
   departure_airport?: string;
-  departure_airport_set: boolean;
+  departure_airport_set?: boolean;
   flight_type: FLIGHT_TYPES;
   locality?: string;
   fly_from_lat?: number;

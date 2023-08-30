@@ -6,6 +6,7 @@
   --primary: #ff5600;
   --secondary: #ECECEC;
   --tertiary: #fbae88;
+  --forth-level: #fde2d4;
   --primary-text: white;
   --secondary-text: black;
   --tertiary-text: black;
@@ -172,12 +173,16 @@ svg {
 
 select, input {
   appearance: none;
-  /* for Firefox */
   -moz-appearance: none;
-  /* for Safari, Chrome, Opera */
   -webkit-appearance: none;
   outline: none !important;
-  background: none !important;
-  padding-right: 0 !important;
+  /* background: none !important; */
+  padding-right: 2rem !important;
   font-size: 1.05rem;
+
+}
+
+.react-datepicker__day--selected {
+      color: var(--primary-text) !important;
+      background-color: var(--primary) !important;
 }
