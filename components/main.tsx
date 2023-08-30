@@ -103,11 +103,6 @@ export default function Main({
     prevParams: IFlightParamsConverted
   ) => {
     console.log({ data });
-    // const { latitude, longitude, cityName } = parseLocation(
-    //   data.locality ?? ''
-    // );
-    // console.log({ latitude, longitude, cityName });
-
     const fp = {
       date_from: formatDateToYYYYMMDD(data.date_from),
       date_to: formatDateToYYYYMMDD(data.date_to),
