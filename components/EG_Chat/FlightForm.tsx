@@ -161,6 +161,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
               ? false
               : true
           }
+          minDateTo={formData.date_from}
           onDateChange={handleDateChange}
         />
       </div>
@@ -182,6 +183,10 @@ export const FlightForm: React.FC<FormComponentProps> = ({
               formData.nights_in_dst_from > 0
                 ? false
                 : true
+            }
+            minDateFrom={formData.date_from}
+            minDateTo={
+              formData.date_to ? formData.date_to : formData.date_from
             }
             onDateChange={handleDateChange}
           />
