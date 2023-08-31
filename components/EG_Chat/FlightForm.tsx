@@ -90,7 +90,6 @@ export const FlightForm: React.FC<FormComponentProps> = ({
   };
 
   const handleChange = (val: string, name: string) => {
-    console.log({ name, val });
     setFormData({
       ...formData,
       [name]: val,

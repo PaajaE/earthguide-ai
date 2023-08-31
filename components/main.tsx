@@ -122,10 +122,10 @@ export default function Main({
           : ipData?.gps.split(',')[1]) ?? undefined,
       fly_from_radius: data.fly_from_radius.toString() ?? undefined,
       nights_in_dst_from: data.nights_in_dst_from
-        ? data.nights_in_dst_from.toString()
+        ? data.nights_in_dst_from
         : undefined,
       nights_in_dst_to: data.nights_in_dst_to
-        ? data.nights_in_dst_to.toString()
+        ? data.nights_in_dst_to
         : undefined,
       return_from: formatDateToYYYYMMDD(data.return_from),
       return_to: formatDateToYYYYMMDD(data.return_to),
@@ -267,13 +267,13 @@ export default function Main({
                   fly_from_radius: +(fp.fly_from_radius ?? 0),
                   nights_in_dst_from:
                     fp.nights_in_dst_from &&
-                    fp.nights_in_dst_from.length > 0
-                      ? +fp.nights_in_dst_from
+                    typeof +fp.nights_in_dst_from === 'number'
+                      ? fp.nights_in_dst_from
                       : undefined,
                   nights_in_dst_to:
                     fp.nights_in_dst_to &&
-                    fp.nights_in_dst_to.length > 0
-                      ? +fp.nights_in_dst_to
+                    typeof +fp.nights_in_dst_to === 'number'
+                      ? fp.nights_in_dst_to
                       : undefined,
                   return_from:
                     fp.return_from && fp.return_from.length > 0
