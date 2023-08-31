@@ -1,15 +1,23 @@
 /* eslint-disable @next/next/no-img-element */
-import { Message, PanelData, TypeOfPrompt } from "@/types";
-import { EarthGuideReactMarkdown } from "./EarthGuideReactMarkdown";
-import { FC } from "react";
-import { Button } from "../Shared/Button";
-import { ChatLoader } from "./ChatLoader";
+import {
+  Message,
+  PanelData,
+  TypeOfMessage,
+  TypeOfPrompt,
+} from '@/types';
+import { EarthGuideReactMarkdown } from './EarthGuideReactMarkdown';
+import { FC } from 'react';
+import { Button } from '../Shared/Button';
+import { ChatLoader } from './ChatLoader';
 
 interface Props {
   data: PanelData | null;
   loading: boolean;
-  lightMode: "light" | "dark";
-  onAnotherPromptClick: (typeOfPrompt: TypeOfPrompt, id: string) => void;
+  lightMode: 'light' | 'dark';
+  onAnotherPromptClick: (
+    typeOfPrompt: TypeOfPrompt,
+    id: string
+  ) => void;
   onSend: (message: Message, isResend: boolean) => void;
   onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
 }
@@ -25,7 +33,7 @@ export const RightSidebarMobile: FC<Props> = ({
   return (
     <div
       className={`relative flex flex-col w-full h-full z-10 bg-[#F4F4F4]`}
-    //   style={{width: "-webkit-fill-available, fill-available, -moz-fill-available"}}
+      //   style={{width: "-webkit-fill-available, fill-available, -moz-fill-available"}}
     >
       <div className="w-auto flex flex-col h-full justify-between overflow-y-auto">
         <div className="text-[var(--secondary-text)]">
@@ -72,10 +80,11 @@ export const RightSidebarMobile: FC<Props> = ({
                 onSend &&
                   onSend(
                     {
-                      role: "user",
-                      content: "Similar places like this",
+                      role: 'user',
+                      content: 'Similar places like this',
+                      typeOfMessage: TypeOfMessage.TEXT,
                       typeOfPrompt,
-                      id: `${data?.id ?? ""}`,
+                      id: `${data?.id ?? ''}`,
                     },
                     false
                   );

@@ -7,7 +7,7 @@ interface Props {
   mapData: IMapDataConverted[];
 }
 
-const MapboxMap: React.FC<Props> = ({mapData}) => {
+const MapboxMap: React.FC<Props> = ({ mapData }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -35,12 +35,11 @@ const MapboxMap: React.FC<Props> = ({mapData}) => {
         // el.style.width = `64px`;
         el.style.minHeight = `120px`;
         el.style.minWidth = `160px`;
-
+        el.style.maxWidth = `200px`;
 
         el.style.backgroundColor = '#e2e2e2';
         el.style.backgroundImage = `linear-gradient(to top, rgba(78, 78, 78, 0.43) 0%, rgba(255, 255, 255, 0) 40%), url(${
-          destination.photos[0] ??
-          'https://fakeimg.pl/160x120/cccccc/909090?text=~'
+          destination.photos[0] ?? '/plane.jpg '
         })`;
         el.style.backgroundRepeat = 'no-repeat';
         el.style.backgroundPosition = 'center';
@@ -49,9 +48,9 @@ const MapboxMap: React.FC<Props> = ({mapData}) => {
         el.style.border = `5px solid`;
         el.style.borderRadius = `10px`;
         el.style.borderColor = 'var(--tertiary)';
-        el.style.display = 'flex'
-        el.style.alignItems = 'end'
-        el.style.padding = '2px 6px'
+        el.style.display = 'flex';
+        el.style.alignItems = 'end';
+        el.style.padding = '2px 6px';
 
         var foot = document.createElement('div');
         foot.className = 'foot';
@@ -67,12 +66,18 @@ const MapboxMap: React.FC<Props> = ({mapData}) => {
 
         new mapboxgl.Marker(el, {
           anchor: 'bottom',
-          offset: [0, -5]
+          offset: [0, -5],
         })
-          .setLngLat([destination.gps.longitude, destination.gps.latitude])
+          .setLngLat([
+            destination.gps.longitude,
+            destination.gps.latitude,
+          ])
           .addTo(map);
 
-        bounds.extend([destination.gps.longitude, destination.gps.latitude]);
+        bounds.extend([
+          destination.gps.longitude,
+          destination.gps.latitude,
+        ]);
       });
 
       map.fitBounds(bounds, {
