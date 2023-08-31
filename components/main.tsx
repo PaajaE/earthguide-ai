@@ -5,6 +5,7 @@ import {
   Conversation,
   DeviceTypes,
   EarthGuideQuestionResponse,
+  FLIGHT_TYPES,
   IFlightParamsConverted,
   IFlightParamsObtained,
   IMapDataConverted,
@@ -17,6 +18,7 @@ import {
   OpenAIModelID,
   OpenAIModels,
   PanelData,
+  TypeOfMessage,
   TypeOfPrompt,
   WhereToDisplay,
 } from '@/types';
@@ -41,6 +43,12 @@ import {
 import { Gallery } from '@/components/EG_Chat/Gallery';
 import { RightSidebarMobile } from '@/components/EG_Chat/RightSidebarMobile';
 import { IAirlineDataItem } from '@/utils/data/airlines';
+import {
+  formatDateToYYYYMMDD,
+  getNightsInDestination,
+  getNightsInDestinationTolerance,
+  parseLocation,
+} from '@/utils/app/flight';
 
 export default function Main({
   specificAirlines = '',
@@ -78,8 +86,9 @@ export default function Main({
   const [newSession, setNewSession] = useState<boolean>(true);
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
-  const [mapData, setMapData] = useState<IMapDataConverted[]>([])
-  const [flightParams, setFlightParams] = useState<IFlightParamsConverted | undefined>(undefined);
+  // const [flightParams, setFlightParams] = useState<
+  //   IFlightParamsConverted | undefined
+  // >(undefined);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -88,22 +97,83 @@ export default function Main({
     }
   }, [selectedConversation]);
 
-  const handleSend = async (message: Message, isResend: boolean) => {
+  const handleFlightParamsSubmit = (
+    data: IFlightParamsConverted,
+    messageId: string,
+    prevParams: IFlightParamsConverted
+  ) => {
+    console.log({ data });
+    const fp = {
+      date_from: formatDateToYYYYMMDD(data.date_from),
+      date_to: formatDateToYYYYMMDD(data.date_to),
+      departure_airport:
+        data.departure_airport ?? prevParams.departure_airport,
+      fly_from_lat:
+        (data.fly_from_lat
+          ? data.fly_from_lat.toString()
+          : prevParams?.fly_from_lat
+          ? prevParams?.fly_from_lat.toString()
+          : ipData?.gps.split(',')[0]) ?? undefined,
+      fly_from_lon:
+        (data.fly_from_lon
+          ? data.fly_from_lon.toString()
+          : prevParams?.fly_from_lon
+          ? prevParams?.fly_from_lon.toString()
+          : ipData?.gps.split(',')[1]) ?? undefined,
+      fly_from_radius: data.fly_from_radius.toString() ?? undefined,
+      nights_in_dst_from: data.nights_in_dst_from
+        ? data.nights_in_dst_from
+        : undefined,
+      nights_in_dst_to: data.nights_in_dst_to
+        ? data.nights_in_dst_to
+        : undefined,
+      return_from: formatDateToYYYYMMDD(data.return_from),
+      return_to: formatDateToYYYYMMDD(data.return_to),
+      flight_type:
+        data.return_from || data.return_to
+          ? FLIGHT_TYPES.ROUNDTRIP
+          : FLIGHT_TYPES.ONEWAY,
+      curr: data.curr ?? undefined,
+    };
+
+    console.log({ flightType: fp.flight_type });
+
+    console.log({ inFp: prevParams });
+    console.log({ outFp: fp });
+
+    handleSend(
+      {
+        role: 'user',
+        content: 'Please change flight preferences',
+        id: messageId,
+        typeOfMessage: TypeOfMessage.TEXT,
+        typeOfPrompt: TypeOfPrompt.FT_BODY,
+      },
+      fp
+    );
+  };
+
+  const handleSend = async (
+    message: Message,
+    flightParams?: IFlightParamsObtained
+  ) => {
     if (selectedConversation) {
       setMessageIsStreaming(true);
       let updatedConversation: Conversation;
 
-      updatedConversation = {
-        ...selectedConversation,
-        messages: [...selectedConversation.messages, message],
-      };
+      if (!flightParams) {
+        updatedConversation = {
+          ...selectedConversation,
+          messages: [...selectedConversation.messages, message],
+        };
+        setSelectedConversation(updatedConversation);
+      } else {
+        updatedConversation = {
+          ...selectedConversation,
+        };
+      }
 
-      setSelectedConversation(updatedConversation);
-
-      const lastMessage =
-        updatedConversation.messages[
-          updatedConversation.messages.length - 1
-        ];
+      const lastMessage = message;
 
       const ws = new WebSocket(
         process.env.NEXT_PUBLIC_EG_WSS_URL ?? ''
@@ -111,8 +181,8 @@ export default function Main({
       ws.onopen = () => {
         let text = '';
         let isWsFirst = true;
-        let convertedMapData: IMapDataConverted[]
-        let flightParametersData: IFlightParamsConverted
+        let convertedMapData: IMapDataConverted[];
+        let flightParametersData: IFlightParamsConverted;
         ws.onmessage = (event) => {
           const json = event.data;
           if (isValidJSON(json)) {
@@ -120,13 +190,20 @@ export default function Main({
             text += data.formatted_text;
 
             if (data.additional_data) {
-              const replacedString = data.additional_data.replaceAll('"', '\\"').replaceAll('\'', '"').replaceAll('\\"', '\'')
+              const replacedString = data.additional_data
+                .replaceAll('"', '\\"')
+                .replaceAll("'", '"')
+                .replaceAll('\\"', "'");
               const fixedData = jsonrepair(replacedString);
-              if (data.json_type === 'all_other_types_all_locations') {
-                const mapDataObtained: IMapDataObtained[] = JSON.parse(fixedData);
+              if (
+                data.json_type === 'all_other_types_all_locations'
+              ) {
+                const mapDataObtained: IMapDataObtained[] =
+                  JSON.parse(fixedData);
                 convertedMapData = mapDataObtained.map(
                   (mapLocation) => {
-                    const { id, gps, location, photos, price } = mapLocation;
+                    const { id, gps, location, photos, price } =
+                      mapLocation;
                     const locationString = removeMarkdown(location);
                     const photosArr =
                       extractSrcAttributesFromHTML(photos);
@@ -141,50 +218,92 @@ export default function Main({
                     };
                   }
                 );
+
+                const updatedMessages: Message[] = [
+                  ...updatedConversation.messages,
+                  {
+                    role: 'earth.guide',
+                    content: '',
+                    typeOfMessage: TypeOfMessage.MAP,
+                    id: data.id_answer,
+                    mapData: convertedMapData,
+                  },
+                ];
+
+                updatedConversation = {
+                  ...updatedConversation,
+                  messages: updatedMessages,
+                };
+
+                setSelectedConversation(updatedConversation);
+                isWsFirst = true;
               } else if (data.json_type === 'Flight_parameters') {
-                const fp: IFlightParamsObtained = JSON.parse(fixedData);
+                console.log({ fixedData });
+                const fp: IFlightParamsObtained =
+                  JSON.parse(fixedData);
+                console.log({ fp });
                 flightParametersData = {
-                  curr: fp.curr,
+                  comment: data.comment,
+                  curr: fp.curr ?? '',
                   date_from:
-                    fp.date_from.length > 0
-                      ? fp.date_from
+                    fp.date_from && fp.date_from.length > 0
+                      ? new Date(fp.date_from)
                       : undefined,
                   date_to:
-                    fp.date_from.length > 0
-                      ? fp.date_from
+                    fp.date_to && fp.date_to.length > 0
+                      ? new Date(fp.date_to)
                       : undefined,
-                  departure_airport: fp.departure_airport.includes(
-                    'Your position:'
-                  )
-                    ? undefined
-                    : fp.departure_airport,
-                  departure_airport_set:
-                    fp.departure_airport.includes('Your position:')
-                      ? false
-                      : true,
-                  flight_type: fp.flight_type,
-                  fly_from_lat: +fp.fly_from_lat,
-                  fly_from_lon: +fp.fly_from_lon,
-                  fly_from_radius: +fp.fly_from_radius,
+                  departure_airport: fp.departure_airport,
+                  flight_type:
+                    fp.flight_type ?? FLIGHT_TYPES.ROUNDTRIP,
+                  fly_from_lat:
+                    fp.fly_from_lat && fp.fly_from_lat.length > 0
+                      ? +fp.fly_from_lat
+                      : undefined,
+                  fly_from_lon:
+                    fp.fly_from_lon && fp.fly_from_lon.length > 0
+                      ? +fp.fly_from_lon
+                      : undefined,
+                  fly_from_radius: +(fp.fly_from_radius ?? 0),
                   nights_in_dst_from:
-                    fp.nights_in_dst_from.length > 0
-                      ? +fp.nights_in_dst_from
+                    fp.nights_in_dst_from &&
+                    typeof +fp.nights_in_dst_from === 'number'
+                      ? fp.nights_in_dst_from
                       : undefined,
                   nights_in_dst_to:
-                    fp.nights_in_dst_to.length > 0
-                      ? +fp.nights_in_dst_to
+                    fp.nights_in_dst_to &&
+                    typeof +fp.nights_in_dst_to === 'number'
+                      ? fp.nights_in_dst_to
                       : undefined,
                   return_from:
-                    fp.return_from.length > 0
-                      ? fp.return_from
+                    fp.return_from && fp.return_from.length > 0
+                      ? new Date(fp.return_from)
                       : undefined,
                   return_to:
-                    fp.return_to.length > 0
-                      ? fp.return_to
+                    fp.return_to && fp.return_to.length > 0
+                      ? new Date(fp.return_to)
                       : undefined,
                 };
-                console.log({flightParametersData})
+                console.log({ flightParametersData });
 
+                const updatedMessages: Message[] = [
+                  ...updatedConversation.messages,
+                  {
+                    role: 'earth.guide',
+                    content: '',
+                    typeOfMessage: TypeOfMessage.FLIGHT_PARAMS,
+                    id: data.id_answer,
+                    flightParams: flightParametersData,
+                  },
+                ];
+
+                updatedConversation = {
+                  ...updatedConversation,
+                  messages: updatedMessages,
+                };
+
+                setSelectedConversation(updatedConversation);
+                isWsFirst = true;
               }
             }
 
@@ -196,6 +315,7 @@ export default function Main({
                   {
                     role: 'earth.guide',
                     content: data.formatted_text,
+                    typeOfMessage: TypeOfMessage.TEXT,
                     id: data.id_answer,
                   },
                 ];
@@ -247,8 +367,6 @@ export default function Main({
             }
             if (data.done) {
               setMessageIsStreaming(false);
-              setMapData(convertedMapData);
-              setFlightParams(flightParametersData)
             }
           }
         };
@@ -271,6 +389,7 @@ export default function Main({
             type_of_device: deviceType,
             new_session: newSession,
             specific_airlines: specificAirlines,
+            flight_params: flightParams ? flightParams : undefined,
           })
         );
 
@@ -343,7 +462,6 @@ export default function Main({
           const json = event.data;
           if (isValidJSON(json)) {
             const data: EarthGuideQuestionResponse = JSON.parse(json);
-            // console.log("valid json", data);
 
             if (
               data.where_to_display ===
@@ -462,13 +580,13 @@ export default function Main({
   return (
     <>
       <Head>
-        <title>Chatbot UI</title>
-        <meta name="description" content="ChatGPT but better." />
+        <title>{airlineData.title}</title>
+        <meta name="description" content="Your AI travel advisor" />
         <meta
           name="viewport"
           content="width=device-width, initial-scale=1"
         />
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href={airlineData.icon} />
       </Head>
       {showModal && (
         <div
@@ -521,8 +639,6 @@ export default function Main({
                 <Chat
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
-                  mapData={mapData}
-                  flightParameters={flightParams}
                   messageError={messageError}
                   loading={loading}
                   lightMode={lightMode}
@@ -534,6 +650,7 @@ export default function Main({
                   onAnotherPromptClick={handleAnotherPromptClick}
                   onDisplayGallery={handleDisplayGallery}
                   isMobile={false}
+                  onFormSubmit={handleFlightParamsSubmit}
                 />
                 {showPanelData && (
                   <>
@@ -562,8 +679,6 @@ export default function Main({
                 <Chat
                   conversation={selectedConversation}
                   messageIsStreaming={messageIsStreaming}
-                  mapData={mapData}
-                  flightParameters={flightParams}
                   messageError={messageError}
                   loading={loading}
                   lightMode={lightMode}
@@ -575,6 +690,7 @@ export default function Main({
                   onAnotherPromptClick={handleAnotherPromptClick}
                   onDisplayGallery={handleDisplayGallery}
                   isMobile={true}
+                  onFormSubmit={handleFlightParamsSubmit}
                 />
                 {showMobilePanelData && (
                   <div
@@ -612,12 +728,9 @@ export default function Main({
                               onAnotherPromptClick={
                                 handleAnotherPromptClick
                               }
-                              onSend={(
-                                message: Message,
-                                isResend: boolean
-                              ) => {
+                              onSend={(message: Message) => {
                                 setShowMobilePanelData(false);
-                                handleSend(message, isResend);
+                                handleSend(message);
                               }}
                               onDisplayGallery={handleDisplayGallery}
                             />
