@@ -116,13 +116,18 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
           <div className="text-black text-sm font-semibold mb-[0.1rem] mt-2 lg:mt-0">
             Airports within:
           </div>
-          <input
-            type="text"
-            className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] pl-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-            size={radius.toString().length + 3}
-            value={`${radius} km`}
-            onChange={handleRadiusChange}
-          />
+          <div className="relative w-fit">
+            <input
+              type="text"
+              className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] pl-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
+              size={radius.toString().length + 3}
+              value={`${radius}`}
+              onChange={handleRadiusChange}
+            />
+            <span className="absolute right-2 top-[1px] py-1 text-[var(--primary)] text-[1.05rem]">
+              km
+            </span>
+          </div>
         </div>
       </div>
     </>
