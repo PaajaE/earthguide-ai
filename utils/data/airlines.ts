@@ -153,4 +153,38 @@ export const airlinesData: IAirlinesData = {
       },
     ],
   },
+  vueling: {
+    title: 'Vueling AI Advisor',
+    flightIcon: '/flight_icon_vueling.svg',
+    logo: '/vueling-logo.svg',
+    icon: '/vueling.ico',
+    starterMessage:
+      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
+    styles: [
+      {
+        key: '--primary',
+        value: '#fc0',
+      },
+      {
+        key: '--secondary',
+        value: '#4d4d4d',
+      },
+      {
+        key: '--tertiary',
+        value: '#eee',
+      },
+      {
+        key: '--primary-text',
+        value: '#4d4d4d',
+      },
+      {
+        key: '--secondary-text',
+        value: 'white',
+      },
+      {
+        key: '--tertiary-text',
+        value: 'black',
+      },
+    ],
+  },
 };
