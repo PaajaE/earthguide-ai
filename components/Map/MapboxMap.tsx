@@ -56,10 +56,15 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
         foot.className = 'foot';
         el.appendChild(foot);
 
-        let elChild = `<div style='display: block;'><div style='color: var(--primary-text); font-weight: 700; line-height: 1em;'>${destination.locationTitle}</div>`;
+        let elChild = `<div style='display: block;'><div style='color: white; font-weight: 700; ${
+          destination.price.length > 0
+            ? 'line-height: 1em;'
+            : 'line-height: 2em;'
+        }'>${destination.locationTitle}</div>`;
         elChild +=
-          destination.price.length > 0 &&
-          `<div style='color: var(--primary-text);'>${destination.price}</div>`;
+          destination.price.length > 0
+            ? `<div style='color: white;'>${destination.price}</div>`
+            : '';
         elChild += '</div>';
 
         el.innerHTML += elChild;
