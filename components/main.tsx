@@ -571,10 +571,10 @@ export default function Main({
       console.log(data);
       setIpData({
         city: data.city,
-        ip: data.query,
-        gps: `${data.lat},${data.lon}`,
-        country: data.country,
-        state: data.regionName,
+        ip: data.ip,
+        gps: `${data.latitude},${data.longitude}`,
+        country: data.country_name,
+        state: data.region,
       });
     });
     const language = getLanguage();
