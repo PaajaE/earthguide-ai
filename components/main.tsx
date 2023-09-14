@@ -129,10 +129,7 @@ export default function Main({
         : undefined,
       return_from: formatDateToYYYYMMDD(data.return_from),
       return_to: formatDateToYYYYMMDD(data.return_to),
-      flight_type:
-        data.return_from || data.return_to
-          ? FLIGHT_TYPES.ROUNDTRIP
-          : FLIGHT_TYPES.ONEWAY,
+      flight_type: data.flight_type,
       curr: data.curr ?? undefined,
     };
 
