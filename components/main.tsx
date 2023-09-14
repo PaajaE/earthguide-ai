@@ -121,14 +121,24 @@ export default function Main({
           ? prevParams?.fly_from_lon.toString()
           : ipData?.gps.split(',')[1]) ?? undefined,
       fly_from_radius: data.fly_from_radius.toString() ?? undefined,
-      nights_in_dst_from: data.nights_in_dst_from
-        ? data.nights_in_dst_from
-        : undefined,
-      nights_in_dst_to: data.nights_in_dst_to
-        ? data.nights_in_dst_to
-        : undefined,
-      return_from: formatDateToYYYYMMDD(data.return_from),
-      return_to: formatDateToYYYYMMDD(data.return_to),
+      nights_in_dst_from:
+        data.flight_type === FLIGHT_TYPES.ROUNDTRIP &&
+        data.nights_in_dst_from
+          ? data.nights_in_dst_from
+          : undefined,
+      nights_in_dst_to:
+        data.flight_type === FLIGHT_TYPES.ROUNDTRIP &&
+        data.nights_in_dst_to
+          ? data.nights_in_dst_to
+          : undefined,
+      return_from:
+        data.flight_type === FLIGHT_TYPES.ROUNDTRIP
+          ? formatDateToYYYYMMDD(data.return_from)
+          : undefined,
+      return_to:
+        data.flight_type === FLIGHT_TYPES.ROUNDTRIP
+          ? formatDateToYYYYMMDD(data.return_to)
+          : undefined,
       flight_type: data.flight_type,
       curr: data.curr ?? undefined,
     };
@@ -560,11 +570,11 @@ export default function Main({
     ipData.then((data) => {
       console.log(data);
       setIpData({
-        city: data.city.name,
-        ip: data.ip,
-        gps: `${data.location.latitude},${data.location.longitude}`,
-        country: data.country.name,
-        state: data.state.name,
+        city: data.city,
+        ip: data.query,
+        gps: `${data.lat},${data.lon}`,
+        country: data.country,
+        state: data.regionName,
       });
     });
     const language = getLanguage();
