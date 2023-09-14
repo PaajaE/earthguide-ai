@@ -187,4 +187,72 @@ export const airlinesData: IAirlinesData = {
       },
     ],
   },
+  smartwings: {
+    title: 'Smartwings AI Advisor',
+    flightIcon: '/flight_icon_smartwings.svg',
+    logo: '/logo-smartwings.svg',
+    icon: '/smartwings.ico',
+    starterMessage:
+      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
+    styles: [
+      {
+        key: '--primary',
+        value: '#ff7300',
+      },
+      {
+        key: '--secondary',
+        value: '#f4f6f9',
+      },
+      {
+        key: '--tertiary',
+        value: '#4a86c0',
+      },
+      {
+        key: '--primary-text',
+        value: 'white',
+      },
+      {
+        key: '--secondary-text',
+        value: 'black',
+      },
+      {
+        key: '--tertiary-text',
+        value: 'black',
+      },
+    ],
+  },
+  lufthansa: {
+    title: 'Lufthansa AI Advisor',
+    flightIcon: '/flight_icon_lufthansa.svg',
+    logo: '/lufthansa-logo.svg',
+    icon: '/lufthansa.ico',
+    starterMessage:
+      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
+    styles: [
+      {
+        key: '--primary',
+        value: '#05164d',
+      },
+      {
+        key: '--secondary',
+        value: 'white',
+      },
+      {
+        key: '--tertiary',
+        value: '#ffad01',
+      },
+      {
+        key: '--primary-text',
+        value: 'white',
+      },
+      {
+        key: '--secondary-text',
+        value: 'black',
+      },
+      {
+        key: '--tertiary-text',
+        value: 'black',
+      },
+    ],
+  },
 };
