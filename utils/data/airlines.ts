@@ -21,7 +21,7 @@ export const airlinesData: IAirlinesData = {
     title: 'Earth.Guide',
     flightIcon: '/flight_icon.svg',
     logo: '/earth-guide.svg',
-    icon: '/favicon.ico',
+    icon: '/earth-guide.ico',
     starterMessage:
       'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
     styles: [
