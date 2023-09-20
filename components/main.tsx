@@ -550,21 +550,6 @@ export default function Main({
     <>
       <Head>
         <title>{airlineData.title}</title>
-        <meta name="description" content="Your AI travel advisor" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta
-          property="og:title"
-          content={airlineData.title}
-        />
-        <meta
-          property="og:description"
-          content={airlineData.starterMessage}
-        />
-        <meta
-          property="og:image"
-          content={airlineData.logo}
-        />
-        <link rel="icon" href={airlineData.icon} />
       </Head>
       {showModal && (
         <div
