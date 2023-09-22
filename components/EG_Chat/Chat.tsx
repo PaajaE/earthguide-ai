@@ -6,6 +6,7 @@ import {
   IRateAnswer,
   KeyValuePair,
   Message,
+  TranslateResponseBody,
   TypeOfMessage,
   TypeOfPrompt,
 } from '@/types';
@@ -24,6 +25,7 @@ interface Props {
   isMobile: boolean;
   logoPath: string;
   starterMessage: string;
+  texts?: TranslateResponseBody<string>;
   onSend: (message: Message) => void;
   onRateAnswer: (feedback: IRateAnswer) => void;
   onUpdateConversation: (
@@ -51,6 +53,7 @@ export const Chat: FC<Props> = ({
   isMobile,
   logoPath,
   starterMessage,
+  texts,
   onSend,
   onRateAnswer,
   onAnotherPromptClick,
@@ -158,7 +161,9 @@ export const Chat: FC<Props> = ({
             message={{
               role: 'starter',
               typeOfMessage: TypeOfMessage.TEXT,
-              content: starterMessage,
+              content: `${
+                texts?.intro.translation ?? starterMessage
+              }`,
             }}
             lightMode={lightMode}
             onFormSubmit={onFormSubmit}
@@ -166,14 +171,18 @@ export const Chat: FC<Props> = ({
 
           <div className="flex lg:hidden flex-col mt-6">
             <h2 className="text-[var(--tertiary-text)] font-bold mb-4">
-              Examples
+              {texts?.examples
+                ? `${texts.examples.translation}`
+                : 'Examples'}
             </h2>
             <ChatMessage
               message={{
                 role: 'sample',
                 typeOfMessage: TypeOfMessage.TEXT,
-                content:
-                  'Affordable beach destinations in Europe. We want to fly in October. For 7 days.',
+                content: `${
+                  texts?.example1.translation ??
+                  'Affordable beach destinations in Europe. We want to fly in October. For 7 days.'
+                }`,
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
@@ -189,8 +198,10 @@ export const Chat: FC<Props> = ({
               message={{
                 role: 'sample',
                 typeOfMessage: TypeOfMessage.TEXT,
-                content:
-                  'Flight to UNESCO site. City break for 4 days, November, warm weather',
+                content: `${
+                  texts?.example2.translation ??
+                  'Flight to UNESCO site. City break for 4 days, November, warm weather'
+                }`,
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
@@ -206,8 +217,10 @@ export const Chat: FC<Props> = ({
               message={{
                 role: 'sample',
                 typeOfMessage: TypeOfMessage.TEXT,
-                content:
-                  'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.',
+                content: `${
+                  texts?.example3.translation ??
+                  'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.'
+                }`,
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
@@ -230,6 +243,7 @@ export const Chat: FC<Props> = ({
                   key={index}
                   message={message}
                   lightMode={lightMode}
+                  texts={texts}
                   onAnotherPromptClick={onAnotherPromptClick}
                   messageIsStreaming={
                     messageIsStreaming &&
@@ -268,6 +282,7 @@ export const Chat: FC<Props> = ({
               onSend(message);
             }}
             textareaRef={textareaRef}
+            texts={texts}
             model={conversation.model}
           />
         )}

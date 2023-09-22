@@ -5,6 +5,7 @@ import {
   IMapDataConverted,
   IRateAnswer,
   Message,
+  TranslateResponseBody,
   TypeOfMessage,
   TypeOfPrompt,
 } from '@/types';
@@ -23,6 +24,7 @@ interface Props {
   flightParameters?: IFlightParamsConverted;
   lightMode: 'light' | 'dark';
   pathExists?: boolean;
+  texts?: TranslateResponseBody<string>;
   onAnotherPromptClick?: (
     typeOfPrompt: TypeOfPrompt,
     id: string
@@ -44,6 +46,7 @@ export const ChatMessage: FC<Props> = ({
   messageIsStreaming = false,
   streamingFinished = false,
   pathExists = false,
+  texts,
   onSend,
   onRateAnswer,
   onAnotherPromptClick,
@@ -234,6 +237,7 @@ export const ChatMessage: FC<Props> = ({
               <FlightForm
                 flightParameters={message.flightParams}
                 messageId={message.id ?? ''}
+                texts={texts}
                 onFormSubmit={onFormSubmit}
               />
             </div>
@@ -256,7 +260,10 @@ export const ChatMessage: FC<Props> = ({
             )}
             <div className="flex flex-col lg:flex-row mt-3 mb-6">
               <Button
-                text="More places like these"
+                text={
+                  texts?.button_1.translation ??
+                  'More places like these'
+                }
                 iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
                 bgColor="var(--tertiary)"
                 typeOfPrompt={TypeOfPrompt.MORE_PLACES}
@@ -265,7 +272,10 @@ export const ChatMessage: FC<Props> = ({
                     onSend({
                       role: 'user',
                       typeOfMessage: TypeOfMessage.TEXT,
-                      content: 'More places like these',
+                      content: `${
+                        texts?.answer_button_1.translation ??
+                        'More places like these'
+                      }`,
                       typeOfPrompt,
                       id: message.id ?? '',
                     });
@@ -273,7 +283,10 @@ export const ChatMessage: FC<Props> = ({
               />
               {!pathExists && (
                 <Button
-                  text="Show me lesser-known places"
+                  text={
+                    texts?.button_2.translation ??
+                    'Show me lesser-known places'
+                  }
                   iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
                   bgColor="var(--tertiary)"
                   typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
@@ -282,7 +295,10 @@ export const ChatMessage: FC<Props> = ({
                       onSend({
                         role: 'user',
                         typeOfMessage: TypeOfMessage.TEXT,
-                        content: 'Show me lesser-known places',
+                        content: `${
+                          texts?.answer_button2.translation ??
+                          'Show me lesser-known places'
+                        }`,
                         typeOfPrompt,
                         id: message.id ?? '',
                       });

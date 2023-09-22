@@ -1,4 +1,5 @@
 import { currencies } from '@/mocks/currency';
+import { TranslateResponseBody } from '@/types';
 
 interface CurrencyOption {
   value: string;
@@ -14,17 +15,19 @@ const currenciesDropdownOptions: CurrencyOption[] = Object.entries(
 
 interface CurrencyPickerProps {
   selected: string;
+  texts?: TranslateResponseBody<string>;
   onCurrencyChange: (val: string, name: string) => void;
 }
 
 export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
   selected,
+  texts,
   onCurrencyChange,
 }) => {
   return (
     <>
       <div className="font-semibold text-sm mb-[0.1rem]">
-        Currency:
+        {texts?.flights_currency_title.translation ?? 'Currency:'}
       </div>
       <div className="flex items-center space-x-1">
         <div className="relative">
