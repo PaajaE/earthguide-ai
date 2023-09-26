@@ -2,7 +2,8 @@ import { DeviceTypes } from "@/types";
 
 // function to get user's langauge from navigator object
 export const getLanguage = (): string => {
-    const language = navigator.language;
+    const browserLanguage = navigator.language;
+    const language = browserLanguage.split('-')[0];
     return language;
 }
 
