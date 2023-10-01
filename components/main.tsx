@@ -14,7 +14,6 @@ import {
   IpData,
   KeyValuePair,
   Message,
-  OpenAIModel,
   OpenAIModelID,
   OpenAIModels,
   PanelData,
@@ -45,12 +44,7 @@ import {
 import { Gallery } from '@/components/EG_Chat/Gallery';
 import { RightSidebarMobile } from '@/components/EG_Chat/RightSidebarMobile';
 import { IAirlineDataItem } from '@/utils/data/airlines';
-import {
-  formatDateToYYYYMMDD,
-  getNightsInDestination,
-  getNightsInDestinationTolerance,
-  parseLocation,
-} from '@/utils/app/flight';
+import { formatDateToYYYYMMDD } from '@/utils/app/flight';
 import { usePathname } from 'next/navigation';
 
 export default function Main({
@@ -90,9 +84,6 @@ export default function Main({
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
   const [texts, setTexts] = useState<TranslateResponseBody<string>>();
-  // const [flightParams, setFlightParams] = useState<
-  //   IFlightParamsConverted | undefined
-  // >(undefined);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
