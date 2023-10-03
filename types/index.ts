@@ -76,6 +76,19 @@ export interface EarthGuideQuestionBody {
   gps: string;
 }
 
+interface Translations<T> {
+  en: T;
+  translation: T;
+}
+
+export interface TranslateRequestBody {
+  specific_airlines?: string;
+  language_of_browser?: string;
+}
+export interface TranslateResponseBody<T> {
+  [key: string]: Translations<T>;
+}
+
 export enum WhereToDisplay {
   BODY = 'body',
   PANEL_DESTINATION = 'panel_dest',

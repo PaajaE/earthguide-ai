@@ -26,3 +26,40 @@ export const fetchIpData = (): Promise<any> => {
       });
   });
 };
+
+import { TranslateRequestBody, TranslateResponseBody } from '@/types';
+
+export const fetchTranslation = (
+  requestBody: TranslateRequestBody
+): Promise<TranslateResponseBody<string>> => {
+  return new Promise<TranslateResponseBody<string>>(
+    (resolve, reject) => {
+      fetch('/api/eg-translate', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            reject();
+          }
+
+          return response.json();
+        })
+        .then((data: TranslateResponseBody<string>) => {
+          if (!data) {
+            reject();
+          }
+
+          console.log({ translation: data });
+
+          resolve(data);
+        })
+        .catch(() => {
+          reject();
+        });
+    }
+  );
+};

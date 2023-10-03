@@ -14,10 +14,11 @@ import {
   IpData,
   KeyValuePair,
   Message,
-  OpenAIModel,
   OpenAIModelID,
   OpenAIModels,
   PanelData,
+  TranslateRequestBody,
+  TranslateResponseBody,
   TypeOfMessage,
   TypeOfPrompt,
   WhereToDisplay,
@@ -43,12 +44,8 @@ import {
 import { Gallery } from '@/components/EG_Chat/Gallery';
 import { RightSidebarMobile } from '@/components/EG_Chat/RightSidebarMobile';
 import { IAirlineDataItem } from '@/utils/data/airlines';
-import {
-  formatDateToYYYYMMDD,
-  getNightsInDestination,
-  getNightsInDestinationTolerance,
-  parseLocation,
-} from '@/utils/app/flight';
+import { formatDateToYYYYMMDD } from '@/utils/app/flight';
+import { usePathname } from 'next/navigation';
 
 export default function Main({
   specificAirlines = '',
@@ -86,9 +83,7 @@ export default function Main({
   const [newSession, setNewSession] = useState<boolean>(true);
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
-  // const [flightParams, setFlightParams] = useState<
-  //   IFlightParamsConverted | undefined
-  // >(undefined);
+  const [texts, setTexts] = useState<TranslateResponseBody<string>>();
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -158,6 +153,23 @@ export default function Main({
       },
       fp
     );
+  };
+
+  const sendWithRetry = (message: Message) => {
+    if (ipData?.gps) {
+      handleSend(message);
+    } else {
+      setTimeout(() => {
+        console.log('waiting for ipData with GPS');
+        if (ipData?.gps) {
+          handleSend(message);
+        } else {
+          setTimeout(() => {
+            handleSend(message);
+          }, 3000);
+        }
+      }, 1000);
+    }
   };
 
   const handleSend = async (
@@ -378,6 +390,12 @@ export default function Main({
           }
         };
 
+        if (!ipData?.gps) {
+          alert('no GPS retrieved');
+        } else {
+          console.log({ gpsIs: ipData.gps });
+        }
+
         ws.send(
           JSON.stringify({
             type_of_prompt:
@@ -519,6 +537,12 @@ export default function Main({
   };
 
   useEffect(() => {
+    const language = getLanguage();
+    setLanguage(language);
+
+    const machId = getMachineId();
+    setMachineId(machId);
+
     const theme = localStorage.getItem('theme');
     if (theme) {
       setLightMode(theme as 'dark' | 'light');
@@ -563,37 +587,67 @@ export default function Main({
     }
   }, []);
 
-  useEffect(() => {
-    const machId = getMachineId();
-    setMachineId(machId);
-    const ipData = fetchIpData();
-    ipData.then((data) => {
-      console.log(data);
-      setIpData({
-        city: data.city,
-        ip: data.ip,
-        gps: `${data.latitude},${data.longitude}`,
-        country: data.country_name,
-        state: data.region,
+  const fetchTranslation = async (
+    requestData: TranslateRequestBody
+  ) => {
+    try {
+      const response = await fetch('/api/eg-translate', {
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestData),
       });
-    });
-    const language = getLanguage();
-    setLanguage(language);
+      if (response.ok) {
+        const data = await response.json();
+        setTexts(data);
+        console.log({ texts: data });
+      } else {
+        console.error(
+          'Error fetching translation:',
+          response.statusText
+        );
+        console.log('Error fetching translation');
+      }
+    } catch (error) {
+      console.error('Error fetching translation:', error);
+      console.log('Error fetching translation');
+    }
+  };
 
-    const deviceType = getDeviceType();
-    setDeviceType(deviceType);
+  useEffect(() => {
+    fetchTranslation({
+      language_of_browser: language,
+      specific_airlines: specificAirlines,
+    });
+  }, [language, specificAirlines]);
+
+  useEffect(() => {
+    const ipData = fetchIpData();
+    if (!ipData) {
+      alert('no ip data');
+    } else {
+      ipData.then((data) => {
+        console.log(data);
+        setIpData({
+          city: data.city,
+          ip: data.ip,
+          gps: `${data.latitude},${data.longitude}`,
+          country: data.country_name,
+          state: data.region,
+        });
+      });
+
+      const deviceType = getDeviceType();
+      setDeviceType(deviceType);
+    }
   }, []);
 
   return (
     <>
       <Head>
         <title>{airlineData.title}</title>
-        <meta name="description" content="Your AI travel advisor" />
-        <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        />
-        <link rel="icon" href={airlineData.icon} />
       </Head>
       {showModal && (
         <div
@@ -651,7 +705,8 @@ export default function Main({
                   lightMode={lightMode}
                   logoPath={airlineData.logo}
                   starterMessage={airlineData.starterMessage}
-                  onSend={handleSend}
+                  texts={texts}
+                  onSend={sendWithRetry}
                   onRateAnswer={handleRateAnswer}
                   onUpdateConversation={handleUpdateConversation}
                   onAnotherPromptClick={handleAnotherPromptClick}
@@ -667,9 +722,10 @@ export default function Main({
                         selectedConversation.messages.length === 0
                       }
                       data={panelData}
+                      texts={texts}
                       lightMode="light"
                       onAnotherPromptClick={handleAnotherPromptClick}
-                      onSend={handleSend}
+                      onSend={sendWithRetry}
                       onDisplayGallery={handleDisplayGallery}
                     />
                   </>
@@ -691,7 +747,7 @@ export default function Main({
                   lightMode={lightMode}
                   logoPath={airlineData.logo}
                   starterMessage={airlineData.starterMessage}
-                  onSend={handleSend}
+                  onSend={sendWithRetry}
                   onRateAnswer={handleRateAnswer}
                   onUpdateConversation={handleUpdateConversation}
                   onAnotherPromptClick={handleAnotherPromptClick}
@@ -737,7 +793,7 @@ export default function Main({
                               }
                               onSend={(message: Message) => {
                                 setShowMobilePanelData(false);
-                                handleSend(message);
+                                sendWithRetry(message);
                               }}
                               onDisplayGallery={handleDisplayGallery}
                             />
