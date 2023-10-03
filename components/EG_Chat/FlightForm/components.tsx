@@ -1,6 +1,9 @@
+import { TranslateResponseBody } from '@/types';
+
 interface VacationLengthPickerProps {
   from?: number;
   to?: number;
+  texts?: TranslateResponseBody<string>;
   onVacationLengthChange: ({
     from,
     to,
@@ -12,7 +15,7 @@ interface VacationLengthPickerProps {
 
 export const VacationLengthPicker: React.FC<
   VacationLengthPickerProps
-> = ({ from = 0, to = 0, onVacationLengthChange }) => {
+> = ({ from = 0, to = 0, texts, onVacationLengthChange }) => {
   const generateOptions = (
     start: number,
     end: number,
@@ -23,7 +26,8 @@ export const VacationLengthPicker: React.FC<
     if (withPlaceholder) {
       options.push(
         <option key={0} value={'undefined'}>
-          Based on flight dates
+          {texts?.flights_vac_lenght_possibility1.translation ??
+            'Based on flight dates'}
         </option>
       );
     }
@@ -31,7 +35,16 @@ export const VacationLengthPicker: React.FC<
     for (let i = start; i <= end; i++) {
       options.push(
         <option key={i} value={i}>
-          {`${i} ${i === 1 ? 'night' : 'nights'}`}
+          {`${i} ${
+            i === 1
+              ? texts?.flights_vac_lenght_1_night.translation ??
+                'night'
+              : i <= 4
+              ? texts?.['flights_vac_lenght_2-4_nights']
+                  .translation ?? 'nights'
+              : texts?.['flights_vac_lenght_5+nights'].translation ??
+                'nights'
+          }`}
         </option>
       );
     }
@@ -41,7 +54,8 @@ export const VacationLengthPicker: React.FC<
   return (
     <>
       <div className="font-semibold text-sm mb-[0.1rem]">
-        Vacation length:
+        {texts?.flights_vac_lenght_title.translation ??
+          'Vacation length:'}
       </div>
       <div className="flex flex-col lg:flex-row items-start lg:items-center space-x-1">
         <div className="relative">

@@ -1,18 +1,20 @@
-import { FLIGHT_TYPES } from '@/types';
+import { FLIGHT_TYPES, TranslateResponseBody } from '@/types';
 
 interface FlightTypePickerProps {
   selected: string;
+  texts?: TranslateResponseBody<string>;
   onFlightTypeChange: (val: FLIGHT_TYPES, name: string) => void;
 }
 
 export const FlightTypePicker: React.FC<FlightTypePickerProps> = ({
   selected,
   onFlightTypeChange,
+  texts,
 }) => {
   return (
     <>
       <div className="font-semibold text-sm mb-[0.1rem]">
-        Flight type:
+        {texts?.flights_type_title.translation ?? 'Flight type:'}
       </div>
       <div className="flex items-center space-x-1">
         <div className="relative">
@@ -29,7 +31,12 @@ export const FlightTypePicker: React.FC<FlightTypePickerProps> = ({
                 key={key}
                 value={FLIGHT_TYPES[key as keyof typeof FLIGHT_TYPES]}
               >
-                {FLIGHT_TYPES[key as keyof typeof FLIGHT_TYPES]}
+                {FLIGHT_TYPES[key as keyof typeof FLIGHT_TYPES] ===
+                FLIGHT_TYPES.ROUNDTRIP
+                  ? texts?.flights_type_round.translation ??
+                    FLIGHT_TYPES.ROUNDTRIP
+                  : texts?.flights_type_oneway.translation ??
+                    FLIGHT_TYPES.ONEWAY}
               </option>
             ))}
           </select>

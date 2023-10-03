@@ -2,6 +2,7 @@ import {
   Message,
   OpenAIModel,
   OpenAIModelID,
+  TranslateResponseBody,
   TypeOfMessage,
 } from '@/types';
 import { IconSend } from '@tabler/icons-react';
@@ -19,6 +20,7 @@ interface Props {
   onSend: (message: Message) => void;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   model: OpenAIModel;
+  texts?: TranslateResponseBody<string>;
 }
 
 export const ChatInput: FC<Props> = ({
@@ -26,6 +28,7 @@ export const ChatInput: FC<Props> = ({
   messageIsStreaming,
   model,
   textareaRef,
+  texts,
 }) => {
   const [content, setContent] = useState<string>();
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -107,7 +110,10 @@ export const ChatInput: FC<Props> = ({
             maxHeight: '400px',
             overflow: 'auto',
           }}
-          placeholder="Discover flights and dream holidays"
+          placeholder={`${
+            texts?.prompt.translation ??
+            'Discover flights and dream holidays'
+          }`}
           value={content}
           rows={1}
           onCompositionStart={() => setIsTyping(true)}
@@ -123,15 +129,16 @@ export const ChatInput: FC<Props> = ({
           <IconSend size={18} color={'#999'} />
         </button>
         <p className="absolute bottom-4 text-[var(--secondary-text)] text-[0.65rem] w-[90%] flex justify-center text-center">
-          All photos are from our community. Want to join, earn to
-          train AI and create content and earn dividends?{' '}
+          {texts?.text_under_prompt.translation ??
+            'All photos are from our community. Want to join, earn to train AI and create content and earn dividends?'}
+
           <a
-            className="underline"
+            className="underline pl-1"
             href="https://earth.guide"
             title="Earth.Guide"
             target="_blank"
           >
-            Join
+            {texts?.text_of_link_under_prompt.translation ?? 'Join'}
           </a>
         </p>
       </div>

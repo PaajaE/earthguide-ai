@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 
-import { FLIGHT_TYPES, IFlightParamsConverted } from '@/types';
+import {
+  FLIGHT_TYPES,
+  IFlightParamsConverted,
+  TranslateResponseBody,
+} from '@/types';
 import {
   LocationInput,
   VacationLengthPicker,
@@ -16,6 +20,7 @@ import { airports } from '@/mocks/airports';
 interface FormComponentProps {
   flightParameters: IFlightParamsConverted;
   messageId: string;
+  texts?: TranslateResponseBody<string>;
   onFormSubmit: (
     data: IFlightParamsConverted,
     messageId: string,
@@ -26,6 +31,7 @@ interface FormComponentProps {
 export const FlightForm: React.FC<FormComponentProps> = ({
   flightParameters,
   messageId,
+  texts,
   onFormSubmit,
 }) => {
   const [formData, setFormData] =
@@ -131,12 +137,16 @@ export const FlightForm: React.FC<FormComponentProps> = ({
 
   return (
     <form>
-      <h3 className="font-bold mb-2">Flights’ set-up:</h3>
+      <h3 className="font-bold mb-2">
+        {texts?.flights_setup_heading.translation ??
+          'Flights’ set-up:'}
+      </h3>
       {/* <div className="mb-4">{flightParameters.comment}</div> */}
       <div className="text-black mb-2 text-sm">
         <FlightTypePicker
           selected={formData.flight_type}
           onFlightTypeChange={handleChange}
+          texts={texts}
         />
       </div>
       <div className="text-black mb-2 text-sm">
@@ -167,6 +177,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
               : undefined
           }
           radius={formData.fly_from_radius}
+          texts={texts}
           onRadiusChange={(val) => {
             setFormData({
               ...formData,
@@ -181,6 +192,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
           <VacationLengthPicker
             from={formData.nights_in_dst_from}
             to={formData.nights_in_dst_to}
+            texts={texts}
             onVacationLengthChange={handleVacationLengthChange}
           />
         </div>
@@ -189,8 +201,14 @@ export const FlightForm: React.FC<FormComponentProps> = ({
         <DepartureReturnDates
           from={formData.date_from}
           to={formData.date_to}
-          labelFrom="Departure earliest"
-          labelTo="Departure latest"
+          labelFrom={`${
+            texts?.flights_departure_earliest.translation ??
+            'Departure earliest'
+          }`}
+          labelTo={`${
+            texts?.flights_departure_latest.translation ??
+            'Departure latest'
+          }`}
           fromKey="date_from"
           toKey="date_to"
           showToPicker={
@@ -210,8 +228,14 @@ export const FlightForm: React.FC<FormComponentProps> = ({
           <DepartureReturnDates
             from={formData.return_from}
             to={formData.return_to}
-            labelFrom="Return earliest"
-            labelTo="Return latest"
+            labelFrom={`${
+              texts?.flights_return_earliest.translation ??
+              'Return earliest'
+            }`}
+            labelTo={`${
+              texts?.flights_return_latest.translation ??
+              'Return latest'
+            }`}
             fromKey="return_from"
             toKey="return_to"
             showFromPicker={
@@ -241,6 +265,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
         <CurrencyPicker
           selected={formData.curr}
           onCurrencyChange={handleChange}
+          texts={texts}
         />
       </div>
 
@@ -252,7 +277,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
             onFormSubmit(formData, messageId, flightParameters);
           }}
         >
-          Submit
+          {texts?.flights_search_button.translation ?? 'Search'}
         </button>
       </div>
     </form>

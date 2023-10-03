@@ -1,3 +1,4 @@
+import { TranslateResponseBody } from '@/types';
 import React, { useState, useEffect } from 'react';
 
 export interface Airport {
@@ -13,6 +14,7 @@ interface AirportSelectProps {
   airports: Airport[];
   departureAirport?: string;
   radius: number;
+  texts?: TranslateResponseBody<string>;
   onRadiusChange: (val: number) => void;
   onChange: (value: Airport) => void;
 }
@@ -22,6 +24,7 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   departureAirport,
   onChange,
   radius,
+  texts,
   onRadiusChange,
 }) => {
   const [inputValue, setInputValue] = useState<string>(
@@ -77,7 +80,7 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
       <div className="flex flex-col lg:flex-row items-start lg:items-center">
         <div className="relative w-[50vw] lg:w-[300px]">
           <div className="text-black text-sm font-semibold mb-[0.1rem]">
-            From:
+            {texts?.flights_from.translation ?? 'From:'}
           </div>
           <input
             type="text"
@@ -88,7 +91,10 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
             className="w-full appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px] focus:rounded-b-[0]"
             onFocus={handleInputFocus}
             // onBlur={handleInputBlur}
-            placeholder="Your position"
+            placeholder={`${
+              texts?.flights_airports_possibility1.translation ??
+              'Your position'
+            }`}
             onKeyDown={handleInputKeyDown}
           />
           {isOpen && (
@@ -114,7 +120,8 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
         </div>
         <div className="lg:ml-4">
           <div className="text-black text-sm font-semibold mb-[0.1rem] mt-2 lg:mt-0">
-            Airports within:
+            {texts?.flights_airports_title.translation ??
+              'Airports within:'}
           </div>
           <div className="relative w-fit">
             <input

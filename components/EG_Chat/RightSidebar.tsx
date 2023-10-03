@@ -2,6 +2,7 @@
 import {
   Message,
   PanelData,
+  TranslateResponseBody,
   TypeOfMessage,
   TypeOfPrompt,
   WhereToDisplay,
@@ -19,6 +20,7 @@ interface Props {
   loading: boolean;
   lightMode: 'light' | 'dark';
   showSample: boolean;
+  texts?: TranslateResponseBody<string>;
   onAnotherPromptClick: (
     typeOfPrompt: TypeOfPrompt,
     id: string
@@ -32,6 +34,7 @@ export const RightSidebar: FC<Props> = ({
   loading,
   lightMode,
   showSample,
+  texts,
   onAnotherPromptClick,
   onSend,
   onDisplayGallery,
@@ -48,13 +51,19 @@ export const RightSidebar: FC<Props> = ({
         <div className="text-[var(--tertiary-text)] mt-4 mb-2 pt-0">
           {showSample && (
             <div className="flex flex-col mt-2 px-4">
-              <h2 className="font-bold mb-4">Examples</h2>
+              <h2 className="font-bold mb-4">
+                {texts?.examples
+                  ? `${texts.examples.translation}`
+                  : 'Samples'}
+              </h2>
               <ChatMessage
                 message={{
                   role: 'sample',
                   typeOfMessage: TypeOfMessage.TEXT,
-                  content:
-                    'Affordable beach destinations in Europe. We want to fly in October. For 7 days.',
+                  content: `${
+                    texts?.example1.translation ??
+                    'Affordable beach destinations in Europe. We want to fly in October. For 7 days.'
+                  }`,
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
@@ -70,8 +79,10 @@ export const RightSidebar: FC<Props> = ({
                 message={{
                   role: 'sample',
                   typeOfMessage: TypeOfMessage.TEXT,
-                  content:
-                    'Flight to UNESCO site. City break for 4 days, November, warm weather',
+                  content: `${
+                    texts?.example2.translation ??
+                    'Flight to UNESCO site. City break for 4 days, November, warm weather'
+                  }`,
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
@@ -87,8 +98,10 @@ export const RightSidebar: FC<Props> = ({
                 message={{
                   role: 'sample',
                   typeOfMessage: TypeOfMessage.TEXT,
-                  content:
-                    'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.',
+                  content: `${
+                    texts?.example3.translation ??
+                    'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.'
+                  }`,
                 }}
                 lightMode={lightMode}
                 onSampleClick={(content) => {
@@ -100,13 +113,19 @@ export const RightSidebar: FC<Props> = ({
                 }}
                 onFormSubmit={() => {}}
               />
-              <h2 className="font-bold mb-4 mt-2">Capabilities</h2>
+              <h2 className="font-bold mb-4 mt-2">
+                {texts?.capabilities
+                  ? `${texts.capabilities.translation}`
+                  : 'Capabilities'}
+              </h2>
               <ChatMessage
                 message={{
                   role: 'sample',
                   typeOfMessage: TypeOfMessage.TEXT,
-                  content:
-                    "My superpower is discovering destinations and flight tickets with just one request. Simply tell me your preferences, and I'll provide personalized recommendations.",
+                  content: `${
+                    texts?.capabilities1.translation ??
+                    "My superpower is discovering destinations and flight tickets with just one request. Simply tell me your preferences, and I'll provide personalized recommendations."
+                  }`,
                 }}
                 lightMode={lightMode}
                 onFormSubmit={() => {}}
@@ -120,11 +139,16 @@ export const RightSidebar: FC<Props> = ({
                   items={[
                     {
                       type: WhereToDisplay.PANEL_DESTINATION,
-                      label: 'Destination',
+                      label: `${
+                        texts?.button_1_panel.translation ??
+                        'Destinations'
+                      }`,
                     },
                     {
                       type: WhereToDisplay.PANEL_FLIGHTS,
-                      label: 'Flights',
+                      label: `${
+                        texts?.button_2_panel.translation ?? 'Flights'
+                      }`,
                     },
                   ]}
                 />
@@ -148,7 +172,7 @@ export const RightSidebar: FC<Props> = ({
         {data && !loading && (
           <div className="flex mt-4 mb-2 px-4">
             <Button
-              text="Similar places"
+              text={texts?.button_3.translation ?? 'Similar places'}
               iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
               bgColor="var(--tertiary)"
               typeOfPrompt={TypeOfPrompt.MORE_LIKE}
@@ -156,7 +180,10 @@ export const RightSidebar: FC<Props> = ({
                 onSend &&
                   onSend({
                     role: 'user',
-                    content: 'Similar places like this',
+                    content: `${
+                      texts?.answer_button3.translation ??
+                      'Similar places like this'
+                    }`,
                     typeOfMessage: TypeOfMessage.TEXT,
                     typeOfPrompt,
                     id: `${data?.id ?? ''}`,

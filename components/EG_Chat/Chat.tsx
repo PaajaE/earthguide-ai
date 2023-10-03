@@ -6,6 +6,7 @@ import {
   IRateAnswer,
   KeyValuePair,
   Message,
+  TranslateResponseBody,
   TypeOfMessage,
   TypeOfPrompt,
 } from '@/types';
@@ -24,6 +25,7 @@ interface Props {
   isMobile: boolean;
   logoPath: string;
   starterMessage: string;
+  texts?: TranslateResponseBody<string>;
   onSend: (message: Message) => void;
   onRateAnswer: (feedback: IRateAnswer) => void;
   onUpdateConversation: (
@@ -51,6 +53,7 @@ export const Chat: FC<Props> = ({
   isMobile,
   logoPath,
   starterMessage,
+  texts,
   onSend,
   onRateAnswer,
   onAnotherPromptClick,
@@ -67,18 +70,29 @@ export const Chat: FC<Props> = ({
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  const scrollToBottom = useCallback(() => {
-    if (autoScrollEnabled) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-      textareaRef.current?.focus();
-    }
-  }, [autoScrollEnabled]);
+  // const scrollToBottom = useCallback(() => {
+  //   if (autoScrollEnabled) {
+  //     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  //     textareaRef.current?.focus();
+  //   }
+  // }, [autoScrollEnabled]);
 
   const handleScroll = () => {
     if (chatContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } =
         chatContainerRef.current;
-      const bottomTolerance = 30;
+      const bottomTolerance = 60;
+
+      console.log({
+        scrollTop,
+        clientHeight,
+        scrollHeight,
+        bottomTolerance,
+      });
+      console.log({
+        shouldScroll:
+          scrollTop + clientHeight < scrollHeight - bottomTolerance,
+      });
 
       if (scrollTop + clientHeight < scrollHeight - bottomTolerance) {
         setAutoScrollEnabled(false);
@@ -88,19 +102,29 @@ export const Chat: FC<Props> = ({
     }
   };
 
-  const handleScrollDown = () => {
-    chatContainerRef.current?.scrollTo({
-      top: chatContainerRef.current.scrollHeight,
-      behavior: 'smooth',
-    });
-  };
+  // const handleScrollDown = () => {
+  //   chatContainerRef.current?.scrollTo({
+  //     top: chatContainerRef.current.scrollHeight,
+  //     behavior: 'smooth',
+  //   });
+  // };
 
   const scrollDown = () => {
+    console.log({ autoScrollEnabled });
     if (autoScrollEnabled) {
       messagesEndRef.current?.scrollIntoView(true);
     }
   };
   const throttledScrollDown = throttle(scrollDown, 250);
+
+  const handleFormSubmit = (
+    data: IFlightParamsConverted,
+    messageId: string,
+    prevParams: IFlightParamsConverted
+  ) => {
+    setAutoScrollEnabled(true);
+    onFormSubmit(data, messageId, prevParams);
+  };
 
   // useEffect(() => {
   //   console.log('currentMessage', currentMessage);
@@ -118,29 +142,30 @@ export const Chat: FC<Props> = ({
       );
   }, [conversation, throttledScrollDown]);
 
-  useEffect(() => {
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        setAutoScrollEnabled(entry.isIntersecting);
-        if (entry.isIntersecting) {
-          textareaRef.current?.focus();
-        }
-      },
-      {
-        root: null,
-        threshold: 0.5,
-      }
-    );
-    const messagesEndElement = messagesEndRef.current;
-    if (messagesEndElement) {
-      observer.observe(messagesEndElement);
-    }
-    return () => {
-      if (messagesEndElement) {
-        observer.unobserve(messagesEndElement);
-      }
-    };
-  }, [messagesEndRef]);
+  // useEffect(() => {
+  //   const observer = new IntersectionObserver(
+  //     ([entry]) => {
+  //       console.log({entry})
+  //       setAutoScrollEnabled(entry.isIntersecting);
+  //       if (entry.isIntersecting) {
+  //         textareaRef.current?.focus();
+  //       }
+  //     },
+  //     {
+  //       root: null,
+  //       threshold: 0.5,
+  //     }
+  //   );
+  //   const messagesEndElement = messagesEndRef.current;
+  //   if (messagesEndElement) {
+  //     observer.observe(messagesEndElement);
+  //   }
+  //   return () => {
+  //     if (messagesEndElement) {
+  //       observer.unobserve(messagesEndElement);
+  //     }
+  //   };
+  // }, [messagesEndRef]);
 
   return (
     <div className="relative flex flex-col justify-between w-auto h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full lg:max-w-[60%] bg-[#FAFAFA]">
@@ -158,22 +183,28 @@ export const Chat: FC<Props> = ({
             message={{
               role: 'starter',
               typeOfMessage: TypeOfMessage.TEXT,
-              content: starterMessage,
+              content: `${
+                texts?.intro.translation ?? starterMessage
+              }`,
             }}
             lightMode={lightMode}
-            onFormSubmit={onFormSubmit}
+            onFormSubmit={handleFormSubmit}
           />
 
           <div className="flex lg:hidden flex-col mt-6">
             <h2 className="text-[var(--tertiary-text)] font-bold mb-4">
-              Examples
+              {texts?.examples
+                ? `${texts.examples.translation}`
+                : 'Examples'}
             </h2>
             <ChatMessage
               message={{
                 role: 'sample',
                 typeOfMessage: TypeOfMessage.TEXT,
-                content:
-                  'Affordable beach destinations in Europe. We want to fly in October. For 7 days.',
+                content: `${
+                  texts?.example1.translation ??
+                  'Affordable beach destinations in Europe. We want to fly in October. For 7 days.'
+                }`,
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
@@ -183,14 +214,16 @@ export const Chat: FC<Props> = ({
                   content,
                 });
               }}
-              onFormSubmit={onFormSubmit}
+              onFormSubmit={handleFormSubmit}
             />
             <ChatMessage
               message={{
                 role: 'sample',
                 typeOfMessage: TypeOfMessage.TEXT,
-                content:
-                  'Flight to UNESCO site. City break for 4 days, November, warm weather',
+                content: `${
+                  texts?.example2.translation ??
+                  'Flight to UNESCO site. City break for 4 days, November, warm weather'
+                }`,
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
@@ -200,14 +233,16 @@ export const Chat: FC<Props> = ({
                   content,
                 });
               }}
-              onFormSubmit={onFormSubmit}
+              onFormSubmit={handleFormSubmit}
             />
             <ChatMessage
               message={{
                 role: 'sample',
                 typeOfMessage: TypeOfMessage.TEXT,
-                content:
-                  'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.',
+                content: `${
+                  texts?.example3.translation ??
+                  'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.'
+                }`,
               }}
               lightMode={lightMode}
               onSampleClick={(content) => {
@@ -217,7 +252,7 @@ export const Chat: FC<Props> = ({
                   content,
                 });
               }}
-              onFormSubmit={onFormSubmit}
+              onFormSubmit={handleFormSubmit}
             />
           </div>
 
@@ -230,6 +265,7 @@ export const Chat: FC<Props> = ({
                   key={index}
                   message={message}
                   lightMode={lightMode}
+                  texts={texts}
                   onAnotherPromptClick={onAnotherPromptClick}
                   messageIsStreaming={
                     messageIsStreaming &&
@@ -240,13 +276,16 @@ export const Chat: FC<Props> = ({
                     index === conversation.messages.length - 1
                   }
                   pathExists={!!path}
-                  onSend={(message) => {
+                  onSend={(message, shouldScroll = false) => {
+                    if (shouldScroll) {
+                      setAutoScrollEnabled(true);
+                    }
                     setCurrentMessage(message);
                     onSend(message);
                   }}
                   onRateAnswer={onRateAnswer}
                   onDisplayGallery={onDisplayGallery}
-                  onFormSubmit={onFormSubmit}
+                  onFormSubmit={handleFormSubmit}
                 />
               ))}
 
@@ -265,9 +304,11 @@ export const Chat: FC<Props> = ({
             messageIsStreaming={messageIsStreaming}
             onSend={(message) => {
               setCurrentMessage(message);
+              setAutoScrollEnabled(true);
               onSend(message);
             }}
             textareaRef={textareaRef}
+            texts={texts}
             model={conversation.model}
           />
         )}
