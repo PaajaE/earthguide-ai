@@ -29,7 +29,7 @@ interface Props {
     typeOfPrompt: TypeOfPrompt,
     id: string
   ) => void;
-  onSend?: (message: Message, shouldScroll?: boolean) => void;
+  onSend?: (message: Message) => void;
   onRateAnswer?: (feedback: IRateAnswer) => void;
   onSampleClick?: (content: string) => void;
   onDisplayGallery?: (imgSrcs: string[], curIndex: number) => void;
@@ -269,19 +269,16 @@ export const ChatMessage: FC<Props> = ({
                 typeOfPrompt={TypeOfPrompt.MORE_PLACES}
                 onClick={(typeOfPrompt: TypeOfPrompt) => {
                   onSend &&
-                    onSend(
-                      {
-                        role: 'user',
-                        typeOfMessage: TypeOfMessage.TEXT,
-                        content: `${
-                          texts?.answer_button1.translation ??
-                          'More places like these'
-                        }`,
-                        typeOfPrompt,
-                        id: message.id ?? '',
-                      },
-                      true
-                    );
+                    onSend({
+                      role: 'user',
+                      typeOfMessage: TypeOfMessage.TEXT,
+                      content: `${
+                        texts?.answer_button1.translation ??
+                        'More places like these'
+                      }`,
+                      typeOfPrompt,
+                      id: message.id ?? '',
+                    });
                 }}
               />
               {!pathExists && (
@@ -295,19 +292,16 @@ export const ChatMessage: FC<Props> = ({
                   typeOfPrompt={TypeOfPrompt.LESSER_KNOWN}
                   onClick={(typeOfPrompt: TypeOfPrompt) => {
                     onSend &&
-                      onSend(
-                        {
-                          role: 'user',
-                          typeOfMessage: TypeOfMessage.TEXT,
-                          content: `${
-                            texts?.answer_button2.translation ??
-                            'Show me lesser-known places'
-                          }`,
-                          typeOfPrompt,
-                          id: message.id ?? '',
-                        },
-                        true
-                      );
+                      onSend({
+                        role: 'user',
+                        typeOfMessage: TypeOfMessage.TEXT,
+                        content: `${
+                          texts?.answer_button2.translation ??
+                          'Show me lesser-known places'
+                        }`,
+                        typeOfPrompt,
+                        id: message.id ?? '',
+                      });
                   }}
                 />
               )}

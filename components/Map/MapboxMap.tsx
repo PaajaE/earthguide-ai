@@ -29,60 +29,66 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
       const bounds = new mapboxgl.LngLatBounds();
 
       mapData.forEach((destination) => {
-        const el = document.createElement('div');
-        el.className = 'marker';
+        if (
+          destination &&
+          typeof destination.gps.latitude === 'number' &&
+          typeof destination.gps.longitude === 'number'
+        ) {
+          const el = document.createElement('div');
+          el.className = 'marker';
 
-        // el.style.width = `64px`;
-        el.style.minHeight = `120px`;
-        el.style.minWidth = `160px`;
-        el.style.maxWidth = `200px`;
+          // el.style.width = `64px`;
+          el.style.minHeight = `120px`;
+          el.style.minWidth = `160px`;
+          el.style.maxWidth = `200px`;
 
-        el.style.backgroundColor = '#e2e2e2';
-        el.style.backgroundImage = `linear-gradient(to top, rgba(78, 78, 78, 0.43) 0%, rgba(255, 255, 255, 0) 40%), url(${
-          destination.photos[0] ?? '/plane.jpg '
-        })`;
-        el.style.backgroundRepeat = 'no-repeat';
-        el.style.backgroundPosition = 'center';
-        el.style.backgroundSize = 'cover';
-        el.style.cursor = 'pointer';
-        el.style.border = `5px solid`;
-        el.style.borderRadius = `10px`;
-        el.style.borderColor = 'var(--tertiary)';
-        el.style.display = 'flex';
-        el.style.alignItems = 'end';
-        el.style.padding = '2px 6px';
+          el.style.backgroundColor = '#e2e2e2';
+          el.style.backgroundImage = `linear-gradient(to top, rgba(78, 78, 78, 0.43) 0%, rgba(255, 255, 255, 0) 40%), url(${
+            destination.photos[0] ?? '/plane.jpg '
+          })`;
+          el.style.backgroundRepeat = 'no-repeat';
+          el.style.backgroundPosition = 'center';
+          el.style.backgroundSize = 'cover';
+          el.style.cursor = 'pointer';
+          el.style.border = `5px solid`;
+          el.style.borderRadius = `10px`;
+          el.style.borderColor = 'var(--tertiary)';
+          el.style.display = 'flex';
+          el.style.alignItems = 'end';
+          el.style.padding = '2px 6px';
 
-        var foot = document.createElement('div');
-        foot.className = 'foot';
-        el.appendChild(foot);
+          var foot = document.createElement('div');
+          foot.className = 'foot';
+          el.appendChild(foot);
 
-        let elChild = `<div style='display: block;'><div style='color: white; font-weight: 700; ${
-          destination.price.length > 0
-            ? 'line-height: 1em;'
-            : 'line-height: 2em;'
-        }'>${destination.locationTitle}</div>`;
-        elChild +=
-          destination.price.length > 0
-            ? `<div style='color: white;'>${destination.price}</div>`
-            : '';
-        elChild += '</div>';
+          let elChild = `<div style='display: block;'><div style='color: white; font-weight: 700; ${
+            destination.price.length > 0
+              ? 'line-height: 1em;'
+              : 'line-height: 2em;'
+          }'>${destination.locationTitle}</div>`;
+          elChild +=
+            destination.price.length > 0
+              ? `<div style='color: white;'>${destination.price}</div>`
+              : '';
+          elChild += '</div>';
 
-        el.innerHTML += elChild;
+          el.innerHTML += elChild;
 
-        new mapboxgl.Marker(el, {
-          anchor: 'bottom',
-          offset: [0, -5],
-        })
-          .setLngLat([
+          new mapboxgl.Marker(el, {
+            anchor: 'bottom',
+            offset: [0, -5],
+          })
+            .setLngLat([
+              destination.gps.longitude,
+              destination.gps.latitude,
+            ])
+            .addTo(map);
+
+          bounds.extend([
             destination.gps.longitude,
             destination.gps.latitude,
-          ])
-          .addTo(map);
-
-        bounds.extend([
-          destination.gps.longitude,
-          destination.gps.latitude,
-        ]);
+          ]);
+        }
       });
 
       map.fitBounds(bounds, {
