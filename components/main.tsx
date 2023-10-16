@@ -69,7 +69,9 @@ export default function Main({
   const [messageError, setMessageError] = useState<boolean>(false);
   const [machineId, setMachineId] = useState<string>('');
   const [ipData, setIpData] = useState<IpData | null>(null);
-  const [language, setLanguage] = useState<string>('en');
+  const [language, setLanguage] = useState<string | undefined>(
+    undefined
+  );
   const [deviceType, setDeviceType] = useState<DeviceTypes>(
     DeviceTypes.COMPUTER
   );
@@ -84,6 +86,8 @@ export default function Main({
   const [galleryItems, setGalleryItems] = useState<string[]>([]);
   const [galleryIndex, setGalleryIndex] = useState<number>(0);
   const [texts, setTexts] = useState<TranslateResponseBody<string>>();
+  const [shouldScrollToBottom, setShouldScrollToBottom] =
+    useState<boolean>(false);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -177,6 +181,7 @@ export default function Main({
     flightParams?: IFlightParamsObtained
   ) => {
     if (selectedConversation) {
+      setShouldScrollToBottom(true);
       setMessageIsStreaming(true);
       let updatedConversation: Conversation;
 
@@ -617,10 +622,12 @@ export default function Main({
   };
 
   useEffect(() => {
-    fetchTranslation({
-      language_of_browser: language,
-      specific_airlines: specificAirlines,
-    });
+    if (language) {
+      fetchTranslation({
+        language_of_browser: language,
+        specific_airlines: specificAirlines,
+      });
+    }
   }, [language, specificAirlines]);
 
   useEffect(() => {
@@ -649,163 +656,180 @@ export default function Main({
       <Head>
         <title>{airlineData.title}</title>
       </Head>
-      {showModal && (
-        <div
-          id="defaultModal"
-          tabIndex={-1}
-          aria-hidden="true"
-          className={`fixed top-0 left-0 right-0 bottom-0 z-40 ${
-            showModal ? '' : 'hidden'
-          } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#4d4d4d]`}
-        >
-          <div className="relative w-full h-full max-h-full">
-            <div className="relative h-full bg-black lg:rounded-lg shadow dark:bg-gray-700">
-              <div className="absolute right-0 z-50">
-                <div className="flex justify-end p-2">
-                  <button
-                    type="button"
-                    className="text-[var(--primary-text)] flex justify-center align-center h-[40px] w-[40px] rounded-full bg-white/30 lg:bg-black/70 hover:bg-white/20 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-[var(--primary-text)]"
-                    onClick={() => setShowModal(false)}
-                  >
-                    x<span className="sr-only">Close modal</span>
-                  </button>
+      {texts && (
+        <>
+          {showModal && (
+            <div
+              id="defaultModal"
+              tabIndex={-1}
+              aria-hidden="true"
+              className={`fixed top-0 left-0 right-0 bottom-0 z-40 ${
+                showModal ? '' : 'hidden'
+              } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#4d4d4d]`}
+            >
+              <div className="relative w-full h-full max-h-full">
+                <div className="relative h-full bg-black lg:rounded-lg shadow dark:bg-gray-700">
+                  <div className="absolute right-0 z-50">
+                    <div className="flex justify-end p-2">
+                      <button
+                        type="button"
+                        className="text-[var(--primary-text)] flex justify-center align-center h-[40px] w-[40px] rounded-full bg-white/30 lg:bg-black/70 hover:bg-white/20 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-[var(--primary-text)]"
+                        onClick={() => setShowModal(false)}
+                      >
+                        x<span className="sr-only">Close modal</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div className="p-0 lg:p-6 space-y-6 w-full h-full">
+                    {galleryItems.length > 0 && (
+                      <div className="w-full h-full flex">
+                        <Gallery
+                          galleryItems={galleryItems}
+                          curIndex={galleryIndex}
+                        />
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="p-0 lg:p-6 space-y-6 w-full h-full">
-                {galleryItems.length > 0 && (
-                  <div className="w-full h-full flex">
-                    <Gallery
-                      galleryItems={galleryItems}
-                      curIndex={galleryIndex}
-                    />
-                  </div>
-                )}
-              </div>
             </div>
-          </div>
-        </div>
-      )}
-      {selectedConversation && (
-        <>
-          <div
-            className={`hidden lg:flex flex-col h-screen w-100 text-[var(--primary-text)] ${lightMode}`}
-          >
-            <div className="h-full w-100 p-2">
-              <div className="flex h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
-                <LeftSidebar
-                  lightMode="light"
-                  logoPath={airlineData.logo}
-                />
-
-                <Chat
-                  conversation={selectedConversation}
-                  messageIsStreaming={messageIsStreaming}
-                  messageError={messageError}
-                  loading={loading}
-                  lightMode={lightMode}
-                  logoPath={airlineData.logo}
-                  starterMessage={airlineData.starterMessage}
-                  texts={texts}
-                  onSend={sendWithRetry}
-                  onRateAnswer={handleRateAnswer}
-                  onUpdateConversation={handleUpdateConversation}
-                  onAnotherPromptClick={handleAnotherPromptClick}
-                  onDisplayGallery={handleDisplayGallery}
-                  isMobile={false}
-                  onFormSubmit={handleFlightParamsSubmit}
-                />
-                {showPanelData && (
-                  <>
-                    <RightSidebar
-                      loading={panelDataLoading}
-                      showSample={
-                        selectedConversation.messages.length === 0
-                      }
-                      data={panelData}
-                      texts={texts}
+          )}
+          {selectedConversation && (
+            <>
+              <div
+                className={`hidden lg:flex flex-col h-screen w-100 text-[var(--primary-text)] ${lightMode}`}
+              >
+                <div className="h-full w-100 p-2">
+                  <div className="flex h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
+                    <LeftSidebar
                       lightMode="light"
-                      onAnotherPromptClick={handleAnotherPromptClick}
-                      onSend={sendWithRetry}
-                      onDisplayGallery={handleDisplayGallery}
+                      logoPath={airlineData.logo}
                     />
-                  </>
-                )}
-              </div>
-            </div>
-          </div>
 
-          <div
-            className={`flex lg:hidden flex-col justify-start h-screen w-full text-[var(--primary-text)] ${lightMode}`}
-          >
-            <div className="h-full w-100">
-              <div className="flex flex-col h-screen lg:h-full bg-[#FAFAFA] rounded-md">
-                <Chat
-                  conversation={selectedConversation}
-                  messageIsStreaming={messageIsStreaming}
-                  messageError={messageError}
-                  loading={loading}
-                  lightMode={lightMode}
-                  logoPath={airlineData.logo}
-                  starterMessage={airlineData.starterMessage}
-                  onSend={sendWithRetry}
-                  onRateAnswer={handleRateAnswer}
-                  onUpdateConversation={handleUpdateConversation}
-                  onAnotherPromptClick={handleAnotherPromptClick}
-                  onDisplayGallery={handleDisplayGallery}
-                  isMobile={true}
-                  onFormSubmit={handleFlightParamsSubmit}
-                />
-                {showMobilePanelData && (
-                  <div
-                    id="defaultModal"
-                    tabIndex={-1}
-                    aria-hidden="true"
-                    className={`fixed top-0 left-0 right-0 bottom-0 z-20 ${
-                      showMobilePanelData ? '' : 'hidden'
-                    } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#4d4d4d]`}
-                  >
-                    <div className="relative w-full h-full max-h-full">
-                      <div className="relative h-full bg-black lg:rounded-lg shadow dark:bg-gray-700">
-                        <div className="absolute right-0 z-30">
-                          <div className="flex justify-end p-2">
-                            <button
-                              type="button"
-                              className="text-[var(--secondary-text)] flex justify-center align-center h-[40px] w-[40px] rounded-full bg-black/30 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-[var(--primary-text)]"
-                              onClick={() =>
-                                setShowMobilePanelData(false)
-                              }
-                            >
-                              x
-                              <span className="sr-only">
-                                Close modal
-                              </span>
-                            </button>
-                          </div>
-                        </div>
-                        <div className="p-0 lg:p-6 space-y-6 w-full h-full">
-                          <div className="w-full h-full flex">
-                            <RightSidebarMobile
-                              loading={panelDataLoading}
-                              data={panelData}
-                              lightMode="light"
-                              onAnotherPromptClick={
-                                handleAnotherPromptClick
-                              }
-                              onSend={(message: Message) => {
-                                setShowMobilePanelData(false);
-                                sendWithRetry(message);
-                              }}
-                              onDisplayGallery={handleDisplayGallery}
-                            />
+                    <Chat
+                      conversation={selectedConversation}
+                      messageIsStreaming={messageIsStreaming}
+                      messageError={messageError}
+                      loading={loading}
+                      lightMode={lightMode}
+                      logoPath={airlineData.logo}
+                      starterMessage={airlineData.starterMessage}
+                      texts={texts}
+                      shouldScrollToBottom={shouldScrollToBottom}
+                      onSend={sendWithRetry}
+                      onRateAnswer={handleRateAnswer}
+                      onUpdateConversation={handleUpdateConversation}
+                      onAnotherPromptClick={handleAnotherPromptClick}
+                      onDisplayGallery={handleDisplayGallery}
+                      isMobile={false}
+                      onFormSubmit={handleFlightParamsSubmit}
+                      onDisallowScrollToBottom={() => {
+                        setShouldScrollToBottom(false);
+                      }}
+                    />
+                    {showPanelData && (
+                      <>
+                        <RightSidebar
+                          loading={panelDataLoading}
+                          showSample={
+                            selectedConversation.messages.length === 0
+                          }
+                          data={panelData}
+                          texts={texts}
+                          lightMode="light"
+                          onAnotherPromptClick={
+                            handleAnotherPromptClick
+                          }
+                          onSend={sendWithRetry}
+                          onDisplayGallery={handleDisplayGallery}
+                        />
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+
+              <div
+                className={`flex lg:hidden flex-col justify-start h-screen w-full text-[var(--primary-text)] ${lightMode}`}
+              >
+                <div className="h-full w-100">
+                  <div className="flex flex-col h-screen lg:h-full bg-[#FAFAFA] rounded-md">
+                    <Chat
+                      conversation={selectedConversation}
+                      messageIsStreaming={messageIsStreaming}
+                      messageError={messageError}
+                      loading={loading}
+                      lightMode={lightMode}
+                      logoPath={airlineData.logo}
+                      starterMessage={airlineData.starterMessage}
+                      texts={texts}
+                      shouldScrollToBottom={shouldScrollToBottom}
+                      onSend={sendWithRetry}
+                      onRateAnswer={handleRateAnswer}
+                      onUpdateConversation={handleUpdateConversation}
+                      onAnotherPromptClick={handleAnotherPromptClick}
+                      onDisplayGallery={handleDisplayGallery}
+                      isMobile={true}
+                      onFormSubmit={handleFlightParamsSubmit}
+                      onDisallowScrollToBottom={() => {
+                        setShouldScrollToBottom(false);
+                      }}
+                    />
+                    {showMobilePanelData && (
+                      <div
+                        id="defaultModal"
+                        tabIndex={-1}
+                        aria-hidden="true"
+                        className={`fixed top-0 left-0 right-0 bottom-0 z-20 ${
+                          showMobilePanelData ? '' : 'hidden'
+                        } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 h-[calc(100%-1rem)] max-h-full bg-[#4d4d4d]`}
+                      >
+                        <div className="relative w-full h-full max-h-full">
+                          <div className="relative h-full bg-black lg:rounded-lg shadow dark:bg-gray-700">
+                            <div className="absolute right-0 z-30">
+                              <div className="flex justify-end p-2">
+                                <button
+                                  type="button"
+                                  className="text-[var(--secondary-text)] flex justify-center align-center h-[40px] w-[40px] rounded-full bg-black/30 text-sm p-1.5 ml-auto inline-flex items-center dark:hover:bg-gray-600 dark:hover:text-[var(--primary-text)]"
+                                  onClick={() =>
+                                    setShowMobilePanelData(false)
+                                  }
+                                >
+                                  x
+                                  <span className="sr-only">
+                                    Close modal
+                                  </span>
+                                </button>
+                              </div>
+                            </div>
+                            <div className="p-0 lg:p-6 space-y-6 w-full h-full">
+                              <div className="w-full h-full flex">
+                                <RightSidebarMobile
+                                  loading={panelDataLoading}
+                                  data={panelData}
+                                  lightMode="light"
+                                  onAnotherPromptClick={
+                                    handleAnotherPromptClick
+                                  }
+                                  onSend={(message: Message) => {
+                                    setShowMobilePanelData(false);
+                                    sendWithRetry(message);
+                                  }}
+                                  onDisplayGallery={
+                                    handleDisplayGallery
+                                  }
+                                />
+                              </div>
+                            </div>
                           </div>
                         </div>
                       </div>
-                    </div>
+                    )}
                   </div>
-                )}
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          )}
         </>
       )}
     </>

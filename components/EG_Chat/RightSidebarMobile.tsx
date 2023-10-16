@@ -2,6 +2,7 @@
 import {
   Message,
   PanelData,
+  TranslateResponseBody,
   TypeOfMessage,
   TypeOfPrompt,
 } from '@/types';
@@ -14,6 +15,7 @@ interface Props {
   data: PanelData | null;
   loading: boolean;
   lightMode: 'light' | 'dark';
+  texts?: TranslateResponseBody<string>;
   onAnotherPromptClick: (
     typeOfPrompt: TypeOfPrompt,
     id: string
@@ -26,6 +28,7 @@ export const RightSidebarMobile: FC<Props> = ({
   data,
   loading,
   lightMode,
+  texts,
   onAnotherPromptClick,
   onSend,
   onDisplayGallery,
@@ -33,26 +36,11 @@ export const RightSidebarMobile: FC<Props> = ({
   return (
     <div
       className={`relative flex flex-col w-full h-full z-10 bg-[#F4F4F4]`}
-      //   style={{width: "-webkit-fill-available, fill-available, -moz-fill-available"}}
     >
       <div className="w-auto flex flex-col h-full justify-between overflow-y-auto">
         <div className="text-[var(--secondary-text)]">
           {(data || loading) && (
             <>
-              {/* <div className="flex flex-row justify-center align-center">
-                <Toggle
-                  items={[
-                    {
-                      type: WhereToDisplay.PANEL_DESTINATION,
-                      label: "Destination",
-                    },
-                    {
-                      type: WhereToDisplay.PANEL_FLIGHTS,
-                      label: "Flights",
-                    },
-                  ]}
-                />
-              </div> */}
               <div
                 className={`border-[#000000ff] p-4 leading-6  font-plus jakarta sans  font-[400] overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_6rem)]`}
               >
@@ -72,7 +60,7 @@ export const RightSidebarMobile: FC<Props> = ({
         {data && !loading && (
           <div className="flex my-4 px-4">
             <Button
-              text="Similar places"
+              text={texts?.button_3.translation ?? 'Similar places'}
               iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
               bgColor="var(--tertiary)"
               typeOfPrompt={TypeOfPrompt.MORE_LIKE}
@@ -81,7 +69,10 @@ export const RightSidebarMobile: FC<Props> = ({
                   onSend(
                     {
                       role: 'user',
-                      content: 'Similar places like this',
+                      content: `${
+                        texts?.answer_button3.translation ??
+                        'Similar places like this'
+                      }`,
                       typeOfMessage: TypeOfMessage.TEXT,
                       typeOfPrompt,
                       id: `${data?.id ?? ''}`,
