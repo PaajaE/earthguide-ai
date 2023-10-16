@@ -96,7 +96,8 @@ export default function Main({
   const [handleSendParams, setHandleSendParams] = useState<
     IHandleSendParams | undefined
   >(undefined);
-  const [showErrorModal, setShowErrorModal] = useState<boolean>(true);
+  const [showErrorModal, setShowErrorModal] =
+    useState<boolean>(false);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
