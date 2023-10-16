@@ -26,6 +26,7 @@ interface Props {
   logoPath: string;
   starterMessage: string;
   texts?: TranslateResponseBody<string>;
+  shouldScrollToBottom: boolean;
   onSend: (message: Message) => void;
   onRateAnswer: (feedback: IRateAnswer) => void;
   onUpdateConversation: (
@@ -37,6 +38,7 @@ interface Props {
     id: string
   ) => void;
   onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
+  onDisallowScrollToBottom: () => void;
   onFormSubmit: (
     data: IFlightParamsConverted,
     messageId: string,
@@ -54,118 +56,43 @@ export const Chat: FC<Props> = ({
   logoPath,
   starterMessage,
   texts,
+  shouldScrollToBottom,
   onSend,
   onRateAnswer,
   onAnotherPromptClick,
   onDisplayGallery,
   onFormSubmit,
+  onDisallowScrollToBottom,
 }) => {
   const path = usePathname()?.substring(1);
-
-  const [currentMessage, setCurrentMessage] = useState<Message>();
-  const [autoScrollEnabled, setAutoScrollEnabled] =
-    useState<boolean>(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // const scrollToBottom = useCallback(() => {
-  //   if (autoScrollEnabled) {
-  //     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  //     textareaRef.current?.focus();
-  //   }
-  // }, [autoScrollEnabled]);
+  const scrollToBottom = useCallback(() => {
+    console.log('scroll to bottom');
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, []);
 
-  const handleScroll = () => {
-    if (chatContainerRef.current) {
-      const { scrollTop, scrollHeight, clientHeight } =
-        chatContainerRef.current;
-      const bottomTolerance = 60;
-
-      console.log({
-        scrollTop,
-        clientHeight,
-        scrollHeight,
-        bottomTolerance,
-      });
-      console.log({
-        shouldScroll:
-          scrollTop + clientHeight < scrollHeight - bottomTolerance,
-      });
-
-      if (scrollTop + clientHeight < scrollHeight - bottomTolerance) {
-        setAutoScrollEnabled(false);
-      } else {
-        setAutoScrollEnabled(true);
-      }
+  useEffect(() => {
+    if (shouldScrollToBottom) {
+      scrollToBottom();
+      onDisallowScrollToBottom();
     }
-  };
-
-  // const handleScrollDown = () => {
-  //   chatContainerRef.current?.scrollTo({
-  //     top: chatContainerRef.current.scrollHeight,
-  //     behavior: 'smooth',
-  //   });
-  // };
-
-  const scrollDown = () => {
-    console.log({ autoScrollEnabled });
-    if (autoScrollEnabled) {
-      messagesEndRef.current?.scrollIntoView(true);
-    }
-  };
-  const throttledScrollDown = throttle(scrollDown, 250);
+  }, [
+    shouldScrollToBottom,
+    scrollToBottom,
+    onDisallowScrollToBottom,
+  ]);
 
   const handleFormSubmit = (
     data: IFlightParamsConverted,
     messageId: string,
     prevParams: IFlightParamsConverted
   ) => {
-    setAutoScrollEnabled(true);
     onFormSubmit(data, messageId, prevParams);
   };
-
-  // useEffect(() => {
-  //   console.log('currentMessage', currentMessage);
-  //   if (currentMessage) {
-  //     handleSend(currentMessage);
-  //     homeDispatch({ field: 'currentMessage', value: undefined });
-  //   }
-  // }, [currentMessage]);
-
-  useEffect(() => {
-    throttledScrollDown();
-    conversation &&
-      setCurrentMessage(
-        conversation.messages[conversation.messages.length - 2]
-      );
-  }, [conversation, throttledScrollDown]);
-
-  // useEffect(() => {
-  //   const observer = new IntersectionObserver(
-  //     ([entry]) => {
-  //       console.log({entry})
-  //       setAutoScrollEnabled(entry.isIntersecting);
-  //       if (entry.isIntersecting) {
-  //         textareaRef.current?.focus();
-  //       }
-  //     },
-  //     {
-  //       root: null,
-  //       threshold: 0.5,
-  //     }
-  //   );
-  //   const messagesEndElement = messagesEndRef.current;
-  //   if (messagesEndElement) {
-  //     observer.observe(messagesEndElement);
-  //   }
-  //   return () => {
-  //     if (messagesEndElement) {
-  //       observer.unobserve(messagesEndElement);
-  //     }
-  //   };
-  // }, [messagesEndRef]);
 
   return (
     <div className="relative flex flex-col justify-between w-auto h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full lg:max-w-[60%] bg-[#FAFAFA]">
@@ -173,7 +100,6 @@ export const Chat: FC<Props> = ({
         <div
           className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_10rem)] p-4 lg:py-0 lg:px-4"
           ref={chatContainerRef}
-          onScroll={handleScroll}
         >
           {isMobile && (
             <LeftSidebar lightMode="light" logoPath={logoPath} />
@@ -276,11 +202,7 @@ export const Chat: FC<Props> = ({
                     index === conversation.messages.length - 1
                   }
                   pathExists={!!path}
-                  onSend={(message, shouldScroll = false) => {
-                    if (shouldScroll) {
-                      setAutoScrollEnabled(true);
-                    }
-                    setCurrentMessage(message);
+                  onSend={(message) => {
                     onSend(message);
                   }}
                   onRateAnswer={onRateAnswer}
@@ -290,7 +212,7 @@ export const Chat: FC<Props> = ({
               ))}
 
               <div
-                className="bg-[#FAFAFA] h-8"
+                className="bg-[#FAFAFA] h-[20vh]"
                 ref={messagesEndRef}
               />
             </>
@@ -303,8 +225,6 @@ export const Chat: FC<Props> = ({
           <ChatInput
             messageIsStreaming={messageIsStreaming}
             onSend={(message) => {
-              setCurrentMessage(message);
-              setAutoScrollEnabled(true);
               onSend(message);
             }}
             textareaRef={textareaRef}
