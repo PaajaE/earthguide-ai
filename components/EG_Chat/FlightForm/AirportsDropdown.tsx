@@ -1,4 +1,5 @@
 import { TranslateResponseBody } from '@/types';
+import { InputField } from '@kiwicom/orbit-components';
 import React, { useState, useEffect } from 'react';
 
 export interface Airport {
@@ -79,16 +80,15 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
     <>
       <div className="flex flex-col lg:flex-row items-start lg:items-center">
         <div className="relative w-[50vw] lg:w-[300px]">
-          <div className="text-black text-sm font-semibold mb-[0.1rem]">
-            {texts?.flights_from.translation ?? 'From:'}
-          </div>
-          <input
+          <InputField
             type="text"
             value={inputValue}
+            label={texts?.flights_from.translation ?? 'From:'}
+            inlineLabel
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleInputChange(e.target.value)
             }
-            className="w-full appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px] focus:rounded-b-[0]"
+            // className="w-full appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px] focus:rounded-b-[0]"
             onFocus={handleInputFocus}
             // onBlur={handleInputBlur}
             placeholder={`${
@@ -119,21 +119,23 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
           )}
         </div>
         <div className="lg:ml-4">
-          <div className="text-black text-sm font-semibold mb-[0.1rem] mt-2 lg:mt-0">
-            {texts?.flights_airports_title.translation ??
-              'Airports within:'}
-          </div>
           <div className="relative w-fit">
-            <input
+            <InputField
               type="text"
-              className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] pl-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-              size={radius.toString().length + 3}
+              label={
+                texts?.flights_airports_title.translation ??
+                'Airports within:'
+              }
+              inlineLabel
+              // className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] pl-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
+              // size={radius.toString().length + 3}
               value={`${radius}`}
               onChange={handleRadiusChange}
+              suffix={<span className="pr-2">km</span>}
             />
-            <span className="absolute right-2 top-[1px] py-1 text-[var(--primary)] text-[1.05rem]">
+            {/* <span className="absolute right-2 top-[1px] py-1 text-[var(--primary)] text-[1.05rem]">
               km
-            </span>
+            </span> */}
           </div>
         </div>
       </div>

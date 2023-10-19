@@ -49,8 +49,29 @@ import { Button } from './Shared/Button';
 
 interface IHandleSendParams {
   message: Message;
-  flightParams?: IFlightParamsObtained;
+  flightParams: IFlightParamsObtained;
 }
+
+const today = new Date();
+
+// Tomorrow's date
+const tomorrow = new Date(today);
+tomorrow.setDate(today.getDate() + 1);
+
+// Date one month later
+const oneMonthLater = new Date(today);
+oneMonthLater.setMonth(today.getMonth() + 1);
+
+const initFpData: IFlightParamsConverted = {
+  curr: '',
+  departure_airport: '',
+  flight_type: FLIGHT_TYPES.ROUNDTRIP,
+  fly_from_radius: 250,
+  nights_in_dst_from: 7,
+  nights_in_dst_to: 10,
+  date_from: tomorrow,
+  return_to: oneMonthLater,
+};
 
 export default function Main({
   specificAirlines = '',
@@ -98,6 +119,9 @@ export default function Main({
   >(undefined);
   const [showErrorModal, setShowErrorModal] =
     useState<boolean>(false);
+  const [fpData, setFpData] =
+    useState<IFlightParamsConverted>(initFpData);
+  const [defaultFpData, setDefaultFpData] = useState<boolean>(true);
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -106,28 +130,47 @@ export default function Main({
     }
   }, [selectedConversation]);
 
-  const handleFlightParamsSubmit = (
-    data: IFlightParamsConverted,
-    messageId: string,
-    prevParams: IFlightParamsConverted
+  const handleChangeFlightParams = (
+    newFpData: Partial<IFlightParamsConverted>
   ) => {
+    setFpData({
+      ...fpData,
+      ...newFpData,
+    });
+    setDefaultFpData(false);
+  };
+
+  const handleFlightParamsSubmit = () => {
+    const lastMessageId =
+      selectedConversation?.messages[
+        selectedConversation.messages.length - 1
+      ]?.id ?? undefined;
+    if (lastMessageId) {
+      handleSend({
+        role: 'user',
+        content: 'Please change flight preferences',
+        id: lastMessageId,
+        typeOfMessage: TypeOfMessage.TEXT,
+        typeOfPrompt: TypeOfPrompt.FT_BODY,
+      });
+    }
+  };
+
+  const convertFpForSend = (
+    data: IFlightParamsConverted
+  ): IFlightParamsObtained => {
     console.log({ data });
     const fp = {
       date_from: formatDateToYYYYMMDD(data.date_from),
       date_to: formatDateToYYYYMMDD(data.date_to),
-      departure_airport:
-        data.departure_airport ?? prevParams.departure_airport,
+      departure_airport: data.departure_airport,
       fly_from_lat:
         (data.fly_from_lat
           ? data.fly_from_lat.toString()
-          : prevParams?.fly_from_lat
-          ? prevParams?.fly_from_lat.toString()
           : ipData?.gps.split(',')[0]) ?? undefined,
       fly_from_lon:
         (data.fly_from_lon
           ? data.fly_from_lon.toString()
-          : prevParams?.fly_from_lon
-          ? prevParams?.fly_from_lon.toString()
           : ipData?.gps.split(',')[1]) ?? undefined,
       fly_from_radius: data.fly_from_radius.toString() ?? undefined,
       nights_in_dst_from:
@@ -152,21 +195,9 @@ export default function Main({
       curr: data.curr ?? undefined,
     };
 
-    console.log({ flightType: fp.flight_type });
-
-    console.log({ inFp: prevParams });
     console.log({ outFp: fp });
 
-    handleSend(
-      {
-        role: 'user',
-        content: 'Please change flight preferences',
-        id: messageId,
-        typeOfMessage: TypeOfMessage.TEXT,
-        typeOfPrompt: TypeOfPrompt.FT_BODY,
-      },
-      fp
-    );
+    return fp;
   };
 
   const sendWithRetry = (message: Message) => {
@@ -188,10 +219,13 @@ export default function Main({
 
   const handleSend = async (
     message: Message,
-    flightParams?: IFlightParamsObtained
+    restoredFp?: IFlightParamsObtained
   ) => {
     console.log({ handleSendParams });
     if (selectedConversation) {
+      const flightParams = restoredFp
+        ? restoredFp
+        : convertFpForSend(fpData);
       setShouldScrollToBottom(true);
       setMessageIsStreaming(true);
       setHandleSendParams({ message, flightParams });
@@ -323,6 +357,11 @@ export default function Main({
                   };
                   console.log({ flightParametersData });
 
+                  setFpData({
+                    ...fpData,
+                    ...flightParametersData,
+                  });
+
                   const updatedMessages: Message[] = [
                     ...updatedConversation.messages,
                     {
@@ -330,7 +369,6 @@ export default function Main({
                       content: '',
                       typeOfMessage: TypeOfMessage.FLIGHT_PARAMS,
                       id: data.id_answer,
-                      flightParams: flightParametersData,
                     },
                   ];
 
@@ -439,6 +477,7 @@ export default function Main({
               new_session: newSession,
               specific_airlines: specificAirlines,
               flight_params: flightParams ? flightParams : undefined,
+              flight_params_default: defaultFpData,
             })
           );
 
@@ -684,6 +723,13 @@ export default function Main({
           country: data.country_name,
           state: data.region,
         });
+
+        setFpData({
+          ...fpData,
+          fly_from_lat: data.latitude,
+          fly_from_lon: data.longitude,
+          departure_airport: data.city,
+        });
       });
 
       const deviceType = getDeviceType();
@@ -799,6 +845,7 @@ export default function Main({
                       logoPath={airlineData.logo}
                       starterMessage={airlineData.starterMessage}
                       texts={texts}
+                      flightParams={fpData}
                       shouldScrollToBottom={shouldScrollToBottom}
                       onSend={sendWithRetry}
                       onRateAnswer={handleRateAnswer}
@@ -807,6 +854,7 @@ export default function Main({
                       onDisplayGallery={handleDisplayGallery}
                       isMobile={false}
                       onFormSubmit={handleFlightParamsSubmit}
+                      onChangeFlightParams={handleChangeFlightParams}
                       onDisallowScrollToBottom={() => {
                         setShouldScrollToBottom(false);
                       }}
@@ -847,6 +895,7 @@ export default function Main({
                       logoPath={airlineData.logo}
                       starterMessage={airlineData.starterMessage}
                       texts={texts}
+                      flightParams={fpData}
                       shouldScrollToBottom={shouldScrollToBottom}
                       onSend={sendWithRetry}
                       onRateAnswer={handleRateAnswer}
@@ -854,6 +903,7 @@ export default function Main({
                       onAnotherPromptClick={handleAnotherPromptClick}
                       onDisplayGallery={handleDisplayGallery}
                       isMobile={true}
+                      onChangeFlightParams={handleChangeFlightParams}
                       onFormSubmit={handleFlightParamsSubmit}
                       onDisallowScrollToBottom={() => {
                         setShouldScrollToBottom(false);

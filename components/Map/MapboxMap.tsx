@@ -29,6 +29,7 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
       const bounds = new mapboxgl.LngLatBounds();
 
       mapData.forEach((destination) => {
+        console.log(destination.gps);
         if (
           destination &&
           typeof destination.gps.latitude === 'number' &&

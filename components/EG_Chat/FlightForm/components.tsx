@@ -1,4 +1,5 @@
 import { TranslateResponseBody } from '@/types';
+import { InputGroup, Select } from '@kiwicom/orbit-components';
 
 interface VacationLengthPickerProps {
   from?: number;
@@ -24,44 +25,49 @@ export const VacationLengthPicker: React.FC<
     const options = [];
 
     if (withPlaceholder) {
-      options.push(
-        <option key={0} value={'undefined'}>
-          {texts?.flights_vac_lenght_possibility1.translation ??
-            'Based on flight dates'}
-        </option>
-      );
+      options.push({
+        label:
+          texts?.flights_vac_lenght_possibility1.translation ??
+          'Based on flight dates',
+        value: 'undefined',
+      });
     }
 
     for (let i = start; i <= end; i++) {
-      options.push(
-        <option key={i} value={i}>
-          {`${i} ${
-            i === 1
-              ? texts?.flights_vac_lenght_1_night.translation ??
-                'night'
-              : i <= 4
-              ? texts?.['flights_vac_lenght_2-4_nights']
-                  .translation ?? 'nights'
-              : texts?.['flights_vac_lenght_5+nights'].translation ??
-                'nights'
-          }`}
-        </option>
-      );
+      options.push({
+        value: i,
+        label: `${i} ${
+          i === 1
+            ? texts?.flights_vac_lenght_1_night.translation ?? 'night'
+            : i <= 4
+            ? texts?.['flights_vac_lenght_2-4_nights'].translation ??
+              'nights'
+            : texts?.['flights_vac_lenght_5+nights'].translation ??
+              'nights'
+        }`,
+      });
     }
     return options;
   };
 
   return (
     <>
-      <div className="font-semibold text-sm mb-[0.1rem]">
-        {texts?.flights_vac_lenght_title.translation ??
-          'Vacation length:'}
-      </div>
-      <div className="flex flex-col lg:flex-row items-start lg:items-center space-x-1">
-        <div className="relative">
-          <select
-            className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
+      <div className="w-1/2 flex flex-col lg:flex-row items-start lg:items-center space-x-1">
+        <InputGroup
+          flex="1 1 auto"
+          label={
+            texts?.flights_vac_lenght_title.translation ??
+            'Vacation length:'
+          }
+          error=""
+          help=""
+          disabled={false}
+          size="small"
+        >
+          <Select
+            // className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
             value={from}
+            options={generateOptions(1, 100, true)}
             onChange={(e) => {
               const val = e.target.value;
               onVacationLengthChange({
@@ -69,87 +75,24 @@ export const VacationLengthPicker: React.FC<
                 to: val === 'undefined' ? undefined : to,
               });
             }}
-          >
-            {generateOptions(1, 100, true)}
-          </select>
-        </div>
-        {from && from > 0 ? (
-          <>
-            <span> - </span>
-            <div className="relative">
-              <select
-                className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-                value={to}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  onVacationLengthChange({
-                    to:
-                      val === 'undefined' ? undefined : parseInt(val),
-                    from,
-                  });
-                }}
-              >
-                {generateOptions(from, 100)}
-              </select>
-            </div>
-          </>
-        ) : (
-          <></>
-        )}
-      </div>
-    </>
-  );
-};
-
-interface LocationInputProps {
-  radius: number;
-  departureAirport?: string;
-  onRadiusChange: (val: number) => void;
-  onDepartureAirportChange: (val: string, name: string) => void;
-}
-
-export const LocationInput: React.FC<LocationInputProps> = ({
-  departureAirport = '',
-  radius,
-  onRadiusChange,
-  onDepartureAirportChange,
-}) => {
-  const handleDepartureAirportChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    onDepartureAirportChange(event.target.value, 'departure_airport');
-  };
-
-  const handleRadiusChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    onRadiusChange(+event.target.value);
-  };
-
-  return (
-    <>
-      <div className="text-black text-sm font-semibold mb-[0.1rem]">
-        From:
-      </div>
-      <div className="flex items-center">
-        <input
-          type="text"
-          className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-          value={departureAirport}
-          size={departureAirport.length}
-          onChange={handleDepartureAirportChange}
-        />
-        <label className="text-black px-2">
-          include airports within
-        </label>
-        <input
-          type="text"
-          className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-          size={radius.toString().length}
-          value={radius}
-          onChange={handleRadiusChange}
-        />
-        <span className="text-black pl-2">km.</span>
+          />
+          {from && from > 0 ? (
+            <Select
+              // className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
+              value={to}
+              options={generateOptions(from, 100)}
+              onChange={(e) => {
+                const val = e.target.value;
+                onVacationLengthChange({
+                  to: val === 'undefined' ? undefined : parseInt(val),
+                  from,
+                });
+              }}
+            />
+          ) : (
+            <></>
+          )}
+        </InputGroup>
       </div>
     </>
   );

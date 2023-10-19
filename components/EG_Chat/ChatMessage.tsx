@@ -1,5 +1,4 @@
 import {
-  FLIGHT_TYPES,
   FeedbackEnum,
   IFlightParamsConverted,
   IMapDataConverted,
@@ -14,7 +13,6 @@ import { Button } from '../Shared/Button';
 import { EarthGuideReactMarkdown } from './EarthGuideReactMarkdown';
 import { ChatLoader } from './ChatLoader';
 import MapboxMap from '../Map/MapboxMap';
-import { FlightForm } from './FlightForm';
 
 interface Props {
   message: Message;
@@ -33,11 +31,6 @@ interface Props {
   onRateAnswer?: (feedback: IRateAnswer) => void;
   onSampleClick?: (content: string) => void;
   onDisplayGallery?: (imgSrcs: string[], curIndex: number) => void;
-  onFormSubmit: (
-    data: IFlightParamsConverted,
-    messageId: string,
-    prevParams: IFlightParamsConverted
-  ) => void;
 }
 
 export const ChatMessage: FC<Props> = ({
@@ -52,7 +45,6 @@ export const ChatMessage: FC<Props> = ({
   onAnotherPromptClick,
   onSampleClick,
   onDisplayGallery,
-  onFormSubmit,
 }) => {
   const [selectedFeedback, setSelectedFeedback] = useState<
     FeedbackEnum | undefined
@@ -225,7 +217,7 @@ export const ChatMessage: FC<Props> = ({
         </>
       )}
 
-      {message.role === 'earth.guide' &&
+      {/* {message.role === 'earth.guide' &&
         message.typeOfMessage === TypeOfMessage.FLIGHT_PARAMS &&
         message.flightParams && (
           <div
@@ -242,7 +234,7 @@ export const ChatMessage: FC<Props> = ({
               />
             </div>
           </div>
-        )}
+        )} */}
       {message.role === 'earth.guide' &&
         message.typeOfMessage === TypeOfMessage.MAP &&
         message.mapData && (
