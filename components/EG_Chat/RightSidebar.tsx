@@ -73,7 +73,6 @@ export const RightSidebar: FC<Props> = ({
                     content,
                   });
                 }}
-                onFormSubmit={() => {}}
               />
               <ChatMessage
                 message={{
@@ -92,7 +91,6 @@ export const RightSidebar: FC<Props> = ({
                     content,
                   });
                 }}
-                onFormSubmit={() => {}}
               />
               <ChatMessage
                 message={{
@@ -111,7 +109,6 @@ export const RightSidebar: FC<Props> = ({
                     content,
                   });
                 }}
-                onFormSubmit={() => {}}
               />
               <h2 className="font-bold mb-4 mt-2">
                 {texts?.capabilities
@@ -128,7 +125,6 @@ export const RightSidebar: FC<Props> = ({
                   }`,
                 }}
                 lightMode={lightMode}
-                onFormSubmit={() => {}}
               />
             </div>
           )}
