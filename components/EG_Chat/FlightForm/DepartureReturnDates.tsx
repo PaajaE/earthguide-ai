@@ -36,7 +36,6 @@ const ExampleCustomInput = forwardRef<
     <InputField
       value={value}
       label={label}
-      inlineLabel
       onFocus={onClick}
       ref={ref}
       onChange={onChange}
@@ -63,8 +62,7 @@ export const DepartureReturnDates: React.FC<
   onDateChange,
 }) => {
   return (
-    // <div className="flex flex-col lg:flex-row items-start lg:items-center lg:space-x-1">
-    <InputGroup>
+    <div className="flex flex-col gap-3 lg:flex-row items-start lg:items-center">
       {showFromPicker ? (
         <div>
           <DatePicker
@@ -110,7 +108,6 @@ export const DepartureReturnDates: React.FC<
       ) : (
         <></>
       )}
-    </InputGroup>
-    // </div>
+    </div>
   );
 };

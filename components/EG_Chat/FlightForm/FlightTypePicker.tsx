@@ -1,5 +1,12 @@
 import { FLIGHT_TYPES, TranslateResponseBody } from '@/types';
-import { Select } from '@kiwicom/orbit-components';
+import {
+  ButtonPrimitive,
+  ListChoice,
+  Popover,
+  Select,
+} from '@kiwicom/orbit-components';
+import { ChevronDown } from '@kiwicom/orbit-components/lib/icons';
+import { MouseEvent, useState } from 'react';
 
 interface FlightTypePickerProps {
   selected: string;
@@ -12,39 +19,47 @@ export const FlightTypePicker: React.FC<FlightTypePickerProps> = ({
   onFlightTypeChange,
   texts,
 }) => {
-  const options = Object.keys(FLIGHT_TYPES).map((key) => {
-    return {
-      value: FLIGHT_TYPES[key as keyof typeof FLIGHT_TYPES],
-      label:
+  const [opened, setOpened] = useState<boolean>(false);
+  const content = Object.keys(FLIGHT_TYPES).map((key) => (
+    <ListChoice
+      key={key}
+      selected={selected === key}
+      role="checkbox"
+      onClick={() => {
+        onFlightTypeChange(
+          FLIGHT_TYPES[key as keyof typeof FLIGHT_TYPES],
+          'flight_type'
+        );
+        setOpened(false);
+      }}
+      title={
         FLIGHT_TYPES[key as keyof typeof FLIGHT_TYPES] ===
         FLIGHT_TYPES.ROUNDTRIP
           ? texts?.flights_type_round.translation ??
             FLIGHT_TYPES.ROUNDTRIP
           : texts?.flights_type_oneway.translation ??
-            FLIGHT_TYPES.ONEWAY,
-    };
-  });
+            FLIGHT_TYPES.ONEWAY
+      }
+    />
+  ));
 
   return (
     <>
-      {/* <div className="font-semibold text-sm mb-[0.1rem]">
-        {texts?.flights_type_title.translation ?? 'Flight type:'}
-      </div> */}
-      <div className="flex items-center space-x-1">
-        <div className="relative">
-          <Select
-            options={options}
-            value={selected}
-            label={
-              texts?.flights_type_title.translation ?? 'Flight type:'
-            }
-            inlineLabel
-            onChange={(e) => {
-              const val = e.target.value as FLIGHT_TYPES;
-              onFlightTypeChange(val, 'flight_type');
+      <div className="flex items-center ">
+        <Popover content={content} overlapped opened={opened}>
+          <ButtonPrimitive
+            iconRight={<ChevronDown />}
+            onClick={() => {
+              setOpened(true);
             }}
-          />
-        </div>
+          >
+            {selected === FLIGHT_TYPES.ROUNDTRIP
+              ? texts?.flights_type_round.translation ??
+                FLIGHT_TYPES.ROUNDTRIP
+              : texts?.flights_type_oneway.translation ??
+                FLIGHT_TYPES.ONEWAY}
+          </ButtonPrimitive>
+        </Popover>
       </div>
     </>
   );

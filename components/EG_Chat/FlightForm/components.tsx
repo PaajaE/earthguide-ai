@@ -1,5 +1,12 @@
 import { TranslateResponseBody } from '@/types';
-import { InputGroup, Select } from '@kiwicom/orbit-components';
+import {
+  ButtonPrimitive,
+  ListChoice,
+  Popover,
+  Text,
+} from '@kiwicom/orbit-components';
+import { ChevronDown } from '@kiwicom/orbit-components/lib/icons';
+import { useState } from 'react';
 
 interface VacationLengthPickerProps {
   from?: number;
@@ -17,6 +24,9 @@ interface VacationLengthPickerProps {
 export const VacationLengthPicker: React.FC<
   VacationLengthPickerProps
 > = ({ from = 0, to = 0, texts, onVacationLengthChange }) => {
+  const [openedFrom, setOpenedFrom] = useState<boolean>(false);
+  const [openedTo, setOpenedTo] = useState<boolean>(false);
+
   const generateOptions = (
     start: number,
     end: number,
@@ -36,63 +46,137 @@ export const VacationLengthPicker: React.FC<
     for (let i = start; i <= end; i++) {
       options.push({
         value: i,
-        label: `${i} ${
-          i === 1
-            ? texts?.flights_vac_lenght_1_night.translation ?? 'night'
-            : i <= 4
-            ? texts?.['flights_vac_lenght_2-4_nights'].translation ??
-              'nights'
-            : texts?.['flights_vac_lenght_5+nights'].translation ??
-              'nights'
-        }`,
+        label: i,
       });
     }
     return options;
   };
 
+  const contentFrom = generateOptions(1, 100, true).map(
+    ({ value, label }) => (
+      <ListChoice
+        key={value}
+        selected={from === value}
+        role="checkbox"
+        onClick={() => {
+          onVacationLengthChange({
+            from:
+              value === 'undefined'
+                ? undefined
+                : parseInt(value.toString()),
+            to:
+              value === 'undefined'
+                ? undefined
+                : parseInt(value.toString()),
+          });
+          setOpenedFrom(false);
+        }}
+        title={label.toString()}
+      />
+    )
+  );
+
+  const contentTo = generateOptions(from, 100).map(
+    ({ value, label }) => (
+      <ListChoice
+        key={value}
+        selected={to === value}
+        role="checkbox"
+        onClick={() => {
+          onVacationLengthChange({
+            to:
+              value === 'undefined'
+                ? undefined
+                : parseInt(value.toString()),
+            from,
+          });
+          setOpenedTo(false);
+        }}
+        title={label.toString()}
+      />
+    )
+  );
+
   return (
     <>
-      <div className="w-1/2 flex flex-col lg:flex-row items-start lg:items-center space-x-1">
-        <InputGroup
-          flex="1 1 auto"
-          label={
-            texts?.flights_vac_lenght_title.translation ??
-            'Vacation length:'
-          }
-          error=""
-          help=""
-          disabled={false}
-          size="small"
-        >
-          <Select
-            // className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-            value={from}
-            options={generateOptions(1, 100, true)}
-            onChange={(e) => {
-              const val = e.target.value;
-              onVacationLengthChange({
-                from: val === 'undefined' ? undefined : parseInt(val),
-                to: val === 'undefined' ? undefined : to,
-              });
-            }}
-          />
-          {from && from > 0 ? (
-            <Select
-              // className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-              value={to}
-              options={generateOptions(from, 100)}
-              onChange={(e) => {
-                const val = e.target.value;
-                onVacationLengthChange({
-                  to: val === 'undefined' ? undefined : parseInt(val),
-                  from,
-                });
+      <div className="w-1/2 flex flex-col gap-3 lg:flex-row items-start lg:items-center py-3 pl-1">
+        <Text>
+          {`${
+            texts?.flights_vac_lenght_title.translation
+              ? `${texts?.flights_vac_lenght_title.translation}:`
+              : 'Vacation length:'
+          }`}
+        </Text>
+        <div className="flex items-center">
+          <Popover
+            content={contentFrom}
+            overlapped
+            opened={openedFrom}
+            maxHeight="40vh"
+          >
+            <ButtonPrimitive
+              iconRight={<ChevronDown />}
+              onClick={() => {
+                setOpenedFrom(true);
               }}
-            />
-          ) : (
-            <></>
-          )}
-        </InputGroup>
+            >
+              {from
+                ? from
+                : `${
+                    texts?.flights_vac_lenght_possibility1
+                      .translation ?? 'Based on flight dates'
+                  }`}
+            </ButtonPrimitive>
+          </Popover>
+          {`${
+            !from
+              ? ''
+              : from === 1
+              ? texts?.flights_vac_lenght_1_night.translation ??
+                'night'
+              : from <= 4
+              ? texts?.['flights_vac_lenght_2-4_nights']
+                  .translation ?? 'nights'
+              : texts?.['flights_vac_lenght_5+nights'].translation ??
+                'nights'
+          }`}
+        </div>
+        {from && from > 0 ? (
+          <>
+            <Text>-</Text>
+            <div className="flex items-center">
+              <Popover
+                content={contentTo}
+                overlapped
+                opened={openedTo}
+                maxHeight="40vh"
+              >
+                <ButtonPrimitive
+                  iconRight={<ChevronDown />}
+                  onClick={() => {
+                    setOpenedTo(true);
+                  }}
+                >
+                  {to}
+                </ButtonPrimitive>
+              </Popover>
+              {`${
+                !to
+                  ? ''
+                  : to === 1
+                  ? texts?.flights_vac_lenght_1_night.translation ??
+                    'night'
+                  : to <= 4
+                  ? texts?.['flights_vac_lenght_2-4_nights']
+                      .translation ?? 'nights'
+                  : texts?.['flights_vac_lenght_5+nights']
+                      .translation ?? 'nights'
+              }`}
+            </div>
+          </>
+        ) : (
+          <></>
+        )}
       </div>
     </>
   );

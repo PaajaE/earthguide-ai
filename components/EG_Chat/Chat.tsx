@@ -90,10 +90,10 @@ export const Chat: FC<Props> = ({
       <>
         <div>
           <div
-            className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 mb-5`}
+            className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 mb-5 `}
           >
             <div
-              className={`sticky lg:w-[calc(60vw_-_2rem)] px-4 pb-12 lg:pb-8 leading-6 flex flex-col w-full font-plus jakarta sans mt-4 mb-2 font-[400] text-[var(--secondary-text)]`}
+              className={`sticky lg:w-[calc(60vw_-_2rem)] px-4 pb-4 leading-6 flex flex-col w-full font-plus jakarta sans mt-4 font-[400] text-[var(--secondary-text)]`}
             >
               <FlightForm
                 flightParameters={flightParams}

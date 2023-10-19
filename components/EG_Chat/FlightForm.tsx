@@ -13,6 +13,7 @@ import AirportSelect, {
   Airport,
 } from './FlightForm/AirportsDropdown';
 import { airports } from '@/mocks/airports';
+import { ButtonPrimitive } from '@kiwicom/orbit-components';
 
 interface FormComponentProps {
   flightParameters: IFlightParamsConverted;
@@ -24,7 +25,6 @@ interface FormComponentProps {
 
 export const FlightForm: React.FC<FormComponentProps> = ({
   flightParameters,
-  messageId,
   texts,
   onChangeFlightParams,
   onFormSubmit,
@@ -120,12 +120,10 @@ export const FlightForm: React.FC<FormComponentProps> = ({
     }
   };
 
-  console.log(flightParameters);
-
   return (
     <form>
-      <div className="w-full flex justify-between">
-        <div className="text-black mb-2 text-sm">
+      <div className="w-full flex justify-start items-center gap-3 mb pl-1">
+        <div className="text-black mb-2">
           <FlightTypePicker
             selected={flightParameters.flight_type}
             onFlightTypeChange={handleChange}
@@ -133,6 +131,27 @@ export const FlightForm: React.FC<FormComponentProps> = ({
           />
         </div>
         <div className="text-black mb-2">
+          <AirportSelect
+            airports={airports}
+            departureAirport={
+              flightParameters.departure_airport &&
+              !flightParameters.departure_airport
+                ?.toLowerCase()
+                .includes('your position')
+                ? flightParameters.departure_airport
+                : undefined
+            }
+            radius={flightParameters.fly_from_radius}
+            texts={texts}
+            onRadiusChange={(val) => {
+              onChangeFlightParams({
+                ['fly_from_radius']: val,
+              });
+            }}
+            onChange={handleAirportChange}
+          />
+        </div>
+        <div className="text-black mb-2 ml-auto">
           <CurrencyPicker
             selected={flightParameters.curr}
             onCurrencyChange={handleChange}
@@ -140,27 +159,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
           />
         </div>
       </div>
-      <div className="text-black mb-2 text-sm">
-        <AirportSelect
-          airports={airports}
-          departureAirport={
-            flightParameters.departure_airport &&
-            !flightParameters.departure_airport
-              ?.toLowerCase()
-              .includes('your position')
-              ? flightParameters.departure_airport
-              : undefined
-          }
-          radius={flightParameters.fly_from_radius}
-          texts={texts}
-          onRadiusChange={(val) => {
-            onChangeFlightParams({
-              ['fly_from_radius']: val,
-            });
-          }}
-          onChange={handleAirportChange}
-        />
-      </div>
+
       {flightParameters.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
         <div className="text-black mb-2">
           <VacationLengthPicker
@@ -171,8 +170,8 @@ export const FlightForm: React.FC<FormComponentProps> = ({
           />
         </div>
       )}
-      <div className="w-full flex">
-        <div className="text-black mb-2">
+      <div className="w-full flex gap-3 items-end">
+        <div className="text-black mb-2 lg:mb-0">
           <DepartureReturnDates
             from={flightParameters.date_from}
             to={flightParameters.date_to}
@@ -199,7 +198,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
         </div>
 
         {flightParameters.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
-          <div className="text-black mb-2">
+          <div className="text-black mb-2 lg:mb-0">
             <DepartureReturnDates
               from={flightParameters.return_from}
               to={flightParameters.return_to}
@@ -236,18 +235,17 @@ export const FlightForm: React.FC<FormComponentProps> = ({
             />
           </div>
         )}
-      </div>
-
-      <div>
-        <button
-          className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-2 px-4 mt-4 rounded-[15px]"
-          onClick={(e) => {
-            e.preventDefault();
-            onFormSubmit();
-          }}
-        >
-          {texts?.flights_search_button.translation ?? 'Search'}
-        </button>
+        <div className="ml-auto">
+          <ButtonPrimitive
+            className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-[4px]"
+            onClick={(e) => {
+              e.preventDefault();
+              onFormSubmit();
+            }}
+          >
+            {texts?.flights_search_button.translation ?? 'Search'}
+          </ButtonPrimitive>
+        </div>
       </div>
     </form>
   );
