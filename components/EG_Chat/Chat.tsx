@@ -105,7 +105,7 @@ export const Chat: FC<Props> = ({
             </div>
           </div>
           <div
-            className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_10rem)] p-4 lg:py-0 lg:px-4"
+            className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_35rem)] p-4 lg:py-0 lg:px-4"
             ref={chatContainerRef}
           >
             {isMobile && (
