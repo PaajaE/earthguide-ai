@@ -56,11 +56,11 @@ const today = new Date();
 
 // Tomorrow's date
 const tomorrow = new Date(today);
-tomorrow.setDate(today.getDate() + 1);
+tomorrow.setDate(today.getDate() + 7);
 
 // Date one month later
 const oneMonthLater = new Date(today);
-oneMonthLater.setMonth(today.getMonth() + 1);
+oneMonthLater.setMonth(tomorrow.getMonth() + 1);
 
 const initFpData: IFlightParamsConverted = {
   curr: '',
