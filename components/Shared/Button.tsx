@@ -19,7 +19,7 @@ export const Button: FC<Props> = ({
 }) => {
   return (
     <div
-      className={`flex flex-row justify-center lg:justify-start mb-3 lg:mb-0 w-full lg:w-auto items-center first-of-type:mr-2 cursor-pointer items-start gap-2.5 px-[13px] py-3.5 rounded-[15px] box-border bg-[var(--tertiary)]`}
+      className={`flex flex-row justify-center lg:justify-start mb-3 lg:mb-0 w-full lg:w-auto items-center first-of-type:mr-2 cursor-pointer items-start gap-2.5 px-[13px] py-3.5 rounded-lg box-border bg-[var(--tertiary)]`}
       onClick={(e) =>
         onClick(typeOfPrompt ?? TypeOfPrompt.TEXT_PROMPT)
       }

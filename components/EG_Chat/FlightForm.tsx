@@ -122,11 +122,16 @@ export const FlightForm: React.FC<FormComponentProps> = ({
 
   return (
     <form>
-      <div className="w-full flex justify-start items-center gap-3 mb pl-1">
-        <div className="text-black mb-2">
+      <div className="w-full flex-col justify-start items-center gap-3 mb pl-1">
+        <div className="w-full flex justify-between text-black mb-3">
           <FlightTypePicker
             selected={flightParameters.flight_type}
             onFlightTypeChange={handleChange}
+            texts={texts}
+          />
+          <CurrencyPicker
+            selected={flightParameters.curr}
+            onCurrencyChange={handleChange}
             texts={texts}
           />
         </div>
@@ -151,13 +156,6 @@ export const FlightForm: React.FC<FormComponentProps> = ({
             onChange={handleAirportChange}
           />
         </div>
-        <div className="text-black mb-2 ml-auto">
-          <CurrencyPicker
-            selected={flightParameters.curr}
-            onCurrencyChange={handleChange}
-            texts={texts}
-          />
-        </div>
       </div>
 
       {flightParameters.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
@@ -170,8 +168,8 @@ export const FlightForm: React.FC<FormComponentProps> = ({
           />
         </div>
       )}
-      <div className="w-full flex gap-3 items-end">
-        <div className="text-black mb-2 lg:mb-0">
+      <div className="w-full flex flex-col gap-3 items-start">
+        <div className="w-full text-black mb-2 lg:mb-0">
           <DepartureReturnDates
             from={flightParameters.date_from}
             to={flightParameters.date_to}
@@ -198,7 +196,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
         </div>
 
         {flightParameters.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
-          <div className="text-black mb-2 lg:mb-0">
+          <div className="w-full text-black mb-2 lg:mb-0">
             <DepartureReturnDates
               from={flightParameters.return_from}
               to={flightParameters.return_to}
@@ -235,9 +233,9 @@ export const FlightForm: React.FC<FormComponentProps> = ({
             />
           </div>
         )}
-        <div className="ml-auto">
+        <div className="ml-auto mt-4">
           <ButtonPrimitive
-            className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-[4px]"
+            className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-lg"
             onClick={(e) => {
               e.preventDefault();
               onFormSubmit();

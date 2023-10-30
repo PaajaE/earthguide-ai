@@ -23,6 +23,9 @@ interface Props {
   lightMode: 'light' | 'dark';
   pathExists?: boolean;
   texts?: TranslateResponseBody<string>;
+  fullWidthMessage?: boolean;
+  showShadows?: boolean;
+  withPadding?: boolean;
   onAnotherPromptClick?: (
     typeOfPrompt: TypeOfPrompt,
     id: string
@@ -40,6 +43,9 @@ export const ChatMessage: FC<Props> = ({
   streamingFinished = false,
   pathExists = false,
   texts,
+  fullWidthMessage = false,
+  showShadows = false,
+  withPadding = false,
   onSend,
   onRateAnswer,
   onAnotherPromptClick,
@@ -54,77 +60,73 @@ export const ChatMessage: FC<Props> = ({
     <>
       {message.typeOfMessage === TypeOfMessage.TEXT && (
         <>
-          <div
-            className={`flex flex-row justify-start items-start gap-2.5 pb-5 w-100 box-border ${
-              message.role === 'starter'
-                ? 'bg-[rgba(236,236,236,1)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 px-[1rem] py-3 mb-5'
-                : ''
-            }
-        ${
-          message.role === 'user'
-            ? 'bg-[var(--primary)] rounded-t-[10px] rounded-bl-[10px] lg:ml-8 px-[1rem] py-5 mb-5'
-            : ''
-        }
-        ${
-          message.role === 'earth.guide'
-            ? 'bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 mb-1'
-            : ''
-        }
-        ${
-          message.role === 'earth.guide' && streamingFinished
-            ? "after:content-['✓'] after:absolute after:bottom-1 after:right-2 after:text-slate-200"
-            : ''
-        }
-        ${
-          message.role === 'sample'
-            ? 'bg-white rounded-t-[10px] rounded-r-[10px] px-[1rem] py-3 mb-5'
-            : ''
-        }
-        `}
-            style={{
-              cursor:
-                message.role === 'sample' && onSampleClick
-                  ? 'pointer'
-                  : 'default',
-            }}
-            onClick={() => {
-              if (message.role === 'sample') {
-                onSampleClick && onSampleClick(message.content);
-              }
-            }}
-          >
+          {message.role === 'earth.guide' ? (
             <div
-              className={`border-[#000000ff] leading-6 flex flex-col w-full  font-plus jakarta sans  font-[400]
-      ${
-        message.role === 'earth.guide'
-          ? 'text-[var(--secondary-text)]'
-          : 'text-[var(--primary-text)]'
-      }
-      ${
-        (message.role === 'sample' || message.role === 'starter') &&
-        'text-[var(--tertiary-text)]'
-      }`}
+              className={`flex flex-row justify-start items-start gap-2.5 px-8 py-8 w-auto bg-[var(--secondary)] rounded-t-lg rounded-r-lg mb-1 ${
+                fullWidthMessage ? 'max-w-full' : 'max-w-[80%]'
+              } box-border ${showShadows ? 'shadow-lg' : ''}${
+                streamingFinished
+                  ? "after:content-['✓'] after:absolute after:bottom-1 after:right-2 after:text-slate-200"
+                  : ''
+              }`}
             >
-              {message.role === 'user' && <>{message.content}</>}
-              {message.role === 'sample' && <>{message.content}</>}
-              {message.role === 'starter' && <>{message.content}</>}
-              {message.role === 'earth.guide' && (
+              <div
+                className={`border-[#000000ff] leading-6 flex flex-col w-auto  font-plus jakarta sans  font-[400] text-[var(--secondary-text)]`}
+              >
                 <>
                   <EarthGuideReactMarkdown
                     content={message.content}
                     lightMode={lightMode}
+                    withPadding={withPadding}
                     onAnotherPromptClick={onAnotherPromptClick}
                     onDisplayGallery={
                       onDisplayGallery && onDisplayGallery
                     }
                   />
-                  {messageIsStreaming && <ChatLoader />}
                 </>
-              )}
+              </div>
             </div>
-          </div>
+          ) : (
+            <div
+              className={`flex flex-row justify-start items-start gap-2.5 py-4 px-8 ${
+                fullWidthMessage ? 'max-w-full' : 'max-w-[80%]'
+              } box-border ${showShadows ? 'shadow-lg' : ''} ${
+                message.role === 'user'
+                  ? 'w-fit ml-auto bg-[var(--primary)] rounded-t-lg rounded-bl-lg mb-5'
+                  : ''
+              } ${
+                message.role === 'sample'
+                  ? 'bg-white rounded-t-lg rounded-r-lg py-3 mb-5'
+                  : ''
+              }`}
+              style={{
+                cursor:
+                  message.role === 'sample' && onSampleClick
+                    ? 'pointer'
+                    : 'default',
+              }}
+              onClick={() => {
+                if (message.role === 'sample') {
+                  onSampleClick && onSampleClick(message.content);
+                }
+              }}
+            >
+              <div
+                className={`border-[#000000ff] leading-6 flex flex-col w-auto  font-plus jakarta sans  font-[400] ${
+                  message.role === 'sample' &&
+                  'text-[var(--tertiary-text)]'
+                }`}
+              >
+                {message.content}
+              </div>
+            </div>
+          )}
           {message.role === 'earth.guide' && (
-            <div className="flex gap-1 mb-5 justify-end lg:mr-8">
+            <div
+              className={`flex gap-1 mb-5 mt-2 justify-end ${
+                fullWidthMessage ? 'max-w-full' : 'max-w-[80%]'
+              }`}
+            >
               {(!selectedFeedback ||
                 selectedFeedback === FeedbackEnum.OK) && (
                 <button
@@ -132,12 +134,11 @@ export const ChatMessage: FC<Props> = ({
                     selectedFeedback === FeedbackEnum.OK
                       ? 'dark:text-[var(--primary)]'
                       : 'dark:text-gray-400'
-                  }
-              ${
-                !selectedFeedback
-                  ? 'cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-400 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400'
-                  : 'cursor-auto'
-              }`}
+                  } ${
+                    !selectedFeedback
+                      ? 'cursor-pointer hover:bg-gray-100 hover:text-gray-700 dark:hover:bg-gray-400 dark:hover:text-gray-200 disabled:dark:hover:text-gray-400'
+                      : 'cursor-auto'
+                  }`}
                   onClick={() => {
                     if (
                       !selectedFeedback &&
@@ -221,10 +222,10 @@ export const ChatMessage: FC<Props> = ({
         message.typeOfMessage === TypeOfMessage.FLIGHT_PARAMS &&
         message.flightParams && (
           <div
-            className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 mb-5`}
+            className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-lg rounded-r-lg lg:mr-8 mb-5`}
           >
             <div
-              className={`border-[#000000ff] leading-6 flex flex-col relative w-full font-plus jakarta sans px-[1rem] mt-4 mb-2 font-[400] text-[var(--secondary-text)]`}
+              className={`border-[#000000ff] leading-6 flex flex-col relative w-full font-plus jakarta sans px-4 mt-4 mb-2 font-[400] text-[var(--secondary-text)]`}
             >
               <FlightForm
                 flightParameters={message.flightParams}
@@ -241,10 +242,12 @@ export const ChatMessage: FC<Props> = ({
           <>
             {message.mapData && message.mapData.length > 0 && (
               <div
-                className={`flex flex-row justify-start items-start gap-2.5 mb-5 w-100 box-border rounded-[10px]`}
+                className={`flex flex-row justify-start items-start gap-2.5 mb-5 w-100 box-border rounded-lg ${
+                  showShadows ? 'shadow-lg' : ''
+                }`}
               >
                 <div
-                  className={`border-[#000000ff] leading-6 flex flex-col relative w-full h-[50vh] font-plus jakarta sans  font-[400] text-[var(--secondary-text)] rounded-[10px]`}
+                  className={`border-[#000000ff] leading-6 flex flex-col relative w-full h-[50vh] font-plus jakarta sans  font-[400] text-[var(--secondary-text)] rounded-lg`}
                 >
                   <MapboxMap mapData={message.mapData} />
                 </div>

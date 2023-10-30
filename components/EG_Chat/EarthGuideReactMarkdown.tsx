@@ -5,10 +5,12 @@ import { usePathname } from 'next/navigation';
 import { FC, ReactNode, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import { text } from 'stream/consumers';
 // import { content } from "@/mocks/md-content-mock";
 interface Props {
   content: string;
   lightMode: 'light' | 'dark';
+  withPadding?: boolean;
   onAnotherPromptClick?: (
     typeOfPrompt: TypeOfPrompt,
     id: string
@@ -19,6 +21,7 @@ interface Props {
 export const EarthGuideReactMarkdown: FC<Props> = ({
   lightMode,
   content,
+  withPadding,
   onAnotherPromptClick,
   onDisplayGallery,
 }) => {
@@ -87,21 +90,23 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
           if (div.includes(`class="gallery"`)) {
             return (
               <div
-                className="order-first"
+                className={`order-first mb-4 ${
+                  withPadding ? '' : '-mt-8 -mx-8'
+                }`}
                 dangerouslySetInnerHTML={{ __html: div }}
               ></div>
             );
           } else if (div.includes(`class="gallery gallery-small"`)) {
             return (
               <div
-                className="w-100 px-[1rem] mt-2"
+                className="w-100 px-4 mb-2"
                 dangerouslySetInnerHTML={{ __html: div }}
               ></div>
             );
           } else if (div.includes(`class="no-photos"`)) {
             return (
               <div
-                className="w-100 order-last px-[1rem] mt-2"
+                className="w-100 order-last px-4"
                 dangerouslySetInnerHTML={{ __html: div }}
               ></div>
             );
@@ -115,7 +120,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
             );
             return (
               <div
-                className="w-100 px-[1rem] mt-1 mb-1"
+                className={`w-100 mb-2`}
                 dangerouslySetInnerHTML={{ __html: replacedIconDiv }}
               ></div>
             );
@@ -204,18 +209,18 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
         },
         img(ref) {
           return (
-            <div className="my-1 px-1">
+            <div className="my-1">
               <img
                 src={ref.src}
                 alt={ref.alt}
-                className="rounded-[10px]"
+                className="rounded-lg"
               />
             </div>
           );
         },
         p({ children }) {
           return (
-            <div className="my-1 px-[1rem] mt-4 mb-2">{children}</div>
+            <div className="mb-4 last-of-type:mb-0">{children}</div>
           );
         },
       }}

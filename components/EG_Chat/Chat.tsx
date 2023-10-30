@@ -14,6 +14,8 @@ import { ChatInput } from './ChatInput';
 import { ChatMessage } from './ChatMessage';
 import { LeftSidebar } from './LeftSidebar';
 import { FlightForm } from './FlightForm';
+import { Collapse, Tile } from '@kiwicom/orbit-components';
+import { ChatLoader } from './ChatLoader';
 
 interface Props {
   conversation: Conversation;
@@ -24,9 +26,12 @@ interface Props {
   isMobile: boolean;
   logoPath: string;
   starterMessage: string;
-  texts?: TranslateResponseBody<string>;
+  texts: TranslateResponseBody<string>;
   shouldScrollToBottom: boolean;
-  flightParams: IFlightParamsConverted;
+  flightParams?: IFlightParamsConverted;
+  fullWidthMessage?: boolean;
+  showShadows?: boolean;
+  withPadding?: boolean;
   onSend: (message: Message) => void;
   onRateAnswer: (feedback: IRateAnswer) => void;
   onUpdateConversation: (
@@ -55,6 +60,9 @@ export const Chat: FC<Props> = ({
   starterMessage,
   texts,
   shouldScrollToBottom,
+  fullWidthMessage = false,
+  showShadows = false,
+  withPadding = false,
   onSend,
   onRateAnswer,
   onAnotherPromptClick,
@@ -86,11 +94,11 @@ export const Chat: FC<Props> = ({
   ]);
 
   return (
-    <div className="relative flex flex-col justify-between w-auto h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full lg:max-w-[60%] bg-[#FAFAFA]">
+    <div className="relative flex flex-col justify-between w-auto lg:w-1/2 h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full bg-[#FAFAFA]">
       <>
         <div>
-          <div
-            className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 mb-5 `}
+          {/* <div
+            className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-lg rounded-r-lg lg:mr-8 mb-5 `}
           >
             <div
               className={`sticky lg:w-[calc(60vw_-_2rem)] px-4 pb-4 leading-6 flex flex-col w-full font-plus jakarta sans mt-4 font-[400] text-[var(--secondary-text)]`}
@@ -103,29 +111,71 @@ export const Chat: FC<Props> = ({
                 onFormSubmit={onFormSubmit}
               />
             </div>
-          </div>
+          </div> */}
           <div
-            className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_25rem)] p-4 lg:py-0 lg:px-4"
+            className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_12rem)] p-4 lg:py-0 lg:px-4"
             ref={chatContainerRef}
           >
             {isMobile && (
               <LeftSidebar lightMode="light" logoPath={logoPath} />
             )}
-            <ChatMessage
-              key="starter-message"
-              message={{
-                role: 'starter',
-                typeOfMessage: TypeOfMessage.TEXT,
-                content: `${
-                  texts?.intro.translation ?? starterMessage
-                }`,
-              }}
-              lightMode={lightMode}
-            />
+
+            <div
+              className={`flex flex-row justify-start items-start gap-2.5 py-4 px-8 ${
+                fullWidthMessage ? 'max-w-full' : 'max-w-[80%]'
+              } ${
+                showShadows ? 'shadow-lg' : ''
+              } box-border bg-[var(--secondary)] rounded-t-lg rounded-r-lg mb-5`}
+            >
+              <div
+                className={`border-[#000000ff] leading-6 flex flex-col w-full  font-plus jakarta sans  font-[400] text-[var(--tertiary-text)]`}
+              >
+                <div>{texts.intro.translation ?? starterMessage}</div>
+                <div className="mt-4">
+                  <Collapse label="Show examples" expanded>
+                    <div className="flex flex-col gap-4">
+                      <Tile
+                        noHeaderIcon
+                        onClick={() => {
+                          onSend({
+                            role: 'user',
+                            typeOfMessage: TypeOfMessage.TEXT,
+                            content: texts.example1.translation,
+                          });
+                        }}
+                        title={texts.example1.translation}
+                      />
+                      <Tile
+                        noHeaderIcon
+                        onClick={() => {
+                          onSend({
+                            role: 'user',
+                            typeOfMessage: TypeOfMessage.TEXT,
+                            content: texts.example2.translation,
+                          });
+                        }}
+                        title={texts.example2.translation}
+                      />
+                      <Tile
+                        noHeaderIcon
+                        onClick={() => {
+                          onSend({
+                            role: 'user',
+                            typeOfMessage: TypeOfMessage.TEXT,
+                            content: texts.example3.translation,
+                          });
+                        }}
+                        title={texts.example3.translation}
+                      />
+                    </div>
+                  </Collapse>
+                </div>
+              </div>
+            </div>
 
             <div className="flex lg:hidden flex-col mt-6">
               <h2 className="text-[var(--tertiary-text)] font-bold mb-4">
-                {texts?.examples
+                {texts.examples
                   ? `${texts.examples.translation}`
                   : 'Examples'}
               </h2>
@@ -134,7 +184,7 @@ export const Chat: FC<Props> = ({
                   role: 'sample',
                   typeOfMessage: TypeOfMessage.TEXT,
                   content: `${
-                    texts?.example1.translation ??
+                    texts.example1.translation ??
                     'Affordable beach destinations in Europe. We want to fly in October. For 7 days.'
                   }`,
                 }}
@@ -152,7 +202,7 @@ export const Chat: FC<Props> = ({
                   role: 'sample',
                   typeOfMessage: TypeOfMessage.TEXT,
                   content: `${
-                    texts?.example2.translation ??
+                    texts.example2.translation ??
                     'Flight to UNESCO site. City break for 4 days, November, warm weather'
                   }`,
                 }}
@@ -170,7 +220,7 @@ export const Chat: FC<Props> = ({
                   role: 'sample',
                   typeOfMessage: TypeOfMessage.TEXT,
                   content: `${
-                    texts?.example3.translation ??
+                    texts.example3.translation ??
                     'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.'
                   }`,
                 }}
@@ -205,6 +255,9 @@ export const Chat: FC<Props> = ({
                       index === conversation.messages.length - 1
                     }
                     pathExists={!!path}
+                    fullWidthMessage={fullWidthMessage}
+                    showShadows={showShadows}
+                    withPadding={withPadding}
                     onSend={(message) => {
                       onSend(message);
                     }}
@@ -213,8 +266,10 @@ export const Chat: FC<Props> = ({
                   />
                 ))}
 
+                {messageIsStreaming && <ChatLoader />}
+
                 <div
-                  className="bg-[#FAFAFA] h-[20vh]"
+                  className="bg-[#FAFAFA] h-[15vh]"
                   ref={messagesEndRef}
                 />
               </>
@@ -232,6 +287,7 @@ export const Chat: FC<Props> = ({
             textareaRef={textareaRef}
             texts={texts}
             model={conversation.model}
+            showShadows={showShadows}
           />
         )}
       </>

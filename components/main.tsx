@@ -46,6 +46,7 @@ import { RightSidebarMobile } from '@/components/EG_Chat/RightSidebarMobile';
 import { IAirlineDataItem } from '@/utils/data/airlines';
 import { formatDateToYYYYMMDD } from '@/utils/app/flight';
 import { Button } from './Shared/Button';
+import { useSearchParams } from 'next/navigation';
 
 interface IHandleSendParams {
   message: Message;
@@ -122,6 +123,15 @@ export default function Main({
   const [fpData, setFpData] =
     useState<IFlightParamsConverted>(initFpData);
   const [defaultFpData, setDefaultFpData] = useState<boolean>(true);
+
+  const searchParams = useSearchParams();
+
+  const showShadows: boolean =
+    searchParams.get('shadows') === 'true' ? true : false;
+  const fullWidthMessage: boolean =
+    searchParams.get('full-width') === 'true' ? true : false;
+  const withPadding: boolean =
+    searchParams.get('gallery-padding') === 'true' ? true : false;
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
@@ -231,17 +241,17 @@ export default function Main({
       setHandleSendParams({ message, flightParams });
       let updatedConversation: Conversation;
 
-      if (!flightParams) {
-        updatedConversation = {
-          ...selectedConversation,
-          messages: [...selectedConversation.messages, message],
-        };
-        setSelectedConversation(updatedConversation);
-      } else {
-        updatedConversation = {
-          ...selectedConversation,
-        };
-      }
+      // if (!flightParams) {
+      updatedConversation = {
+        ...selectedConversation,
+        messages: [...selectedConversation.messages, message],
+      };
+      setSelectedConversation(updatedConversation);
+      // } else {
+      //   updatedConversation = {
+      //     ...selectedConversation,
+      //   };
+      // }
 
       const lastMessage = message;
 
@@ -279,6 +289,8 @@ export default function Main({
                       const photosArr =
                         extractSrcAttributesFromHTML(photos);
                       const gpsObject = extractGpsCoordinates(gps);
+
+                      console.log({ gpsObject });
 
                       return {
                         id,
@@ -829,8 +841,8 @@ export default function Main({
               <div
                 className={`hidden lg:flex flex-col h-screen w-100 text-[var(--primary-text)] ${lightMode}`}
               >
-                <div className="h-full w-100 p-2">
-                  <div className="flex h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
+                <div className="h-full w-full p-2">
+                  <div className="flex gap-8 w-full h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
                     <LeftSidebar
                       lightMode="light"
                       logoPath={airlineData.logo}
@@ -845,8 +857,10 @@ export default function Main({
                       logoPath={airlineData.logo}
                       starterMessage={airlineData.starterMessage}
                       texts={texts}
-                      flightParams={fpData}
                       shouldScrollToBottom={shouldScrollToBottom}
+                      fullWidthMessage={fullWidthMessage}
+                      withPadding={withPadding}
+                      showShadows={showShadows}
                       onSend={sendWithRetry}
                       onRateAnswer={handleRateAnswer}
                       onUpdateConversation={handleUpdateConversation}
@@ -869,11 +883,17 @@ export default function Main({
                           data={panelData}
                           texts={texts}
                           lightMode="light"
+                          flightParams={fpData}
+                          showShadows={showShadows}
                           onAnotherPromptClick={
                             handleAnotherPromptClick
                           }
                           onSend={sendWithRetry}
                           onDisplayGallery={handleDisplayGallery}
+                          onFormSubmit={handleFlightParamsSubmit}
+                          onChangeFlightParams={
+                            handleChangeFlightParams
+                          }
                         />
                       </>
                     )}
@@ -895,8 +915,8 @@ export default function Main({
                       logoPath={airlineData.logo}
                       starterMessage={airlineData.starterMessage}
                       texts={texts}
-                      flightParams={fpData}
                       shouldScrollToBottom={shouldScrollToBottom}
+                      flightParams={fpData}
                       onSend={sendWithRetry}
                       onRateAnswer={handleRateAnswer}
                       onUpdateConversation={handleUpdateConversation}

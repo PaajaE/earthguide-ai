@@ -5,7 +5,7 @@ import {
   TranslateResponseBody,
   TypeOfMessage,
 } from '@/types';
-import { IconSend } from '@tabler/icons-react';
+import { ButtonPrimitive } from '@kiwicom/orbit-components';
 import {
   FC,
   KeyboardEvent,
@@ -21,6 +21,7 @@ interface Props {
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   model: OpenAIModel;
   texts?: TranslateResponseBody<string>;
+  showShadows?: boolean;
 }
 
 export const ChatInput: FC<Props> = ({
@@ -29,6 +30,7 @@ export const ChatInput: FC<Props> = ({
   model,
   textareaRef,
   texts,
+  showShadows = false,
 }) => {
   const [content, setContent] = useState<string>();
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -100,47 +102,55 @@ export const ChatInput: FC<Props> = ({
 
   return (
     <>
-      <div className="sticky lg:w-[calc(60vw_-_2rem)] px-4 pb-12 lg:pb-8 bg-[#FAFAFA]">
-        <textarea
-          ref={textareaRef}
-          className="pl-4 pr-8 pt-[0.8rem] pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-[var(--tertiary-text)] drop-shadow-md"
-          style={{
-            resize: 'none',
-            bottom: `${textareaRef?.current?.scrollHeight}px`,
-            maxHeight: '400px',
-            overflow: 'auto',
-          }}
-          placeholder={`${
-            texts?.prompt.translation ??
-            'Discover flights and dream holidays'
+      <div className="sticky lg:w-[calc(50vw_-_2rem)] lg:p-4 ">
+        <div
+          className={`bg-[var(--secondary)] p-8 rounded-lg ${
+            showShadows ? 'shadow-lg' : ''
           }`}
-          value={content}
-          rows={1}
-          onCompositionStart={() => setIsTyping(true)}
-          onCompositionEnd={() => setIsTyping(false)}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-        />
-
-        <button
-          className="absolute right-6 lg:right-4 bottom-16 lg:bottom-12 focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
-          onClick={handleSend}
         >
-          <IconSend size={18} color={'#999'} />
-        </button>
-        <p className="absolute bottom-4 text-[var(--secondary-text)] text-[0.65rem] w-[90%] flex justify-center text-center">
-          {texts?.text_under_prompt.translation ??
-            'All photos are from our community. Want to join, earn to train AI and create content and earn dividends?'}
+          <div className="flex gap-2">
+            <textarea
+              ref={textareaRef}
+              className="pl-4 pr-8 pt-[0.8rem] pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-lg  bg-[rgba(255,255,255,1)] text-[var(--tertiary-text)] drop-shadow-md"
+              style={{
+                resize: 'none',
+                bottom: `${textareaRef?.current?.scrollHeight}px`,
+                maxHeight: '400px',
+                overflow: 'auto',
+              }}
+              placeholder={`${
+                texts?.prompt.translation ??
+                'Discover flights and dream holidays'
+              }`}
+              value={content}
+              rows={1}
+              onCompositionStart={() => setIsTyping(true)}
+              onCompositionEnd={() => setIsTyping(false)}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+            />
+            <ButtonPrimitive
+              className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-lg"
+              onClick={handleSend}
+            >
+              Odeslat
+            </ButtonPrimitive>
+          </div>
 
-          <a
-            className="underline pl-1"
-            href="https://earth.guide"
-            title="Earth.Guide"
-            target="_blank"
-          >
-            {texts?.text_of_link_under_prompt.translation ?? 'Join'}
-          </a>
-        </p>
+          <p className="relative mt-2 text-[var(--secondary-text)] text-[0.65rem] w-[90%] flex justify-center text-center">
+            {texts?.text_under_prompt.translation ??
+              'All photos are from our community. Want to join, earn to train AI and create content and earn dividends?'}
+
+            <a
+              className="underline pl-1"
+              href="https://earth.guide"
+              title="Earth.Guide"
+              target="_blank"
+            >
+              {texts?.text_of_link_under_prompt.translation ?? 'Join'}
+            </a>
+          </p>
+        </div>
       </div>
     </>
   );

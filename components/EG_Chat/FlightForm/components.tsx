@@ -99,7 +99,7 @@ export const VacationLengthPicker: React.FC<
 
   return (
     <>
-      <div className="w-1/2 flex flex-col gap-3 lg:flex-row items-start lg:items-center py-3 pl-1">
+      <div className="w-full flex flex-col gap-3 lg:flex-row items-start lg:items-center py-3 pl-1">
         <Text>
           {`${
             texts?.flights_vac_lenght_title.translation

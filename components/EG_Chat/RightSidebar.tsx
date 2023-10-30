@@ -1,5 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import {
+  IFlightParamsConverted,
   Message,
   PanelData,
   TranslateResponseBody,
@@ -14,6 +15,7 @@ import { FC } from 'react';
 import { ChatMessage } from './ChatMessage';
 import { Button } from '../Shared/Button';
 import { ChatLoader } from './ChatLoader';
+import { FlightForm } from './FlightForm';
 
 interface Props {
   data: PanelData | null;
@@ -21,12 +23,16 @@ interface Props {
   lightMode: 'light' | 'dark';
   showSample: boolean;
   texts?: TranslateResponseBody<string>;
+  flightParams: IFlightParamsConverted;
+  showShadows?: boolean;
   onAnotherPromptClick: (
     typeOfPrompt: TypeOfPrompt,
     id: string
   ) => void;
   onSend: (message: Message) => void;
   onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
+  onChangeFlightParams: (fp: Partial<IFlightParamsConverted>) => void;
+  onFormSubmit: () => void;
 }
 
 export const RightSidebar: FC<Props> = ({
@@ -34,22 +40,26 @@ export const RightSidebar: FC<Props> = ({
   loading,
   lightMode,
   showSample,
+  showShadows = false,
   texts,
+  flightParams,
   onAnotherPromptClick,
   onSend,
+  onChangeFlightParams,
+  onFormSubmit,
   onDisplayGallery,
 }) => {
   return (
     <div
-      className={`relative flex flex-col w-[30%] shrink-1 z-10 rounded-md bg-[#F4F4F4]`}
+      className={`relative flex flex-col w-1/4 shrink-1 z-10 rounded-md`}
       style={{
         width:
           '-webkit-fill-available, fill-available, -moz-fill-available',
       }}
     >
       <div className="w-auto rounded-md overflow-y-auto">
-        <div className="text-[var(--tertiary-text)] mt-4 mb-2 pt-0">
-          {showSample && (
+        <div className="text-[var(--tertiary-text)] pt-0">
+          {/* {showSample && (
             <div className="flex flex-col mt-2 px-4">
               <h2 className="font-bold mb-4">
                 {texts?.examples
@@ -127,8 +137,27 @@ export const RightSidebar: FC<Props> = ({
                 lightMode={lightMode}
               />
             </div>
+          )} */}
+          {flightParams && (
+            <div
+              className={`flex flex-row justify-start items-start gap-2.5 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 ${
+                showShadows ? 'shadow-lg' : ''
+              }`}
+            >
+              <div
+                className={`p-8 leading-6 flex flex-col w-full font-plus jakarta sans font-[400] text-[var(--secondary-text)]`}
+              >
+                <FlightForm
+                  flightParameters={flightParams}
+                  messageId={''}
+                  texts={texts}
+                  onChangeFlightParams={onChangeFlightParams}
+                  onFormSubmit={onFormSubmit}
+                />
+              </div>
+            </div>
           )}
-          {(data || loading) && (
+          {/* {(data || loading) && (
             <>
               <div className="flex flex-row justify-center align-center">
                 <Toggle
@@ -163,7 +192,7 @@ export const RightSidebar: FC<Props> = ({
                 {loading && <ChatLoader dark />}
               </div>
             </>
-          )}
+          )} */}
         </div>
         {data && !loading && (
           <div className="flex mt-4 mb-2 px-4">
