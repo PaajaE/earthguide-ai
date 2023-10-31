@@ -58,7 +58,7 @@ export const RightSidebar: FC<Props> = ({
       }}
     >
       <div className="w-auto rounded-md overflow-y-auto">
-        <div className="text-[var(--tertiary-text)] pt-0">
+        <div className="text-[var(--tertiary-text)] pb-2 pl-2">
           {/* {showSample && (
             <div className="flex flex-col mt-2 px-4">
               <h2 className="font-bold mb-4">
