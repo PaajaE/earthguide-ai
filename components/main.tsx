@@ -126,12 +126,16 @@ export default function Main({
 
   const searchParams = useSearchParams();
 
-  const showShadows: boolean =
-    searchParams.get('shadows') === 'true' ? true : false;
-  const fullWidthMessage: boolean =
-    searchParams.get('full-width') === 'true' ? true : false;
-  const withPadding: boolean =
-    searchParams.get('gallery-padding') === 'true' ? true : false;
+  // const showShadows: boolean =
+  //   searchParams.get('shadows') === 'true' ? true : false;
+  // const fullWidthMessage: boolean =
+  //   searchParams.get('full-width') === 'true' ? true : false;
+  // const withPadding: boolean =
+  //   searchParams.get('gallery-padding') === 'true' ? true : false;
+
+  const showShadows: boolean = true;
+  const fullWidthMessage: boolean = false;
+  const withPadding: boolean = false;
 
   // Close sidebar when a conversation is selected/created on mobile
   useEffect(() => {
