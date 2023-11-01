@@ -128,7 +128,7 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
           )}
         </div>
         <div className="w-full">
-          <div className="relative w-fit">
+          <div className="relative w-full">
             <InputField
               type="text"
               label={

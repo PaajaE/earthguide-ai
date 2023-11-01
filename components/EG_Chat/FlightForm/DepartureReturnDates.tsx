@@ -74,7 +74,6 @@ export const DepartureReturnDates: React.FC<
             selected={from}
             placeholderText="Select date"
             minDate={minDateFrom ? minDateFrom : new Date()}
-            popperPlacement="top-end"
             customInput={
               // @ts-ignore
               <ExampleCustomInput label={labelFrom} />
@@ -99,7 +98,6 @@ export const DepartureReturnDates: React.FC<
               selected={to}
               placeholderText="Select date"
               minDate={minDateTo ? minDateTo : new Date()}
-              popperPlacement="top-end"
               customInput={
                 // @ts-ignore
                 <ExampleCustomInput label={labelTo} />
