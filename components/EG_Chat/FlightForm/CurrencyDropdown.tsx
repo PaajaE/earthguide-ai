@@ -57,7 +57,7 @@ export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
   const content = currenciesDropdownOptions.map(
     ({ value, label }) => (
       <ListChoice
-        key={value}
+        key={`${label}-${value}`}
         selected={selected === value}
         role="checkbox"
         onClick={() => {
