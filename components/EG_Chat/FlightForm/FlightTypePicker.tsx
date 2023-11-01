@@ -24,7 +24,6 @@ export const FlightTypePicker: React.FC<FlightTypePickerProps> = ({
   const elementRef = useRef<HTMLDivElement | null>(null);
 
   const handleClickOutside = (ev: MouseEvent) => {
-    console.log(ev);
     setOpened(false);
   };
   useClickOutside(elementRef, handleClickOutside);

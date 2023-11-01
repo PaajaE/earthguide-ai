@@ -50,7 +50,6 @@ export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
     });
 
   const handleClickOutside = (ev: MouseEvent) => {
-    console.log(ev);
     setOpened(false);
   };
   useClickOutside(elementRef, handleClickOutside);

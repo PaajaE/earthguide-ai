@@ -78,7 +78,6 @@ export const Chat: FC<Props> = ({
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
   const scrollToBottom = useCallback(() => {
-    console.log('scroll to bottom');
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 

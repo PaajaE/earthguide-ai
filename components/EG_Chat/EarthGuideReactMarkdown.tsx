@@ -27,8 +27,6 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
 }) => {
   const path = usePathname()?.substring(1);
 
-  console.log({ content });
-
   const getAllImgSrc = (elem: HTMLDivElement): string[] => {
     const srcArr: string[] = [];
     const imgs = elem.querySelectorAll('img');
@@ -54,7 +52,6 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
   const handleImgClick = (e: Event) => {
     const target = e.target as HTMLElement;
     const { nodeName } = target;
-    console.log(nodeName);
     let elem;
     let curIndex = 0;
 
@@ -66,9 +63,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
       elem = target as HTMLDivElement;
     }
 
-    console.log(elem);
     const imgSrcs = getAllImgSrc(elem);
-    console.log(imgSrcs);
 
     onDisplayGallery && onDisplayGallery(imgSrcs, curIndex);
   };

@@ -38,7 +38,6 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   const elementRef = useRef<HTMLUListElement | null>(null);
 
   const handleClickOutside = (ev: MouseEvent) => {
-    console.log(ev);
     setIsOpen(false);
   };
   useClickOutside(elementRef, handleClickOutside);
@@ -60,7 +59,6 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   };
 
   const handleOptionClick = (selectedValue: Airport) => {
-    console.log(selectedValue);
     setInputValue(selectedValue.name);
     setIsOpen(false);
     onChange(selectedValue);
