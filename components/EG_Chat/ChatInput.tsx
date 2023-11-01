@@ -20,7 +20,8 @@ interface Props {
   onSend: (message: Message) => void;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   model: OpenAIModel;
-  texts?: TranslateResponseBody<string>;
+  texts: TranslateResponseBody<string>;
+  hasReplies: boolean;
   showShadows?: boolean;
 }
 
@@ -30,6 +31,7 @@ export const ChatInput: FC<Props> = ({
   model,
   textareaRef,
   texts,
+  hasReplies,
   showShadows = false,
 }) => {
   const [content, setContent] = useState<string>();
@@ -55,15 +57,10 @@ export const ChatInput: FC<Props> = ({
       return;
     }
 
-    if (!content) {
-      alert('Please enter a message');
-      return;
-    }
-
     onSend({
       role: 'user',
       typeOfMessage: TypeOfMessage.TEXT,
-      content,
+      content: content ?? '',
     });
     setContent('');
 
@@ -119,8 +116,9 @@ export const ChatInput: FC<Props> = ({
                 overflow: 'auto',
               }}
               placeholder={`${
-                texts?.prompt.translation ??
-                'Discover flights and dream holidays'
+                hasReplies
+                  ? texts.prompt2.translation
+                  : texts.prompt.translation
               }`}
               value={content}
               rows={1}
@@ -138,8 +136,7 @@ export const ChatInput: FC<Props> = ({
           </div>
 
           <p className="relative mt-2 text-[var(--secondary-text)] text-[0.65rem] w-[90%] flex justify-center text-center">
-            {texts?.text_under_prompt.translation ??
-              'All photos are from our community. Want to join, earn to train AI and create content and earn dividends?'}
+            {texts.text_under_prompt.translation}
 
             <a
               className="underline pl-1"
@@ -147,7 +144,7 @@ export const ChatInput: FC<Props> = ({
               title="Earth.Guide"
               target="_blank"
             >
-              {texts?.text_of_link_under_prompt.translation ?? 'Join'}
+              {texts.text_of_link_under_prompt.translation}
             </a>
           </p>
         </div>

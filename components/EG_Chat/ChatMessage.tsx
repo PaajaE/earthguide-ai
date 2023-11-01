@@ -117,7 +117,9 @@ export const ChatMessage: FC<Props> = ({
                   'text-[var(--tertiary-text)]'
                 }`}
               >
-                {message.content}
+                {message.content.length > 0
+                  ? message.content
+                  : '\u00a0'}
               </div>
             </div>
           )}

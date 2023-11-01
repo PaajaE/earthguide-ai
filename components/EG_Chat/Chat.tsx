@@ -82,6 +82,11 @@ export const Chat: FC<Props> = ({
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
 
+  const hasReplies = () =>
+    conversation.messages.some(
+      (message) => message.role === 'earth.guide'
+    );
+
   useEffect(() => {
     if (shouldScrollToBottom) {
       scrollToBottom();
@@ -132,7 +137,7 @@ export const Chat: FC<Props> = ({
               >
                 <div>{texts.intro.translation ?? starterMessage}</div>
                 <div className="mt-4">
-                  <Collapse label="Show examples" expanded>
+                  <Collapse label="Show examples" initialExpanded>
                     <div className="flex flex-col gap-4">
                       <Tile
                         noHeaderIcon
@@ -287,6 +292,7 @@ export const Chat: FC<Props> = ({
             textareaRef={textareaRef}
             texts={texts}
             model={conversation.model}
+            hasReplies={hasReplies()}
             showShadows={showShadows}
           />
         )}

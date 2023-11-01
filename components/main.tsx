@@ -373,6 +373,7 @@ export default function Main({
                     ...fpData,
                     ...flightParametersData,
                   });
+                  setDefaultFpData(true);
 
                   const updatedMessages: Message[] = [
                     ...updatedConversation.messages,

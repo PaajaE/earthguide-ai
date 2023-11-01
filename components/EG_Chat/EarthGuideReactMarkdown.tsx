@@ -99,7 +99,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
           } else if (div.includes(`class="gallery gallery-small"`)) {
             return (
               <div
-                className="w-100 px-4 mb-2"
+                className="w-100 mb-2"
                 dangerouslySetInnerHTML={{ __html: div }}
               ></div>
             );
@@ -120,7 +120,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
             );
             return (
               <div
-                className={`w-100 mb-2`}
+                className={`w-100 mb-2 text-justify`}
                 dangerouslySetInnerHTML={{ __html: replacedIconDiv }}
               ></div>
             );
@@ -220,7 +220,9 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
         },
         p({ children }) {
           return (
-            <div className="mb-4 last-of-type:mb-0">{children}</div>
+            <div className="mb-4 last-of-type:mb-0 text-justify">
+              {children}
+            </div>
           );
         },
       }}
