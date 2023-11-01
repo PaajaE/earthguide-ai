@@ -63,7 +63,7 @@ export const ChatMessage: FC<Props> = ({
           {message.role === 'earth.guide' ? (
             <div
               className={`flex flex-row justify-start items-start gap-2.5 px-8 py-8 w-auto bg-[var(--secondary)] rounded-t-lg rounded-r-lg mb-1 ${
-                fullWidthMessage ? 'max-w-full' : 'max-w-[80%]'
+                fullWidthMessage ? 'max-w-full' : 'max-w-[85%]'
               } box-border ${showShadows ? 'shadow-lg' : ''}${
                 streamingFinished
                   ? "after:content-['✓'] after:absolute after:bottom-1 after:right-2 after:text-slate-200"
@@ -89,7 +89,7 @@ export const ChatMessage: FC<Props> = ({
           ) : (
             <div
               className={`flex flex-row justify-start items-start gap-2.5 py-4 px-8 ${
-                fullWidthMessage ? 'max-w-full' : 'max-w-[80%]'
+                fullWidthMessage ? 'max-w-full' : 'max-w-[85%]'
               } box-border ${showShadows ? 'shadow-lg' : ''} ${
                 message.role === 'user'
                   ? 'w-fit ml-auto bg-[var(--primary)] rounded-t-lg rounded-bl-lg mb-5'
@@ -126,7 +126,7 @@ export const ChatMessage: FC<Props> = ({
           {message.role === 'earth.guide' && (
             <div
               className={`flex gap-1 mb-5 mt-2 justify-end ${
-                fullWidthMessage ? 'max-w-full' : 'max-w-[80%]'
+                fullWidthMessage ? 'max-w-full' : 'max-w-[85%]'
               }`}
             >
               {(!selectedFeedback ||
@@ -244,7 +244,7 @@ export const ChatMessage: FC<Props> = ({
           <>
             {message.mapData && message.mapData.length > 0 && (
               <div
-                className={`flex flex-row justify-start items-start gap-2.5 mb-5 w-100 box-border rounded-lg ${
+                className={`flex flex-row justify-start items-start gap-2.5 mb-5 w-auto max-w-[85%] box-border rounded-lg ${
                   showShadows ? 'shadow-lg' : ''
                 }`}
               >
@@ -262,7 +262,7 @@ export const ChatMessage: FC<Props> = ({
                   'More places like these'
                 }
                 iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
-                bgColor="var(--tertiary)"
+                bgColor="[var(--primary)]"
                 typeOfPrompt={TypeOfPrompt.MORE_PLACES}
                 onClick={(typeOfPrompt: TypeOfPrompt) => {
                   onSend &&

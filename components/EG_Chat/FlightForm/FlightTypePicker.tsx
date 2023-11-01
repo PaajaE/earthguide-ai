@@ -5,8 +5,9 @@ import {
   Popover,
   Select,
 } from '@kiwicom/orbit-components';
+import useClickOutside from '@kiwicom/orbit-components/lib/hooks/useClickOutside';
 import { ChevronDown } from '@kiwicom/orbit-components/lib/icons';
-import { MouseEvent, useState } from 'react';
+import { useRef, useState } from 'react';
 
 interface FlightTypePickerProps {
   selected: string;
@@ -20,6 +21,14 @@ export const FlightTypePicker: React.FC<FlightTypePickerProps> = ({
   texts,
 }) => {
   const [opened, setOpened] = useState<boolean>(false);
+  const elementRef = useRef<HTMLDivElement | null>(null);
+
+  const handleClickOutside = (ev: MouseEvent) => {
+    console.log(ev);
+    setOpened(false);
+  };
+  useClickOutside(elementRef, handleClickOutside);
+
   const content = Object.keys(FLIGHT_TYPES).map((key) => (
     <ListChoice
       key={key}
@@ -45,7 +54,7 @@ export const FlightTypePicker: React.FC<FlightTypePickerProps> = ({
 
   return (
     <>
-      <div className="flex items-center ">
+      <div className="flex items-center" ref={elementRef}>
         <Popover content={content} overlapped opened={opened}>
           <ButtonPrimitive
             iconRight={<ChevronDown />}

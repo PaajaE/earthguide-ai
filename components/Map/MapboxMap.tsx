@@ -26,6 +26,22 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
 
       map.addControl(new mapboxgl.NavigationControl());
 
+      map.on('wheel', (event) => {
+        if (event.originalEvent.ctrlKey) {
+          return;
+        }
+
+        if (event.originalEvent.metaKey) {
+          return;
+        }
+
+        if (event.originalEvent.altKey) {
+          return;
+        }
+
+        event.preventDefault();
+      });
+
       const bounds = new mapboxgl.LngLatBounds();
 
       mapData.forEach((destination) => {

@@ -135,7 +135,7 @@ export const ChatInput: FC<Props> = ({
             </ButtonPrimitive>
           </div>
 
-          <p className="relative mt-2 text-[var(--secondary-text)] text-[0.65rem] w-[90%] flex justify-center text-center">
+          <p className="relative mt-2 text-[var(--secondary-text)] text-[0.65rem] w-full flex-col justify-center text-center">
             {texts.text_under_prompt.translation}
 
             <a

@@ -17,9 +17,10 @@ export const Button: FC<Props> = ({
   typeOfPrompt,
   onClick,
 }) => {
+  const backgroundColor = `bg-${bgColor}`;
   return (
     <div
-      className={`flex flex-row justify-center lg:justify-start mb-3 lg:mb-0 w-full lg:w-auto items-center first-of-type:mr-2 cursor-pointer items-start gap-2.5 px-[13px] py-3.5 rounded-lg box-border bg-[var(--tertiary)]`}
+      className={`flex flex-row justify-center lg:justify-start mb-3 lg:mb-0 w-full lg:w-auto items-center first-of-type:mr-2 cursor-pointer gap-2.5 px-[13px] py-3.5 rounded-lg box-border ${backgroundColor} text-[var(--primary-text)] hover:bg-white hover:text-[var(--primary)] hover:border hover:border-[var(--primary)]`}
       onClick={(e) =>
         onClick(typeOfPrompt ?? TypeOfPrompt.TEXT_PROMPT)
       }
@@ -29,7 +30,7 @@ export const Button: FC<Props> = ({
         alt=""
         className="hidden md:block w-[30px] h-[30px]"
       />
-      <p className="text-[var(--primary-text)] leading-6 font-plus jakarta sans font-[400]">
+      <p className="leading-6 font-plus jakarta sans font-[400]">
         {text}
       </p>
     </div>

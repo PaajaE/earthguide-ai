@@ -27,6 +27,8 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
 }) => {
   const path = usePathname()?.substring(1);
 
+  console.log({ content });
+
   const getAllImgSrc = (elem: HTMLDivElement): string[] => {
     const srcArr: string[] = [];
     const imgs = elem.querySelectorAll('img');

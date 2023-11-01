@@ -58,7 +58,7 @@ export const RightSidebar: FC<Props> = ({
       }}
     >
       <div className="w-auto rounded-md overflow-y-auto">
-        <div className="text-[var(--tertiary-text)] pb-2 pl-2">
+        <div className="text-[var(--tertiary-text)] pb-8 px-4">
           {/* {showSample && (
             <div className="flex flex-col mt-2 px-4">
               <h2 className="font-bold mb-4">
@@ -140,7 +140,7 @@ export const RightSidebar: FC<Props> = ({
           )} */}
           {flightParams && (
             <div
-              className={`flex flex-row justify-start items-start gap-2.5 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] lg:mr-8 ${
+              className={`flex flex-row justify-start items-start gap-2.5 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] ${
                 showShadows ? 'shadow-lg' : ''
               }`}
             >

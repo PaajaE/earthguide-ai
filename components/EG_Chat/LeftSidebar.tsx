@@ -12,7 +12,7 @@ export const LeftSidebar: FC<Props> = ({ lightMode, logoPath }) => {
 
   return (
     <div
-      className={`relative flex flex-col bg-[#FAFAFA] min-w-full sm:min-w-[150px] sm:max-w-[320px] sm:w-[320px] lg:w-1/4 lg:max-w-[25%] z-10 top-4 lg:top-0 lg:bottom-0 mb-8 lg:mb-0`}
+      className={`relative flex flex-col bg-transparent min-w-full sm:min-w-[150px] sm:max-w-[320px] sm:w-[320px] lg:w-1/4 lg:max-w-[25%] z-10 top-4 lg:top-0 lg:bottom-0 mb-8 lg:mb-0`}
     >
       <div className="overflow-auto flex flex-row-reverse lg:flex-col">
         <div

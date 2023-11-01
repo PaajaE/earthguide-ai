@@ -1,6 +1,7 @@
 import { TranslateResponseBody } from '@/types';
 import { InputField } from '@kiwicom/orbit-components';
-import React, { useState, useEffect } from 'react';
+import useClickOutside from '@kiwicom/orbit-components/lib/hooks/useClickOutside';
+import React, { useState, useEffect, useRef } from 'react';
 
 export interface Airport {
   iata: string;
@@ -34,6 +35,13 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   const [filteredOptions, setFilteredOptions] =
     useState<Airport[]>(airports);
   const [isOpen, setIsOpen] = useState(false);
+  const elementRef = useRef<HTMLUListElement | null>(null);
+
+  const handleClickOutside = (ev: MouseEvent) => {
+    console.log(ev);
+    setIsOpen(false);
+  };
+  useClickOutside(elementRef, handleClickOutside);
 
   useEffect(() => {
     console.log({ departureAirport });
@@ -78,8 +86,8 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row items-start lg:items-center">
-        <div className="relative w-[50vw] lg:w-[300px]">
+      <div className="flex flex-col items-start lg:items-center">
+        <div className="relative w-full mb-3">
           <InputField
             type="text"
             value={inputValue}
@@ -100,6 +108,7 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
           {isOpen && (
             <ul
               className={`absolute overflow-y-auto max-h-[200px] border-[1px] border-[var(--primary)] w-full bg-white border-t-0 top-[calc(100% - 20px)] z-[100] shadow-xl`}
+              ref={elementRef}
             >
               {filteredOptions.map((option) => (
                 <li
@@ -118,7 +127,7 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
             </ul>
           )}
         </div>
-        <div className="lg:ml-4">
+        <div className="w-full">
           <div className="relative w-fit">
             <InputField
               type="text"

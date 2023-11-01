@@ -5,8 +5,9 @@ import {
   Popover,
   Text,
 } from '@kiwicom/orbit-components';
+import useClickOutside from '@kiwicom/orbit-components/lib/hooks/useClickOutside';
 import { ChevronDown } from '@kiwicom/orbit-components/lib/icons';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 
 interface VacationLengthPickerProps {
   from?: number;
@@ -26,6 +27,20 @@ export const VacationLengthPicker: React.FC<
 > = ({ from = 0, to = 0, texts, onVacationLengthChange }) => {
   const [openedFrom, setOpenedFrom] = useState<boolean>(false);
   const [openedTo, setOpenedTo] = useState<boolean>(false);
+
+  const elementRefFrom = useRef<HTMLDivElement | null>(null);
+  const elementRefTo = useRef<HTMLDivElement | null>(null);
+
+  const handleClickOutsideFrom = (ev: MouseEvent) => {
+    console.log(ev);
+    setOpenedFrom(false);
+  };
+  const handleClickOutsideTo = (ev: MouseEvent) => {
+    console.log(ev);
+    setOpenedTo(false);
+  };
+  useClickOutside(elementRefFrom, handleClickOutsideFrom);
+  useClickOutside(elementRefTo, handleClickOutsideTo);
 
   const generateOptions = (
     start: number,
@@ -67,7 +82,9 @@ export const VacationLengthPicker: React.FC<
             to:
               value === 'undefined'
                 ? undefined
-                : parseInt(value.toString()),
+                : parseInt(value.toString()) > to
+                ? parseInt(value.toString())
+                : to,
           });
           setOpenedFrom(false);
         }}
@@ -99,15 +116,18 @@ export const VacationLengthPicker: React.FC<
 
   return (
     <>
-      <div className="w-full flex flex-col gap-3 lg:flex-row items-start lg:items-center py-3 pl-1">
-        <Text>
+      <div className="w-full flex flex-col gap-3 text-normal lg:flex-row items-start lg:items-center py-3 pl-1 vac-length">
+        <Text weight="medium">
           {`${
             texts?.flights_vac_lenght_title.translation
               ? `${texts?.flights_vac_lenght_title.translation}:`
               : 'Vacation length:'
           }`}
         </Text>
-        <div className="flex items-center">
+        <div
+          className="flex items-center text-sm"
+          ref={elementRefFrom}
+        >
           <Popover
             content={contentFrom}
             overlapped
@@ -143,8 +163,11 @@ export const VacationLengthPicker: React.FC<
         </div>
         {from && from > 0 ? (
           <>
-            <Text>-</Text>
-            <div className="flex items-center">
+            <Text size="small">-</Text>
+            <div
+              className="flex items-center text-sm"
+              ref={elementRefTo}
+            >
               <Popover
                 content={contentTo}
                 overlapped

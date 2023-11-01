@@ -842,8 +842,8 @@ export default function Main({
               <div
                 className={`hidden lg:flex flex-col h-screen w-100 text-[var(--primary-text)] ${lightMode}`}
               >
-                <div className="h-full w-full p-2">
-                  <div className="flex gap-8 w-full h-full bg-[#FAFAFA] pl-6 pt-10 rounded-md">
+                <div className="h-full w-full p-4">
+                  <div className="flex gap-8 w-full h-full bg-[#FAFAFA] py-4 rounded-md">
                     <LeftSidebar
                       lightMode="light"
                       logoPath={airlineData.logo}
@@ -906,7 +906,7 @@ export default function Main({
                 className={`flex lg:hidden flex-col justify-start h-screen w-full text-[var(--primary-text)] ${lightMode}`}
               >
                 <div className="h-full w-100">
-                  <div className="flex flex-col h-screen lg:h-full bg-[#FAFAFA] rounded-md">
+                  <div className="flex flex-col h-screen lg:h-full bg-[#transparent] rounded-md">
                     <Chat
                       conversation={selectedConversation}
                       messageIsStreaming={messageIsStreaming}

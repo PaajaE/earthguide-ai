@@ -99,7 +99,7 @@ export const Chat: FC<Props> = ({
   ]);
 
   return (
-    <div className="relative flex flex-col justify-between w-auto lg:w-1/2 h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full bg-[#FAFAFA]">
+    <div className="relative flex flex-col justify-between w-auto lg:w-1/2 h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full bg-transparent">
       <>
         <div>
           {/* <div
@@ -127,7 +127,7 @@ export const Chat: FC<Props> = ({
 
             <div
               className={`flex flex-row justify-start items-start gap-2.5 py-4 px-8 ${
-                fullWidthMessage ? 'max-w-full' : 'max-w-[80%]'
+                fullWidthMessage ? 'max-w-full' : 'max-w-[85%]'
               } ${
                 showShadows ? 'shadow-lg' : ''
               } box-border bg-[var(--secondary)] rounded-t-lg rounded-r-lg mb-5`}
@@ -136,9 +136,9 @@ export const Chat: FC<Props> = ({
                 className={`border-[#000000ff] leading-6 flex flex-col w-full  font-plus jakarta sans  font-[400] text-[var(--tertiary-text)]`}
               >
                 <div>{texts.intro.translation ?? starterMessage}</div>
-                <div className="mt-4">
+                <div className="mt-4 text-[var(--primary)] font-medium cursor-pointer">
                   <Collapse label="Show examples" initialExpanded>
-                    <div className="flex flex-col gap-4">
+                    <div className="flex flex-col gap-4 font-normal">
                       <Tile
                         noHeaderIcon
                         onClick={() => {
@@ -274,7 +274,7 @@ export const Chat: FC<Props> = ({
                 {messageIsStreaming && <ChatLoader />}
 
                 <div
-                  className="bg-[#FAFAFA] h-[15vh]"
+                  className="bg-transparent h-[15vh]"
                   ref={messagesEndRef}
                 />
               </>
