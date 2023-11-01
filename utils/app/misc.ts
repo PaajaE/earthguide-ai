@@ -31,11 +31,17 @@ export function extractGpsCoordinates(gpsString: string): {
   latitude: number;
   longitude: number;
 } {
-  const [latitude, longitude] = gpsString.split(',').map((coord) => {
-    console.log(coord);
-    console.log(coord.trim());
-    return parseFloat(coord.trim());
-  });
+  if (gpsString.includes('−')) {
+    console.log('gps not a number');
+  }
+  const [latitude, longitude] = gpsString
+    .replaceAll('−', '-')
+    .split(',')
+    .map((coord) => {
+      console.log(coord);
+      console.log(coord.trim());
+      return parseFloat(coord.trim());
+    });
 
   console.log({ latitude, longitude });
 

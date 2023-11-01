@@ -123,6 +123,8 @@ export default function Main({
   const [fpData, setFpData] =
     useState<IFlightParamsConverted>(initFpData);
   const [defaultFpData, setDefaultFpData] = useState<boolean>(true);
+  const [promptPlaceholder, setPromptPlaceholder] =
+    useState<string>('prompt');
 
   const searchParams = useSearchParams();
 
@@ -456,6 +458,9 @@ export default function Main({
                     isWsFirst = true;
                   }
                 }
+              }
+              if (data.promt_text) {
+                setPromptPlaceholder(data.promt_text);
               }
               if (data.done) {
                 setMessageIsStreaming(false);
@@ -866,6 +871,7 @@ export default function Main({
                       fullWidthMessage={fullWidthMessage}
                       withPadding={withPadding}
                       showShadows={showShadows}
+                      promptPlaceholder={promptPlaceholder}
                       onSend={sendWithRetry}
                       onRateAnswer={handleRateAnswer}
                       onUpdateConversation={handleUpdateConversation}
@@ -922,6 +928,7 @@ export default function Main({
                       texts={texts}
                       shouldScrollToBottom={shouldScrollToBottom}
                       flightParams={fpData}
+                      promptPlaceholder={promptPlaceholder}
                       onSend={sendWithRetry}
                       onRateAnswer={handleRateAnswer}
                       onUpdateConversation={handleUpdateConversation}

@@ -21,7 +21,7 @@ interface Props {
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   model: OpenAIModel;
   texts: TranslateResponseBody<string>;
-  hasReplies: boolean;
+  promptPlaceholder: string;
   showShadows?: boolean;
 }
 
@@ -31,7 +31,7 @@ export const ChatInput: FC<Props> = ({
   model,
   textareaRef,
   texts,
-  hasReplies,
+  promptPlaceholder,
   showShadows = false,
 }) => {
   const [content, setContent] = useState<string>();
@@ -115,11 +115,7 @@ export const ChatInput: FC<Props> = ({
                 maxHeight: '400px',
                 overflow: 'auto',
               }}
-              placeholder={`${
-                hasReplies
-                  ? texts.prompt2.translation
-                  : texts.prompt.translation
-              }`}
+              placeholder={texts[promptPlaceholder].translation}
               value={content}
               rows={1}
               onCompositionStart={() => setIsTyping(true)}

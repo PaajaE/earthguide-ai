@@ -48,10 +48,14 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   }, [departureAirport]);
 
   useEffect(() => {
-    const filtered = airports.filter((option) =>
-      option.name.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    setFilteredOptions(filtered);
+    if (inputValue.length >= 3) {
+      const filtered = airports.filter((option) =>
+        option.name.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setFilteredOptions(filtered);
+    } else {
+      setFilteredOptions([]);
+    }
   }, [inputValue, airports]);
 
   const handleInputChange = (newValue: string) => {

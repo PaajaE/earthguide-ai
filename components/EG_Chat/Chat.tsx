@@ -29,6 +29,7 @@ interface Props {
   texts: TranslateResponseBody<string>;
   shouldScrollToBottom: boolean;
   flightParams?: IFlightParamsConverted;
+  promptPlaceholder: string;
   fullWidthMessage?: boolean;
   showShadows?: boolean;
   withPadding?: boolean;
@@ -63,6 +64,7 @@ export const Chat: FC<Props> = ({
   fullWidthMessage = false,
   showShadows = false,
   withPadding = false,
+  promptPlaceholder,
   onSend,
   onRateAnswer,
   onAnotherPromptClick,
@@ -80,11 +82,6 @@ export const Chat: FC<Props> = ({
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, []);
-
-  const hasReplies = () =>
-    conversation.messages.some(
-      (message) => message.role === 'earth.guide'
-    );
 
   useEffect(() => {
     if (shouldScrollToBottom) {
@@ -291,7 +288,7 @@ export const Chat: FC<Props> = ({
             textareaRef={textareaRef}
             texts={texts}
             model={conversation.model}
-            hasReplies={hasReplies()}
+            promptPlaceholder={promptPlaceholder}
             showShadows={showShadows}
           />
         )}
