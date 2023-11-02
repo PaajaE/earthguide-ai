@@ -37,10 +37,10 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const elementRef = useRef<HTMLUListElement | null>(null);
 
-  const handleClickOutside = (ev: MouseEvent) => {
-    setIsOpen(false);
-  };
-  useClickOutside(elementRef, handleClickOutside);
+  // const handleClickOutside = (ev: MouseEvent) => {
+  //   setIsOpen(false);
+  // };
+  // useClickOutside(elementRef, handleClickOutside);
 
   useEffect(() => {
     console.log({ departureAirport });
