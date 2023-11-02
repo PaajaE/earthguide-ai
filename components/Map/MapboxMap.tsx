@@ -118,7 +118,7 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
 
       map.fitBounds(bounds, {
         padding: { top: 100, bottom: 100, left: 100, right: 100 },
-        maxZoom: 11,
+        maxZoom: 8,
       });
     }
   });

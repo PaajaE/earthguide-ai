@@ -35,12 +35,12 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   const [filteredOptions, setFilteredOptions] =
     useState<Airport[]>(airports);
   const [isOpen, setIsOpen] = useState(false);
-  const elementRef = useRef<HTMLUListElement | null>(null);
+  const elementRef = useRef<HTMLDivElement | null>(null);
 
-  // const handleClickOutside = (ev: MouseEvent) => {
-  //   setIsOpen(false);
-  // };
-  // useClickOutside(elementRef, handleClickOutside);
+  const handleClickOutside = (ev: MouseEvent) => {
+    setIsOpen(false);
+  };
+  useClickOutside(elementRef, handleClickOutside);
 
   useEffect(() => {
     console.log({ departureAirport });
@@ -89,7 +89,7 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   return (
     <>
       <div className="flex flex-col items-start lg:items-center">
-        <div className="relative w-full mb-3">
+        <div className="relative w-full mb-3" ref={elementRef}>
           <InputField
             type="text"
             value={inputValue}
@@ -110,7 +110,6 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
           {isOpen && (
             <ul
               className={`absolute overflow-y-auto max-h-[200px] border-[1px] border-[var(--primary)] w-full bg-white border-t-0 top-[calc(100% - 20px)] z-[100] shadow-xl`}
-              ref={elementRef}
             >
               {filteredOptions.map((option) => (
                 <li
