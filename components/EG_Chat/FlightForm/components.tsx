@@ -31,14 +31,14 @@ export const VacationLengthPicker: React.FC<
   const elementRefFrom = useRef<HTMLDivElement | null>(null);
   const elementRefTo = useRef<HTMLDivElement | null>(null);
 
-  const handleClickOutsideFrom = (ev: MouseEvent) => {
-    setOpenedFrom(false);
-  };
-  const handleClickOutsideTo = (ev: MouseEvent) => {
-    setOpenedTo(false);
-  };
-  useClickOutside(elementRefFrom, handleClickOutsideFrom);
-  useClickOutside(elementRefTo, handleClickOutsideTo);
+  // const handleClickOutsideFrom = (ev: MouseEvent) => {
+  //   setOpenedFrom(false);
+  // };
+  // const handleClickOutsideTo = (ev: MouseEvent) => {
+  //   setOpenedTo(false);
+  // };
+  // useClickOutside(elementRefFrom, handleClickOutsideFrom);
+  // useClickOutside(elementRefTo, handleClickOutsideTo);
 
   const generateOptions = (
     start: number,
