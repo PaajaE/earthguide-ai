@@ -49,10 +49,10 @@ export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
       return 0;
     });
 
-  const handleClickOutside = (ev: MouseEvent) => {
-    setOpened(false);
-  };
-  useClickOutside(elementRef, handleClickOutside);
+  // const handleClickOutside = (ev: MouseEvent) => {
+  //   setOpened(false);
+  // };
+  // useClickOutside(elementRef, handleClickOutside);
 
   const content = currenciesDropdownOptions.map(
     ({ value, label }) => (

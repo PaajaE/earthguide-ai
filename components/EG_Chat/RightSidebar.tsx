@@ -53,9 +53,12 @@ export const RightSidebar: FC<Props> = ({
   const handleChangeFlightParams = (
     newFpData: Partial<IFlightParamsConverted>
   ) => {
-    setFpData({
-      ...fpData,
-      ...newFpData,
+    console.log(newFpData);
+    setFpData((prevData) => {
+      return {
+        ...prevData,
+        ...newFpData,
+      };
     });
     setDefaultFpData(false);
   };
