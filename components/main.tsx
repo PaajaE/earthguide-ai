@@ -893,7 +893,7 @@ export default function Main({
                   className={`flex lg:hidden flex-col justify-start h-screen w-full text-[var(--primary-text)] ${lightMode}`}
                 >
                   <div className="h-full w-100">
-                    <div className="flex flex-col h-screen lg:h-full bg-[#transparent] rounded-md">
+                    <div className="flex flex-col h-screen lg:h-full bg-transparent rounded-md">
                       <Chat
                         conversation={selectedConversation}
                         messageIsStreaming={messageIsStreaming}
