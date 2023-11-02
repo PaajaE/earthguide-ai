@@ -190,9 +190,9 @@ input:focus {
       background-color: var(--primary) !important;
 }
 
-.react-datepicker-popper {
+/* .react-datepicker-popper {
   z-index: 11 !important;
-}
+} */
 
 /* .react-datepicker-wrapper {
   width: 100%;
