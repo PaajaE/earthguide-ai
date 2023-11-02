@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@dqbd/tiktoken": "^1.0.2",
+    "@kiwicom/orbit-components": "^10.0.0",
     "@sentry/nextjs": "^7.73.0",
     "@tabler/icons-react": "^2.9.0",
     "@types/mapbox-gl": "^2.7.12",
@@ -24,6 +25,7 @@
     "flowbite": "^1.6.6",
     "flowbite-react": "^0.4.9",
     "jsonrepair": "^3.2.0",
+    "lottie-react": "^2.4.0",
     "mapbox-gl": "^2.15.0",
     "markdown-to-text": "^0.1.1",
     "next": "13.2.4",
@@ -33,6 +35,7 @@
     "react-dom": "18.2.0",
     "react-markdown": "^8.0.5",
     "react-syntax-highlighter": "^15.5.0",
+    "react-uid": "^2.3.3",
     "remark-gfm": "^3.0.1",
     "typescript": "4.9.5",
     "uuid": "^9.0.0"
@@ -41,7 +44,9 @@
     "@tailwindcss/typography": "^0.5.9",
     "@types/react-datepicker": "^4.15.0",
     "@types/react-syntax-highlighter": "^15.5.6",
+    "@types/styled-components": "^5.1.28",
     "autoprefixer": "^10.4.14",
+    "eslint-plugin-orbit-components": "^0.6.10",
     "postcss": "^8.4.21",
     "tailwindcss": "^3.2.7"
   }

@@ -5,13 +5,12 @@ import {
   TranslateResponseBody,
   TypeOfMessage,
 } from '@/types';
-import { IconSend } from '@tabler/icons-react';
+import { ButtonPrimitive } from '@kiwicom/orbit-components';
 import {
   FC,
   KeyboardEvent,
   MutableRefObject,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 
@@ -20,7 +19,10 @@ interface Props {
   onSend: (message: Message) => void;
   textareaRef: MutableRefObject<HTMLTextAreaElement | null>;
   model: OpenAIModel;
-  texts?: TranslateResponseBody<string>;
+  texts: TranslateResponseBody<string>;
+  promptPlaceholder: string;
+  showShadows?: boolean;
+  isMobile: boolean;
 }
 
 export const ChatInput: FC<Props> = ({
@@ -29,6 +31,9 @@ export const ChatInput: FC<Props> = ({
   model,
   textareaRef,
   texts,
+  promptPlaceholder,
+  showShadows = false,
+  isMobile,
 }) => {
   const [content, setContent] = useState<string>();
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -53,15 +58,10 @@ export const ChatInput: FC<Props> = ({
       return;
     }
 
-    if (!content) {
-      alert('Please enter a message');
-      return;
-    }
-
     onSend({
       role: 'user',
       typeOfMessage: TypeOfMessage.TEXT,
-      content,
+      content: content ?? '',
     });
     setContent('');
 
@@ -70,19 +70,9 @@ export const ChatInput: FC<Props> = ({
     }
   };
 
-  const isMobile = () => {
-    const userAgent =
-      typeof window.navigator === 'undefined'
-        ? ''
-        : navigator.userAgent;
-    const mobileRegex =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
-    return mobileRegex.test(userAgent);
-  };
-
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (!isTyping) {
-      if (e.key === 'Enter' && !e.shiftKey && !isMobile()) {
+      if (e.key === 'Enter' && !e.shiftKey && !isMobile) {
         e.preventDefault();
         handleSend();
       }
@@ -96,51 +86,55 @@ export const ChatInput: FC<Props> = ({
         textareaRef.current?.scrollHeight + 4
       }px`;
     }
-  }, [content]);
+  }, [content, textareaRef]);
 
   return (
     <>
-      <div className="sticky lg:w-[calc(60vw_-_2rem)] px-4 pb-12 lg:pb-8 bg-[#FAFAFA]">
-        <textarea
-          ref={textareaRef}
-          className="pl-4 pr-8 pt-[0.8rem] pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-[10px]  bg-[rgba(255,255,255,1)] text-[var(--tertiary-text)] drop-shadow-md"
-          style={{
-            resize: 'none',
-            bottom: `${textareaRef?.current?.scrollHeight}px`,
-            maxHeight: '400px',
-            overflow: 'auto',
-          }}
-          placeholder={`${
-            texts?.prompt.translation ??
-            'Discover flights and dream holidays'
+      <div className="sticky lg:w-[calc(50vw_-_2rem)] lg:p-4 ">
+        <div
+          className={`bg-[var(--secondary)] p-8 rounded-lg ${
+            showShadows ? 'shadow-lg' : ''
           }`}
-          value={content}
-          rows={1}
-          onCompositionStart={() => setIsTyping(true)}
-          onCompositionEnd={() => setIsTyping(false)}
-          onChange={handleChange}
-          onKeyDown={handleKeyDown}
-        />
-
-        <button
-          className="absolute right-6 lg:right-4 bottom-16 lg:bottom-12 focus:outline-none text-neutral-800 hover:text-neutral-900 dark:text-neutral-100 dark:hover:text-neutral-200 dark:bg-opacity-50 hover:bg-neutral-200 p-1 rounded-sm"
-          onClick={handleSend}
         >
-          <IconSend size={18} color={'#999'} />
-        </button>
-        <p className="absolute bottom-4 text-[var(--secondary-text)] text-[0.65rem] w-[90%] flex justify-center text-center">
-          {texts?.text_under_prompt.translation ??
-            'All photos are from our community. Want to join, earn to train AI and create content and earn dividends?'}
+          <div className="flex gap-2">
+            <textarea
+              ref={textareaRef}
+              className="pl-4 pr-8 pt-[0.8rem] pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-lg  bg-[rgba(255,255,255,1)] text-[var(--tertiary-text)] drop-shadow-md"
+              style={{
+                resize: 'none',
+                bottom: `${textareaRef?.current?.scrollHeight}px`,
+                maxHeight: '400px',
+                overflow: 'auto',
+              }}
+              placeholder={texts[promptPlaceholder].translation}
+              value={content}
+              rows={1}
+              onCompositionStart={() => setIsTyping(true)}
+              onCompositionEnd={() => setIsTyping(false)}
+              onChange={handleChange}
+              onKeyDown={handleKeyDown}
+            />
+            <ButtonPrimitive
+              className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-lg"
+              onClick={handleSend}
+            >
+              {texts.prompt_button.translation}
+            </ButtonPrimitive>
+          </div>
 
-          <a
-            className="underline pl-1"
-            href="https://earth.guide"
-            title="Earth.Guide"
-            target="_blank"
-          >
-            {texts?.text_of_link_under_prompt.translation ?? 'Join'}
-          </a>
-        </p>
+          <p className="relative mt-2 text-[var(--secondary-text)] text-[0.65rem] w-full flex-col justify-center text-center">
+            {texts.text_under_prompt.translation}
+
+            <a
+              className="underline pl-1"
+              href="https://earth.guide"
+              title="Earth.Guide"
+              target="_blank"
+            >
+              {texts.text_of_link_under_prompt.translation}
+            </a>
+          </p>
+        </div>
       </div>
     </>
   );

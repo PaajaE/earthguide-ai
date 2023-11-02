@@ -1,4 +1,13 @@
 import { TranslateResponseBody } from '@/types';
+import {
+  ButtonPrimitive,
+  ListChoice,
+  Popover,
+  Text,
+} from '@kiwicom/orbit-components';
+import useClickOutside from '@kiwicom/orbit-components/lib/hooks/useClickOutside';
+import { ChevronDown } from '@kiwicom/orbit-components/lib/icons';
+import { useRef, useState } from 'react';
 
 interface VacationLengthPickerProps {
   from?: number;
@@ -16,6 +25,21 @@ interface VacationLengthPickerProps {
 export const VacationLengthPicker: React.FC<
   VacationLengthPickerProps
 > = ({ from = 0, to = 0, texts, onVacationLengthChange }) => {
+  const [openedFrom, setOpenedFrom] = useState<boolean>(false);
+  const [openedTo, setOpenedTo] = useState<boolean>(false);
+
+  const elementRefFrom = useRef<HTMLDivElement | null>(null);
+  const elementRefTo = useRef<HTMLDivElement | null>(null);
+
+  // const handleClickOutsideFrom = (ev: MouseEvent) => {
+  //   setOpenedFrom(false);
+  // };
+  // const handleClickOutsideTo = (ev: MouseEvent) => {
+  //   setOpenedTo(false);
+  // };
+  // useClickOutside(elementRefFrom, handleClickOutsideFrom);
+  // useClickOutside(elementRefTo, handleClickOutsideTo);
+
   const generateOptions = (
     start: number,
     end: number,
@@ -24,132 +48,156 @@ export const VacationLengthPicker: React.FC<
     const options = [];
 
     if (withPlaceholder) {
-      options.push(
-        <option key={0} value={'undefined'}>
-          {texts?.flights_vac_lenght_possibility1.translation ??
-            'Based on flight dates'}
-        </option>
-      );
+      options.push({
+        label:
+          texts?.flights_vac_lenght_possibility1.translation ??
+          'Based on flight dates',
+        value: 'undefined',
+      });
     }
 
     for (let i = start; i <= end; i++) {
-      options.push(
-        <option key={i} value={i}>
-          {`${i} ${
-            i === 1
+      options.push({
+        value: i,
+        label: i,
+      });
+    }
+    return options;
+  };
+
+  const contentFrom = generateOptions(1, 100, true).map(
+    ({ value, label }) => (
+      <ListChoice
+        key={value.toString()}
+        selected={from === value}
+        role="checkbox"
+        onClick={() => {
+          onVacationLengthChange({
+            from:
+              value === 'undefined'
+                ? undefined
+                : parseInt(value.toString()),
+            to:
+              value === 'undefined'
+                ? undefined
+                : parseInt(value.toString()) > to
+                ? parseInt(value.toString())
+                : to,
+          });
+          setOpenedFrom(false);
+        }}
+        title={label.toString()}
+      />
+    )
+  );
+
+  const contentTo = generateOptions(from, 100).map(
+    ({ value, label }) => (
+      <ListChoice
+        key={value.toString()}
+        selected={to === value}
+        role="checkbox"
+        onClick={() => {
+          onVacationLengthChange({
+            to:
+              value === 'undefined'
+                ? undefined
+                : parseInt(value.toString()),
+            from,
+          });
+          setOpenedTo(false);
+        }}
+        title={label.toString()}
+      />
+    )
+  );
+
+  return (
+    <>
+      <div className="w-full flex flex-col gap-3 text-normal lg:flex-row items-start lg:items-center py-3 pl-1 vac-length">
+        <Text weight="medium">
+          {`${
+            texts?.flights_vac_lenght_title.translation
+              ? `${texts?.flights_vac_lenght_title.translation}:`
+              : 'Vacation length:'
+          }`}
+        </Text>
+        <div
+          className="flex items-center text-sm"
+          ref={elementRefFrom}
+        >
+          <Popover
+            content={contentFrom}
+            overlapped
+            opened={openedFrom}
+            maxHeight="40vh"
+          >
+            <ButtonPrimitive
+              iconRight={<ChevronDown />}
+              onClick={() => {
+                setOpenedFrom(true);
+              }}
+            >
+              {from
+                ? from
+                : `${
+                    texts?.flights_vac_lenght_possibility1
+                      .translation ?? 'Based on flight dates'
+                  }`}
+            </ButtonPrimitive>
+          </Popover>
+          {`${
+            !from
+              ? ''
+              : from === 1
               ? texts?.flights_vac_lenght_1_night.translation ??
                 'night'
-              : i <= 4
+              : from <= 4
               ? texts?.['flights_vac_lenght_2-4_nights']
                   .translation ?? 'nights'
               : texts?.['flights_vac_lenght_5+nights'].translation ??
                 'nights'
           }`}
-        </option>
-      );
-    }
-    return options;
-  };
-
-  return (
-    <>
-      <div className="font-semibold text-sm mb-[0.1rem]">
-        {texts?.flights_vac_lenght_title.translation ??
-          'Vacation length:'}
-      </div>
-      <div className="flex flex-col lg:flex-row items-start lg:items-center space-x-1">
-        <div className="relative">
-          <select
-            className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-            value={from}
-            onChange={(e) => {
-              const val = e.target.value;
-              onVacationLengthChange({
-                from: val === 'undefined' ? undefined : parseInt(val),
-                to: val === 'undefined' ? undefined : to,
-              });
-            }}
-          >
-            {generateOptions(1, 100, true)}
-          </select>
         </div>
         {from && from > 0 ? (
           <>
-            <span> - </span>
-            <div className="relative">
-              <select
-                className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-                value={to}
-                onChange={(e) => {
-                  const val = e.target.value;
-                  onVacationLengthChange({
-                    to:
-                      val === 'undefined' ? undefined : parseInt(val),
-                    from,
-                  });
-                }}
+            <Text size="small">-</Text>
+            <div
+              className="flex items-center text-sm"
+              ref={elementRefTo}
+            >
+              <Popover
+                content={contentTo}
+                overlapped
+                opened={openedTo}
+                maxHeight="40vh"
               >
-                {generateOptions(from, 100)}
-              </select>
+                <ButtonPrimitive
+                  iconRight={<ChevronDown />}
+                  onClick={() => {
+                    setOpenedTo(true);
+                  }}
+                >
+                  {to}
+                </ButtonPrimitive>
+              </Popover>
+              {`${
+                !to
+                  ? ''
+                  : to === 1
+                  ? texts?.flights_vac_lenght_1_night.translation ??
+                    'night'
+                  : to <= 4
+                  ? texts?.['flights_vac_lenght_2-4_nights']
+                      .translation ?? 'nights'
+                  : texts?.['flights_vac_lenght_5+nights']
+                      .translation ?? 'nights'
+              }`}
             </div>
           </>
         ) : (
           <></>
         )}
-      </div>
-    </>
-  );
-};
-
-interface LocationInputProps {
-  radius: number;
-  departureAirport?: string;
-  onRadiusChange: (val: number) => void;
-  onDepartureAirportChange: (val: string, name: string) => void;
-}
-
-export const LocationInput: React.FC<LocationInputProps> = ({
-  departureAirport = '',
-  radius,
-  onRadiusChange,
-  onDepartureAirportChange,
-}) => {
-  const handleDepartureAirportChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    onDepartureAirportChange(event.target.value, 'departure_airport');
-  };
-
-  const handleRadiusChange = (
-    event: React.ChangeEvent<HTMLInputElement>
-  ) => {
-    onRadiusChange(+event.target.value);
-  };
-
-  return (
-    <>
-      <div className="text-black text-sm font-semibold mb-[0.1rem]">
-        From:
-      </div>
-      <div className="flex items-center">
-        <input
-          type="text"
-          className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-          value={departureAirport}
-          size={departureAirport.length}
-          onChange={handleDepartureAirportChange}
-        />
-        <label className="text-black px-2">
-          include airports within
-        </label>
-        <input
-          type="text"
-          className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-          size={radius.toString().length}
-          value={radius}
-          onChange={handleRadiusChange}
-        />
-        <span className="text-black pl-2">km.</span>
       </div>
     </>
   );

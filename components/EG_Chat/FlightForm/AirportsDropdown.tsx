@@ -1,5 +1,7 @@
 import { TranslateResponseBody } from '@/types';
-import React, { useState, useEffect } from 'react';
+import { InputField } from '@kiwicom/orbit-components';
+import useClickOutside from '@kiwicom/orbit-components/lib/hooks/useClickOutside';
+import React, { useState, useEffect, useRef } from 'react';
 
 export interface Airport {
   iata: string;
@@ -33,6 +35,12 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   const [filteredOptions, setFilteredOptions] =
     useState<Airport[]>(airports);
   const [isOpen, setIsOpen] = useState(false);
+  const elementRef = useRef<HTMLUListElement | null>(null);
+
+  // const handleClickOutside = (ev: MouseEvent) => {
+  //   setIsOpen(false);
+  // };
+  // useClickOutside(elementRef, handleClickOutside);
 
   useEffect(() => {
     console.log({ departureAirport });
@@ -40,10 +48,14 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   }, [departureAirport]);
 
   useEffect(() => {
-    const filtered = airports.filter((option) =>
-      option.name.toLowerCase().includes(inputValue.toLowerCase())
-    );
-    setFilteredOptions(filtered);
+    if (inputValue.length >= 3) {
+      const filtered = airports.filter((option) =>
+        option.name.toLowerCase().includes(inputValue.toLowerCase())
+      );
+      setFilteredOptions(filtered);
+    } else {
+      setFilteredOptions([]);
+    }
   }, [inputValue, airports]);
 
   const handleInputChange = (newValue: string) => {
@@ -51,7 +63,6 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
   };
 
   const handleOptionClick = (selectedValue: Airport) => {
-    console.log(selectedValue);
     setInputValue(selectedValue.name);
     setIsOpen(false);
     onChange(selectedValue);
@@ -77,18 +88,17 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
 
   return (
     <>
-      <div className="flex flex-col lg:flex-row items-start lg:items-center">
-        <div className="relative w-[50vw] lg:w-[300px]">
-          <div className="text-black text-sm font-semibold mb-[0.1rem]">
-            {texts?.flights_from.translation ?? 'From:'}
-          </div>
-          <input
+      <div className="flex flex-col items-start lg:items-center">
+        <div className="relative w-full mb-3">
+          <InputField
             type="text"
             value={inputValue}
+            label={texts?.flights_from.translation ?? 'From:'}
+            inlineLabel
             onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
               handleInputChange(e.target.value)
             }
-            className="w-full appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px] focus:rounded-b-[0]"
+            // className="w-full appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] px-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px] focus:rounded-b-[0]"
             onFocus={handleInputFocus}
             // onBlur={handleInputBlur}
             placeholder={`${
@@ -100,6 +110,7 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
           {isOpen && (
             <ul
               className={`absolute overflow-y-auto max-h-[200px] border-[1px] border-[var(--primary)] w-full bg-white border-t-0 top-[calc(100% - 20px)] z-[100] shadow-xl`}
+              ref={elementRef}
             >
               {filteredOptions.map((option) => (
                 <li
@@ -118,22 +129,24 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
             </ul>
           )}
         </div>
-        <div className="lg:ml-4">
-          <div className="text-black text-sm font-semibold mb-[0.1rem] mt-2 lg:mt-0">
-            {texts?.flights_airports_title.translation ??
-              'Airports within:'}
-          </div>
-          <div className="relative w-fit">
-            <input
+        <div className="w-full">
+          <div className="relative w-full">
+            <InputField
               type="text"
-              className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] pl-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-              size={radius.toString().length + 3}
+              label={
+                texts?.flights_airports_title.translation ??
+                'Airports within:'
+              }
+              inlineLabel
+              // className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] pl-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
+              // size={radius.toString().length + 3}
               value={`${radius}`}
               onChange={handleRadiusChange}
+              suffix={<span className="pr-2">km</span>}
             />
-            <span className="absolute right-2 top-[1px] py-1 text-[var(--primary)] text-[1.05rem]">
+            {/* <span className="absolute right-2 top-[1px] py-1 text-[var(--primary)] text-[1.05rem]">
               km
-            </span>
+            </span> */}
           </div>
         </div>
       </div>
