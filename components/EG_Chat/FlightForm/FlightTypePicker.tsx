@@ -23,10 +23,10 @@ export const FlightTypePicker: React.FC<FlightTypePickerProps> = ({
   const [opened, setOpened] = useState<boolean>(false);
   const elementRef = useRef<HTMLDivElement | null>(null);
 
-  // const handleClickOutside = (ev: MouseEvent) => {
-  //   setOpened(false);
-  // };
-  // useClickOutside(elementRef, handleClickOutside);
+  const handleClickOutside = (ev: MouseEvent) => {
+    setOpened(false);
+  };
+  useClickOutside(elementRef, handleClickOutside);
 
   const content = Object.keys(FLIGHT_TYPES).map((key) => (
     <ListChoice
