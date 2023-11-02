@@ -49,10 +49,10 @@ export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
       return 0;
     });
 
-  // const handleClickOutside = (ev: MouseEvent) => {
-  //   setOpened(false);
-  // };
-  // useClickOutside(elementRef, handleClickOutside);
+  const handleClickOutside = (ev: MouseEvent) => {
+    setOpened(false);
+  };
+  useClickOutside(elementRef, handleClickOutside);
 
   const content = currenciesDropdownOptions.map(
     ({ value, label }) => (
@@ -60,9 +60,10 @@ export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
         key={`${label}-${value}`}
         selected={selected === value}
         role="checkbox"
-        onClick={() => {
-          onCurrencyChange(value, 'curr');
+        onClick={(e) => {
+          e.preventDefault();
           setOpened(false);
+          onCurrencyChange(value, 'curr');
         }}
         title={label}
       />

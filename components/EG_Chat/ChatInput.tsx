@@ -11,7 +11,6 @@ import {
   KeyboardEvent,
   MutableRefObject,
   useEffect,
-  useRef,
   useState,
 } from 'react';
 
@@ -23,6 +22,7 @@ interface Props {
   texts: TranslateResponseBody<string>;
   promptPlaceholder: string;
   showShadows?: boolean;
+  isMobile: boolean;
 }
 
 export const ChatInput: FC<Props> = ({
@@ -33,6 +33,7 @@ export const ChatInput: FC<Props> = ({
   texts,
   promptPlaceholder,
   showShadows = false,
+  isMobile,
 }) => {
   const [content, setContent] = useState<string>();
   const [isTyping, setIsTyping] = useState<boolean>(false);
@@ -69,19 +70,9 @@ export const ChatInput: FC<Props> = ({
     }
   };
 
-  const isMobile = () => {
-    const userAgent =
-      typeof window.navigator === 'undefined'
-        ? ''
-        : navigator.userAgent;
-    const mobileRegex =
-      /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini|Mobile|mobile|CriOS/i;
-    return mobileRegex.test(userAgent);
-  };
-
   const handleKeyDown = (e: KeyboardEvent<HTMLTextAreaElement>) => {
     if (!isTyping) {
-      if (e.key === 'Enter' && !e.shiftKey && !isMobile()) {
+      if (e.key === 'Enter' && !e.shiftKey && !isMobile) {
         e.preventDefault();
         handleSend();
       }
@@ -95,7 +86,7 @@ export const ChatInput: FC<Props> = ({
         textareaRef.current?.scrollHeight + 4
       }px`;
     }
-  }, [content]);
+  }, [content, textareaRef]);
 
   return (
     <>

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { memo, useEffect, useRef } from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css'; // Import the Mapbox CSS
 import { IMapDataConverted } from '@/types';
@@ -45,7 +45,6 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
       const bounds = new mapboxgl.LngLatBounds();
 
       mapData.forEach((destination) => {
-        console.log(destination.gps);
         if (destination) {
           if (
             Number.isNaN(destination.gps.latitude) ||
@@ -119,9 +118,10 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
 
       map.fitBounds(bounds, {
         padding: { top: 100, bottom: 100, left: 100, right: 100 },
+        maxZoom: 16,
       });
     }
-  }, []);
+  });
 
   return (
     <div
@@ -135,4 +135,4 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
   );
 };
 
-export default MapboxMap;
+export default memo(MapboxMap);

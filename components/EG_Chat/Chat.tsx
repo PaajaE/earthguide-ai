@@ -9,52 +9,49 @@ import {
   TypeOfMessage,
   TypeOfPrompt,
 } from '@/types';
-import { FC, useCallback, useEffect, useRef } from 'react';
+import {
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import { ChatInput } from './ChatInput';
 import { ChatMessage } from './ChatMessage';
 import { LeftSidebar } from './LeftSidebar';
 import { FlightForm } from './FlightForm';
 import { Collapse, Tile } from '@kiwicom/orbit-components';
 import { ChatLoader } from './ChatLoader';
+import { v4 } from 'uuid';
 
 interface Props {
   conversation: Conversation;
   messageIsStreaming: boolean;
   messageError: boolean;
-  loading: boolean;
   lightMode: 'light' | 'dark';
   isMobile: boolean;
   logoPath: string;
   starterMessage: string;
   texts: TranslateResponseBody<string>;
   shouldScrollToBottom: boolean;
-  flightParams?: IFlightParamsConverted;
   promptPlaceholder: string;
   fullWidthMessage?: boolean;
   showShadows?: boolean;
   withPadding?: boolean;
   onSend: (message: Message) => void;
   onRateAnswer: (feedback: IRateAnswer) => void;
-  onUpdateConversation: (
-    conversation: Conversation,
-    data: KeyValuePair
-  ) => void;
   onAnotherPromptClick: (
     typeOfPrompt: TypeOfPrompt,
     id: string
   ) => void;
   onDisplayGallery: (imgSrcs: string[], curIndex: number) => void;
   onDisallowScrollToBottom: () => void;
-  onChangeFlightParams: (fp: Partial<IFlightParamsConverted>) => void;
-  onFormSubmit: () => void;
 }
 
-export const Chat: FC<Props> = ({
+function ChatFunction({
   conversation,
   messageIsStreaming,
   messageError,
-  loading,
-  flightParams,
   lightMode,
   isMobile,
   logoPath,
@@ -69,11 +66,11 @@ export const Chat: FC<Props> = ({
   onRateAnswer,
   onAnotherPromptClick,
   onDisplayGallery,
-  onFormSubmit,
-  onChangeFlightParams,
   onDisallowScrollToBottom,
-}) => {
+}: Props): JSX.Element {
   const path = usePathname()?.substring(1);
+
+  const [expanded, setExpanded] = useState<boolean>(true);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);
@@ -98,21 +95,6 @@ export const Chat: FC<Props> = ({
     <div className="relative flex flex-col justify-between w-auto lg:w-1/2 h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full bg-transparent">
       <>
         <div>
-          {/* <div
-            className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-lg rounded-r-lg lg:mr-8 mb-5 `}
-          >
-            <div
-              className={`sticky lg:w-[calc(60vw_-_2rem)] px-4 pb-4 leading-6 flex flex-col w-full font-plus jakarta sans mt-4 font-[400] text-[var(--secondary-text)]`}
-            >
-              <FlightForm
-                flightParameters={flightParams}
-                messageId={''}
-                texts={texts}
-                onChangeFlightParams={onChangeFlightParams}
-                onFormSubmit={onFormSubmit}
-              />
-            </div>
-          </div> */}
           <div
             className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_12rem)] p-4 lg:py-0 lg:px-4"
             ref={chatContainerRef}
@@ -133,7 +115,11 @@ export const Chat: FC<Props> = ({
               >
                 <div>{texts.intro.translation ?? starterMessage}</div>
                 <div className="mt-4 text-[var(--primary)] font-medium cursor-pointer">
-                  <Collapse label="Show examples" initialExpanded>
+                  <Collapse
+                    label="Show examples"
+                    expanded={expanded}
+                    onClick={() => setExpanded(!expanded)}
+                  >
                     <div className="flex flex-col gap-4 font-normal">
                       <Tile
                         noHeaderIcon
@@ -143,6 +129,9 @@ export const Chat: FC<Props> = ({
                             typeOfMessage: TypeOfMessage.TEXT,
                             content: texts.example1.translation,
                           });
+                          setTimeout(() => {
+                            setExpanded(false);
+                          }, 1000);
                         }}
                         title={texts.example1.translation}
                       />
@@ -154,6 +143,9 @@ export const Chat: FC<Props> = ({
                             typeOfMessage: TypeOfMessage.TEXT,
                             content: texts.example2.translation,
                           });
+                          setTimeout(() => {
+                            setExpanded(false);
+                          }, 1000);
                         }}
                         title={texts.example2.translation}
                       />
@@ -165,6 +157,9 @@ export const Chat: FC<Props> = ({
                             typeOfMessage: TypeOfMessage.TEXT,
                             content: texts.example3.translation,
                           });
+                          setTimeout(() => {
+                            setExpanded(false);
+                          }, 1000);
                         }}
                         title={texts.example3.translation}
                       />
@@ -242,7 +237,7 @@ export const Chat: FC<Props> = ({
               <>
                 {conversation.messages.map((message, index) => (
                   <ChatMessage
-                    key={index}
+                    key={v4()}
                     message={message}
                     lightMode={lightMode}
                     texts={texts}
@@ -285,6 +280,7 @@ export const Chat: FC<Props> = ({
             onSend={(message) => {
               onSend(message);
             }}
+            isMobile={isMobile}
             textareaRef={textareaRef}
             texts={texts}
             model={conversation.model}
@@ -295,4 +291,6 @@ export const Chat: FC<Props> = ({
       </>
     </div>
   );
-};
+}
+
+export default memo(ChatFunction);

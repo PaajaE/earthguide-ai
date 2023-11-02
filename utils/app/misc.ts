@@ -31,6 +31,7 @@ export function extractGpsCoordinates(gpsString: string): {
   latitude: number;
   longitude: number;
 } {
+  console.log('recomputing GPS');
   if (gpsString.includes('−')) {
     console.log('gps not a number');
   }

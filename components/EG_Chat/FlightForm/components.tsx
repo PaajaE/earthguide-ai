@@ -31,14 +31,14 @@ export const VacationLengthPicker: React.FC<
   const elementRefFrom = useRef<HTMLDivElement | null>(null);
   const elementRefTo = useRef<HTMLDivElement | null>(null);
 
-  // const handleClickOutsideFrom = (ev: MouseEvent) => {
-  //   setOpenedFrom(false);
-  // };
-  // const handleClickOutsideTo = (ev: MouseEvent) => {
-  //   setOpenedTo(false);
-  // };
-  // useClickOutside(elementRefFrom, handleClickOutsideFrom);
-  // useClickOutside(elementRefTo, handleClickOutsideTo);
+  const handleClickOutsideFrom = (ev: MouseEvent) => {
+    setOpenedFrom(false);
+  };
+  const handleClickOutsideTo = (ev: MouseEvent) => {
+    setOpenedTo(false);
+  };
+  useClickOutside(elementRefFrom, handleClickOutsideFrom);
+  useClickOutside(elementRefTo, handleClickOutsideTo);
 
   const generateOptions = (
     start: number,
@@ -68,7 +68,7 @@ export const VacationLengthPicker: React.FC<
   const contentFrom = generateOptions(1, 100, true).map(
     ({ value, label }) => (
       <ListChoice
-        key={value}
+        key={value.toString()}
         selected={from === value}
         role="checkbox"
         onClick={() => {
@@ -94,7 +94,7 @@ export const VacationLengthPicker: React.FC<
   const contentTo = generateOptions(from, 100).map(
     ({ value, label }) => (
       <ListChoice
-        key={value}
+        key={value.toString()}
         selected={to === value}
         role="checkbox"
         onClick={() => {

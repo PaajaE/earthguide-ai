@@ -13,6 +13,7 @@ import { Button } from '../Shared/Button';
 import { EarthGuideReactMarkdown } from './EarthGuideReactMarkdown';
 import { ChatLoader } from './ChatLoader';
 import MapboxMap from '../Map/MapboxMap';
+import { ButtonPrimitive, Icons } from '@kiwicom/orbit-components';
 
 interface Props {
   message: Message;
@@ -220,24 +221,6 @@ export const ChatMessage: FC<Props> = ({
         </>
       )}
 
-      {/* {message.role === 'earth.guide' &&
-        message.typeOfMessage === TypeOfMessage.FLIGHT_PARAMS &&
-        message.flightParams && (
-          <div
-            className={`flex flex-row justify-start items-start gap-2.5 pb-3 w-100 box-border bg-[var(--secondary)] rounded-t-lg rounded-r-lg lg:mr-8 mb-5`}
-          >
-            <div
-              className={`border-[#000000ff] leading-6 flex flex-col relative w-full font-plus jakarta sans px-4 mt-4 mb-2 font-[400] text-[var(--secondary-text)]`}
-            >
-              <FlightForm
-                flightParameters={message.flightParams}
-                messageId={message.id ?? ''}
-                texts={texts}
-                onFormSubmit={onFormSubmit}
-              />
-            </div>
-          </div>
-        )} */}
       {message.role === 'earth.guide' &&
         message.typeOfMessage === TypeOfMessage.MAP &&
         message.mapData && (
@@ -256,15 +239,11 @@ export const ChatMessage: FC<Props> = ({
               </div>
             )}
             <div className="flex flex-col lg:flex-row mt-3 mb-6">
-              <Button
-                text={
-                  texts?.button_1.translation ??
-                  'More places like these'
-                }
-                iconUrl="https://firebasestorage.googleapis.com/v0/b/unify-v3-copy.appspot.com/o/ye8nsqm0bdc-825%3A578?alt=media&token=24521707-8435-44ee-82ca-d15de9e01b9f"
-                bgColor="[var(--primary)]"
-                typeOfPrompt={TypeOfPrompt.MORE_PLACES}
-                onClick={(typeOfPrompt: TypeOfPrompt) => {
+              <ButtonPrimitive
+                className="bg-white text-[var(--primary)] hover:bg-[var(--primary)] hover:text-white border-[1px] border-[var(--primary)] font-semibold py-3 px-4 rounded-lg"
+                iconRight={<Icons.ArrowDown />}
+                iconLeft={<Icons.ArrowDown />}
+                onClick={() => {
                   onSend &&
                     onSend({
                       role: 'user',
@@ -273,11 +252,13 @@ export const ChatMessage: FC<Props> = ({
                         texts?.answer_button1.translation ??
                         'More places like these'
                       }`,
-                      typeOfPrompt,
+                      typeOfPrompt: TypeOfPrompt.MORE_PLACES,
                       id: message.id ?? '',
                     });
                 }}
-              />
+              >
+                {texts?.button_1.translation ?? ''}
+              </ButtonPrimitive>
               {!pathExists && (
                 <Button
                   text={
