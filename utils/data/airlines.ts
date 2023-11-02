@@ -99,7 +99,8 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--secondary',
-        value: '#e8edf1',
+        // value: '#e8edf1',
+        value: '#ececec',
       },
       {
         key: '--tertiary',

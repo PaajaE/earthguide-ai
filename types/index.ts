@@ -115,6 +115,7 @@ export interface EarthGuideQuestionResponse {
   json_type?: string;
   additional_data?: string;
   comment?: string;
+  promt_text?: string;
 }
 
 export interface IpData {

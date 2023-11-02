@@ -5,10 +5,7 @@ import {
   IFlightParamsConverted,
   TranslateResponseBody,
 } from '@/types';
-import {
-  LocationInput,
-  VacationLengthPicker,
-} from './FlightForm/components';
+import { VacationLengthPicker } from './FlightForm/components';
 import { DepartureReturnDates } from './FlightForm/DepartureReturnDates';
 import { CurrencyPicker } from './FlightForm/CurrencyDropdown';
 import { FlightTypePicker } from './FlightForm/FlightTypePicker';
@@ -16,27 +13,22 @@ import AirportSelect, {
   Airport,
 } from './FlightForm/AirportsDropdown';
 import { airports } from '@/mocks/airports';
+import { ButtonPrimitive } from '@kiwicom/orbit-components';
 
 interface FormComponentProps {
   flightParameters: IFlightParamsConverted;
   messageId: string;
   texts?: TranslateResponseBody<string>;
-  onFormSubmit: (
-    data: IFlightParamsConverted,
-    messageId: string,
-    prevParams: IFlightParamsConverted
-  ) => void;
+  onChangeFlightParams: (fp: Partial<IFlightParamsConverted>) => void;
+  onFormSubmit: () => void;
 }
 
 export const FlightForm: React.FC<FormComponentProps> = ({
   flightParameters,
-  messageId,
   texts,
+  onChangeFlightParams,
   onFormSubmit,
 }) => {
-  const [formData, setFormData] =
-    useState<IFlightParamsConverted>(flightParameters);
-
   const handleDateChange = ({
     name,
     val,
@@ -45,59 +37,60 @@ export const FlightForm: React.FC<FormComponentProps> = ({
     val: Date;
   }) => {
     if (name === 'date_from') {
-      setFormData({
-        ...formData,
+      onChangeFlightParams({
         date_from: val,
         date_to:
-          formData.date_to && formData.date_to < val
+          flightParameters.date_to && flightParameters.date_to < val
             ? val
-            : formData.date_to,
+            : flightParameters.date_to,
         return_from:
-          formData.return_from && formData.return_from < val
+          flightParameters.return_from &&
+          flightParameters.return_from < val
             ? val
-            : formData.return_from,
+            : flightParameters.return_from,
         return_to:
-          formData.return_to && formData.return_to < val
+          flightParameters.return_to &&
+          flightParameters.return_to < val
             ? val
-            : formData.return_to,
+            : flightParameters.return_to,
       });
     } else if (name === 'date_to') {
-      setFormData({
-        ...formData,
+      onChangeFlightParams({
         date_to: val,
         date_from:
-          formData.date_from && formData.date_from > val
+          flightParameters.date_from &&
+          flightParameters.date_from > val
             ? val
-            : formData.date_from,
+            : flightParameters.date_from,
         return_to:
-          formData.return_to && formData.return_to < val
+          flightParameters.return_to &&
+          flightParameters.return_to < val
             ? val
-            : formData.return_to,
+            : flightParameters.return_to,
       });
     } else if (name === 'return_from') {
-      setFormData({
-        ...formData,
+      onChangeFlightParams({
         return_from: val,
         return_to:
-          formData.return_to && formData.return_to < val
+          flightParameters.return_to &&
+          flightParameters.return_to < val
             ? val
-            : formData.return_to,
+            : flightParameters.return_to,
       });
     } else if (name === 'return_to') {
-      setFormData({
-        ...formData,
+      onChangeFlightParams({
         return_to: val,
         return_from:
-          formData.return_from && formData.return_from > val
+          flightParameters.return_from &&
+          flightParameters.return_from > val
             ? val
-            : formData.return_from,
+            : flightParameters.return_from,
       });
     }
   };
 
   const handleChange = (val: string, name: string) => {
-    setFormData({
-      ...formData,
+    onChangeFlightParams({
       [name]: val,
     });
   };
@@ -109,10 +102,9 @@ export const FlightForm: React.FC<FormComponentProps> = ({
     from?: number;
     to?: number;
   }): void => {
-    setFormData({
-      ...formData,
-      date_to: from ? undefined : formData.date_to,
-      return_from: from ? undefined : formData.return_from,
+    onChangeFlightParams({
+      date_to: from ? undefined : flightParameters.date_to,
+      return_from: from ? undefined : flightParameters.return_from,
       nights_in_dst_from: from,
       nights_in_dst_to: to && from && to < (from ?? 0) ? from : to,
     });
@@ -120,8 +112,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
 
   const handleAirportChange = (selectedAirport: Airport) => {
     if (selectedAirport) {
-      setFormData({
-        ...formData,
+      onChangeFlightParams({
         fly_from_lat: +selectedAirport.lat,
         fly_from_lon: +selectedAirport.lon,
         departure_airport: selectedAirport.name,
@@ -129,156 +120,130 @@ export const FlightForm: React.FC<FormComponentProps> = ({
     }
   };
 
-  // const sortedAirports = airports.sort((a, b) =>
-  //   a.name.localeCompare(b.city)
-  // );
-
-  // console.log(sortedAirports);
-
   return (
     <form>
-      <h3 className="font-bold mb-2">
-        {texts?.flights_setup_heading.translation ??
-          'Flights’ set-up:'}
-      </h3>
-      {/* <div className="mb-4">{flightParameters.comment}</div> */}
-      <div className="text-black mb-2 text-sm">
-        <FlightTypePicker
-          selected={formData.flight_type}
-          onFlightTypeChange={handleChange}
-          texts={texts}
-        />
+      <div className="w-full flex-col justify-start items-center gap-3 mb pl-1">
+        <div className="w-full flex justify-between text-black mb-3">
+          <FlightTypePicker
+            selected={flightParameters.flight_type}
+            onFlightTypeChange={handleChange}
+            texts={texts}
+          />
+          <CurrencyPicker
+            selected={flightParameters.curr}
+            onCurrencyChange={handleChange}
+            texts={texts}
+          />
+        </div>
+        <div className="text-black mb-2">
+          <AirportSelect
+            airports={airports}
+            departureAirport={
+              flightParameters.departure_airport &&
+              !flightParameters.departure_airport
+                ?.toLowerCase()
+                .includes('your position')
+                ? flightParameters.departure_airport
+                : undefined
+            }
+            radius={flightParameters.fly_from_radius}
+            texts={texts}
+            onRadiusChange={(val) => {
+              onChangeFlightParams({
+                ['fly_from_radius']: val,
+              });
+            }}
+            onChange={handleAirportChange}
+          />
+        </div>
       </div>
-      <div className="text-black mb-2 text-sm">
-        {/* <LocationInput
-          departureAirport={formData.departure_airport}
-          radius={formData.fly_from_radius}
-          onRadiusChange={(val) => {
-            setFormData({
-              ...formData,
-              ['fly_from_radius']: val,
-            });
-          }}
-          onDepartureAirportChange={(val) => {
-            setFormData({
-              ...formData,
-              ['departure_airport']: val,
-            });
-          }}
-        /> */}
-        <AirportSelect
-          airports={airports}
-          departureAirport={
-            formData.departure_airport &&
-            !formData.departure_airport
-              ?.toLowerCase()
-              .includes('your position')
-              ? formData.departure_airport
-              : undefined
-          }
-          radius={formData.fly_from_radius}
-          texts={texts}
-          onRadiusChange={(val) => {
-            setFormData({
-              ...formData,
-              ['fly_from_radius']: val,
-            });
-          }}
-          onChange={handleAirportChange}
-        />
-      </div>
-      {formData.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
+
+      {flightParameters.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
         <div className="text-black mb-2">
           <VacationLengthPicker
-            from={formData.nights_in_dst_from}
-            to={formData.nights_in_dst_to}
+            from={flightParameters.nights_in_dst_from}
+            to={flightParameters.nights_in_dst_to}
             texts={texts}
             onVacationLengthChange={handleVacationLengthChange}
           />
         </div>
       )}
-      <div className="text-black mb-2">
-        <DepartureReturnDates
-          from={formData.date_from}
-          to={formData.date_to}
-          labelFrom={`${
-            texts?.flights_departure_earliest.translation ??
-            'Departure earliest'
-          }`}
-          labelTo={`${
-            texts?.flights_departure_latest.translation ??
-            'Departure latest'
-          }`}
-          fromKey="date_from"
-          toKey="date_to"
-          showToPicker={
-            formData.nights_in_dst_from &&
-            formData.nights_in_dst_from > 0 &&
-            formData.flight_type === FLIGHT_TYPES.ROUNDTRIP
-              ? false
-              : true
-          }
-          minDateTo={formData.date_from}
-          onDateChange={handleDateChange}
-        />
-      </div>
-
-      {formData.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
-        <div className="text-black mb-2">
+      <div className="w-full flex flex-col gap-3 items-start">
+        <div className="w-full text-black mb-2 lg:mb-0">
           <DepartureReturnDates
-            from={formData.return_from}
-            to={formData.return_to}
+            from={flightParameters.date_from}
+            to={flightParameters.date_to}
             labelFrom={`${
-              texts?.flights_return_earliest.translation ??
-              'Return earliest'
+              texts?.flights_departure_earliest.translation ??
+              'Departure earliest'
             }`}
             labelTo={`${
-              texts?.flights_return_latest.translation ??
-              'Return latest'
+              texts?.flights_departure_latest.translation ??
+              'Departure latest'
             }`}
-            fromKey="return_from"
-            toKey="return_to"
-            showFromPicker={
-              formData.nights_in_dst_from &&
-              formData.nights_in_dst_from > 0
+            fromKey="date_from"
+            toKey="date_to"
+            showToPicker={
+              flightParameters.nights_in_dst_from &&
+              flightParameters.nights_in_dst_from > 0 &&
+              flightParameters.flight_type === FLIGHT_TYPES.ROUNDTRIP
                 ? false
                 : true
             }
-            minDateFrom={formData.date_from}
-            minDateTo={
-              new Date(
-                Math.max(
-                  formData.date_from?.getTime() ??
-                    new Date().getTime(),
-                  formData.date_to?.getTime() ?? new Date().getTime(),
-                  formData.return_from?.getTime() ??
-                    new Date().getTime()
-                )
-              )
-            }
+            minDateTo={flightParameters.date_from}
             onDateChange={handleDateChange}
           />
         </div>
-      )}
 
-      <div className="text-black mb-2">
-        <CurrencyPicker
-          selected={formData.curr}
-          onCurrencyChange={handleChange}
-          texts={texts}
-        />
-      </div>
-
-      <div>
-        <button
-          className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-2 px-4 mt-4 rounded-[15px]"
-          onClick={(e) => {
-            e.preventDefault();
-            onFormSubmit(formData, messageId, flightParameters);
-          }}
-        >
-          {texts?.flights_search_button.translation ?? 'Search'}
-        </button>
+        {flightParameters.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
+          <div className="w-full text-black mb-2 lg:mb-0">
+            <DepartureReturnDates
+              from={flightParameters.return_from}
+              to={flightParameters.return_to}
+              labelFrom={`${
+                texts?.flights_return_earliest.translation ??
+                'Return earliest'
+              }`}
+              labelTo={`${
+                texts?.flights_return_latest.translation ??
+                'Return latest'
+              }`}
+              fromKey="return_from"
+              toKey="return_to"
+              showFromPicker={
+                flightParameters.nights_in_dst_from &&
+                flightParameters.nights_in_dst_from > 0
+                  ? false
+                  : true
+              }
+              minDateFrom={flightParameters.date_from}
+              minDateTo={
+                new Date(
+                  Math.max(
+                    flightParameters.date_from?.getTime() ??
+                      new Date().getTime(),
+                    flightParameters.date_to?.getTime() ??
+                      new Date().getTime(),
+                    flightParameters.return_from?.getTime() ??
+                      new Date().getTime()
+                  )
+                )
+              }
+              onDateChange={handleDateChange}
+            />
+          </div>
+        )}
+        <div className="ml-auto mt-4">
+          <ButtonPrimitive
+            className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-lg"
+            onClick={(e) => {
+              e.preventDefault();
+              onFormSubmit();
+            }}
+          >
+            {texts?.flights_search_button.translation ?? 'Search'}
+          </ButtonPrimitive>
+        </div>
       </div>
     </form>
   );

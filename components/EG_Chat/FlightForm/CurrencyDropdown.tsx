@@ -1,17 +1,19 @@
 import { currencies } from '@/mocks/currency';
 import { TranslateResponseBody } from '@/types';
+import {
+  ButtonPrimitive,
+  ListChoice,
+  Popover,
+  Select,
+} from '@kiwicom/orbit-components';
+import useClickOutside from '@kiwicom/orbit-components/lib/hooks/useClickOutside';
+import { ChevronDown } from '@kiwicom/orbit-components/lib/icons';
+import { useRef, useState } from 'react';
 
 interface CurrencyOption {
   value: string;
   label: string;
 }
-
-const currenciesDropdownOptions: CurrencyOption[] = Object.entries(
-  currencies
-).map(([value, label]) => ({
-  value,
-  label,
-}));
 
 interface CurrencyPickerProps {
   selected: string;
@@ -24,27 +26,73 @@ export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
   texts,
   onCurrencyChange,
 }) => {
+  const [opened, setOpened] = useState<boolean>(false);
+  const elementRef = useRef<HTMLDivElement | null>(null);
+
+  const currenciesDropdownOptions: CurrencyOption[] = Object.entries(
+    currencies
+  )
+    .map(([value, label]) => ({
+      value,
+      label: `${label} - ${value}`,
+    }))
+    .sort((a, b) => {
+      if (a.value === selected) {
+        return -1; // Place selected value first
+      } else if (b.value === selected) {
+        return 1; // Place selected value first
+      } else if (a.label < b.label) {
+        return -1;
+      } else if (a.label > b.label) {
+        return 1;
+      }
+      return 0;
+    });
+
+  // const handleClickOutside = (ev: MouseEvent) => {
+  //   setOpened(false);
+  // };
+  // useClickOutside(elementRef, handleClickOutside);
+
+  const content = currenciesDropdownOptions.map(
+    ({ value, label }) => (
+      <ListChoice
+        key={`${label}-${value}`}
+        selected={selected === value}
+        role="checkbox"
+        onClick={(e) => {
+          e.preventDefault();
+          setOpened(false);
+          onCurrencyChange(value, 'curr');
+        }}
+        title={label}
+      />
+    )
+  );
+
   return (
     <>
-      <div className="font-semibold text-sm mb-[0.1rem]">
-        {texts?.flights_currency_title.translation ?? 'Currency:'}
-      </div>
-      <div className="flex items-center space-x-1">
+      <div className="flex items-center space-x-1" ref={elementRef}>
         <div className="relative">
-          <select
-            className="block py-1 px-2 w-full cursor-pointer font-normal text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-            value={selected}
-            onChange={(e) => {
-              const val = e.target.value;
-              onCurrencyChange(val, 'curr');
-            }}
+          <Popover
+            content={content}
+            overlapped
+            opened={opened}
+            maxHeight="40vh"
+            placement="bottom-end"
           >
-            {currenciesDropdownOptions.map((option) => (
-              <option key={option.value} value={option.value}>
-                {option.value}
-              </option>
-            ))}
-          </select>
+            <ButtonPrimitive
+              iconRight={<ChevronDown />}
+              onClick={() => {
+                setOpened(true);
+              }}
+            >
+              {selected.length > 0
+                ? selected
+                : texts?.flights_currency_title.translation ??
+                  'Currency:'}
+            </ButtonPrimitive>
+          </Popover>
         </div>
       </div>
     </>
