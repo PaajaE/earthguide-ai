@@ -116,7 +116,11 @@ function ChatFunction({
                 <div>{texts.intro.translation ?? starterMessage}</div>
                 <div className="mt-4 text-[var(--primary)] font-medium cursor-pointer">
                   <Collapse
-                    label="Show examples"
+                    label={
+                      expanded
+                        ? texts.hide_examples.translation
+                        : texts.show_examples.translation
+                    }
                     expanded={expanded}
                     onClick={() => setExpanded(!expanded)}
                   >

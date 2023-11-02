@@ -118,7 +118,7 @@ export const ChatInput: FC<Props> = ({
               className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-lg"
               onClick={handleSend}
             >
-              Odeslat
+              {texts.prompt_button.translation}
             </ButtonPrimitive>
           </div>
 
