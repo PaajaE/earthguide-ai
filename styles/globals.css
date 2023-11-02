@@ -181,36 +181,36 @@ select, input {
   font-size: 1.05rem;
 }
 
-input:focus {
+/* input:focus {
   box-shadow: none !important;
-}
+} */
 
 .react-datepicker__day--selected {
       color: var(--primary-text) !important;
       background-color: var(--primary) !important;
 }
 
-.react-datepicker-popper {
+/* .react-datepicker-popper {
   z-index: 11 !important;
-}
+} */
 
-.react-datepicker-wrapper {
+/* .react-datepicker-wrapper {
   width: 100%;
-}
+} */
 
-.react-datepicker-wrapper input + div, label div div:last-of-type {
+/* .react-datepicker-wrapper input + div, label div div:last-of-type {
   border-radius: 8px;
   border-color: #979797ff;
   --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-}
+} */
 
-.react-datepicker-wrapper div:has(+ input) {
+/* .react-datepicker-wrapper div:has(+ input) {
   justify-content: flex-start;
   width: 150px;
-}
+} */
 
-.vac-length>p:first-of-type {
+/* .vac-length>p:first-of-type {
   width: 150px;
   flex-shrink: 0;
-}
+} */
