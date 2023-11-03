@@ -117,7 +117,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
             );
             return (
               <div
-                className={`w-100 mb-2 text-justify`}
+                className={`w-100 relative -top-3 mb-3 text-justify`}
                 dangerouslySetInnerHTML={{ __html: replacedIconDiv }}
               ></div>
             );
