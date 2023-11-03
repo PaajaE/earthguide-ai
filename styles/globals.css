@@ -128,6 +128,11 @@ strong.flights {
   margin-top: -0.33rem;
 }
 
+.road-trips {
+  position: relative;
+  top: -0.5rem;
+}
+
 ol li {
   margin: 1rem 0;
 }
@@ -181,7 +186,7 @@ select, input {
   font-size: 1.05rem;
 }
 
-input:focus {
+input:focus, select:focus {
   box-shadow: none !important;
 }
 
@@ -194,16 +199,16 @@ input:focus {
   z-index: 11 !important;
 }
 
-/* .react-datepicker-wrapper {
+.react-datepicker-wrapper {
   width: 100%;
-} */
+}
 
-/* .react-datepicker-wrapper input + div, label div div:last-of-type {
+.react-datepicker-wrapper input + div, label div div:last-of-type {
   border-radius: 8px;
   border-color: #979797ff;
   --tw-drop-shadow: drop-shadow(0 4px 3px rgb(0 0 0 / 0.07)) drop-shadow(0 2px 2px rgb(0 0 0 / 0.06));
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
-} */
+}
 
 /* .react-datepicker-wrapper div:has(+ input) {
   justify-content: flex-start;

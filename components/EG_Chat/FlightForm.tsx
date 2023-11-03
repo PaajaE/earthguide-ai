@@ -122,8 +122,8 @@ export const FlightForm: React.FC<FormComponentProps> = ({
 
   return (
     <form>
-      <div className="w-full flex-col justify-start items-center gap-3 mb pl-1">
-        <div className="w-full flex justify-between text-black mb-3">
+      <div className="w-full flex-col justify-start items-center gap-3 mb">
+        <div className="w-full flex justify-between gap-3 text-black mb-3">
           <FlightTypePicker
             selected={flightParameters.flight_type}
             onFlightTypeChange={handleChange}
@@ -135,7 +135,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
             texts={texts}
           />
         </div>
-        <div className="text-black mb-2">
+        <div className="text-black mb-3">
           <AirportSelect
             airports={airports}
             departureAirport={
@@ -159,7 +159,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
       </div>
 
       {flightParameters.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
-        <div className="text-black mb-2">
+        <div className="text-black mb-3">
           <VacationLengthPicker
             from={flightParameters.nights_in_dst_from}
             to={flightParameters.nights_in_dst_to}
@@ -168,8 +168,8 @@ export const FlightForm: React.FC<FormComponentProps> = ({
           />
         </div>
       )}
-      <div className="w-full flex flex-col gap-3 items-start">
-        <div className="w-full text-black mb-2 lg:mb-0">
+      <div>
+        <div className="w-full grid grid-cols-2 gap-3">
           <DepartureReturnDates
             from={flightParameters.date_from}
             to={flightParameters.date_to}
@@ -193,10 +193,9 @@ export const FlightForm: React.FC<FormComponentProps> = ({
             minDateTo={flightParameters.date_from}
             onDateChange={handleDateChange}
           />
-        </div>
 
-        {flightParameters.flight_type === FLIGHT_TYPES.ROUNDTRIP && (
-          <div className="w-full text-black mb-2 lg:mb-0">
+          {flightParameters.flight_type ===
+            FLIGHT_TYPES.ROUNDTRIP && (
             <DepartureReturnDates
               from={flightParameters.return_from}
               to={flightParameters.return_to}
@@ -231,9 +230,9 @@ export const FlightForm: React.FC<FormComponentProps> = ({
               }
               onDateChange={handleDateChange}
             />
-          </div>
-        )}
-        <div className="ml-auto mt-4">
+          )}
+        </div>
+        <div className="flex justify-end mt-4">
           <ButtonPrimitive
             className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-lg"
             onClick={(e) => {
