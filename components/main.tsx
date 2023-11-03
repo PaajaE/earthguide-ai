@@ -234,11 +234,16 @@ export default function Main({
   const handleSend = useCallback(
     async (
       message: Message,
-      fpData?: IFlightParamsConverted,
+      newFpData?: IFlightParamsConverted,
       defaultFpData?: boolean
     ) => {
       if (selectedConversation) {
-        const flightParamsData = fpData ? fpData : initFpData;
+        const flightParamsData = newFpData
+          ? newFpData
+          : fpData
+          ? fpData
+          : initFpData;
+        console.log({ flightParamsData });
         const flightParams = convertFpForSend(flightParamsData);
         setShouldScrollToBottom(true);
         setMessageIsStreaming(true);
