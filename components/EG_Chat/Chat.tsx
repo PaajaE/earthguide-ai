@@ -22,7 +22,6 @@ import { LeftSidebar } from './LeftSidebar';
 import { FlightForm } from './FlightForm';
 import { Collapse, Tile } from '@kiwicom/orbit-components';
 import { ChatLoader } from './ChatLoader';
-import { v4 } from 'uuid';
 
 interface Props {
   conversation: Conversation;
@@ -78,7 +77,7 @@ function ChatFunction({
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, []);
+  }, [messagesEndRef]);
 
   useEffect(() => {
     if (shouldScrollToBottom) {
@@ -241,7 +240,7 @@ function ChatFunction({
               <>
                 {conversation.messages.map((message, index) => (
                   <ChatMessage
-                    key={v4()}
+                    key={`${message.id}-${index.toString()}`}
                     message={message}
                     lightMode={lightMode}
                     texts={texts}

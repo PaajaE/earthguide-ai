@@ -137,15 +137,10 @@ const AirportSelect: React.FC<AirportSelectProps> = ({
                 'Airports within:'
               }
               inlineLabel
-              // className="appearance-none outline-none text-[var(--primary)] leading-5 bg-white border-[1px] border-[var(--primary)] pl-2 py-1 w-auto focus:outline-none focus:ring-0 focus:border-[var(--primary)] rounded-[5px]"
-              // size={radius.toString().length + 3}
               value={`${radius}`}
               onChange={handleRadiusChange}
               suffix={<span className="pr-2">km</span>}
             />
-            {/* <span className="absolute right-2 top-[1px] py-1 text-[var(--primary)] text-[1.05rem]">
-              km
-            </span> */}
           </div>
         </div>
       </div>

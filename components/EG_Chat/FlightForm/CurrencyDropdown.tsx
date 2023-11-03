@@ -1,14 +1,7 @@
 import { currencies } from '@/mocks/currency';
 import { TranslateResponseBody } from '@/types';
-import {
-  ButtonPrimitive,
-  ListChoice,
-  Popover,
-  Select,
-} from '@kiwicom/orbit-components';
-import useClickOutside from '@kiwicom/orbit-components/lib/hooks/useClickOutside';
-import { ChevronDown } from '@kiwicom/orbit-components/lib/icons';
-import { useRef, useState } from 'react';
+import { Select } from '@kiwicom/orbit-components';
+import { useRef } from 'react';
 
 interface CurrencyOption {
   value: string;
@@ -26,7 +19,6 @@ export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
   texts,
   onCurrencyChange,
 }) => {
-  const [opened, setOpened] = useState<boolean>(false);
   const elementRef = useRef<HTMLDivElement | null>(null);
 
   const currenciesDropdownOptions: CurrencyOption[] = Object.entries(
@@ -34,7 +26,7 @@ export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
   )
     .map(([value, label]) => ({
       value,
-      label: `${label} - ${value}`,
+      label: `${value} - ${label}`,
     }))
     .sort((a, b) => {
       if (a.value === selected) {
@@ -49,50 +41,20 @@ export const CurrencyPicker: React.FC<CurrencyPickerProps> = ({
       return 0;
     });
 
-  // const handleClickOutside = (ev: MouseEvent) => {
-  //   setOpened(false);
-  // };
-  // useClickOutside(elementRef, handleClickOutside);
-
-  const content = currenciesDropdownOptions.map(
-    ({ value, label }) => (
-      <ListChoice
-        key={`${label}-${value}`}
-        selected={selected === value}
-        role="checkbox"
-        onClick={(e) => {
-          e.preventDefault();
-          setOpened(false);
-          onCurrencyChange(value, 'curr');
-        }}
-        title={label}
-      />
-    )
-  );
-
   return (
     <>
       <div className="flex items-center space-x-1" ref={elementRef}>
         <div className="relative">
-          <Popover
-            content={content}
-            overlapped
-            opened={opened}
-            maxHeight="40vh"
-            placement="bottom-end"
-          >
-            <ButtonPrimitive
-              iconRight={<ChevronDown />}
-              onClick={() => {
-                setOpened(true);
-              }}
-            >
-              {selected.length > 0
-                ? selected
-                : texts?.flights_currency_title.translation ??
-                  'Currency:'}
-            </ButtonPrimitive>
-          </Popover>
+          <Select
+            value={selected}
+            placeholder={texts?.flights_currency_title.translation}
+            options={currenciesDropdownOptions}
+            onChange={(event) =>
+              onCurrencyChange(event.currentTarget.value, 'curr')
+            }
+            required={false}
+            disabled={false}
+          />
         </div>
       </div>
     </>

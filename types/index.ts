@@ -26,6 +26,7 @@ export interface Message {
   typeOfPrompt?: TypeOfPrompt;
   id?: string;
   part_id?: number;
+  fe_part_id?: number;
   flightParams?: IFlightParamsConverted;
   mapData?: IMapDataConverted[];
 }
