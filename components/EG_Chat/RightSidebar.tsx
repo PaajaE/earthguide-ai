@@ -22,7 +22,7 @@ interface Props {
   loading: boolean;
   texts?: TranslateResponseBody<string>;
   flightParams: IFlightParamsConverted;
-  initFpData: boolean;
+  defaultData: boolean;
   showShadows?: boolean;
   onSend: (message: Message) => void;
   onFormSubmit: (
@@ -37,14 +37,14 @@ export const RightSidebar: FC<Props> = ({
   showShadows = false,
   texts,
   flightParams,
-  initFpData,
+  defaultData,
   onSend,
   onFormSubmit,
 }) => {
   const [fpData, setFpData] =
     useState<IFlightParamsConverted>(flightParams);
   const [defaultFpData, setDefaultFpData] =
-    useState<boolean>(initFpData);
+    useState<boolean>(defaultData);
 
   const handleFormSubmit = () => {
     onFormSubmit(fpData, defaultFpData);
@@ -65,12 +65,12 @@ export const RightSidebar: FC<Props> = ({
 
   useEffect(() => {
     setFpData(flightParams);
-    setDefaultFpData(defaultFpData);
-  }, [flightParams, defaultFpData]);
+    setDefaultFpData(defaultData);
+  }, [flightParams, defaultData]);
 
   return (
     <div
-      className={`relative flex flex-col w-1/4 shrink-1 z-10 rounded-md`}
+      className={`relative flex flex-col w-1/4 min-w-[400px] shrink-0 z-10 rounded-md`}
       style={{
         width:
           '-webkit-fill-available, fill-available, -moz-fill-available',

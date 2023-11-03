@@ -1,4 +1,4 @@
-import { InputField, InputGroup } from '@kiwicom/orbit-components';
+import { InputField } from '@kiwicom/orbit-components';
 import { SyntheticEvent, forwardRef } from 'react';
 import DatePicker from 'react-datepicker';
 
@@ -36,7 +36,6 @@ const ExampleCustomInput = forwardRef<
     <InputField
       value={value}
       label={label}
-      inlineLabel
       onFocus={onClick}
       ref={ref}
       onChange={onChange}
@@ -62,9 +61,9 @@ export const DepartureReturnDates: React.FC<
   onDateChange,
 }) => {
   return (
-    <div className="w-full flex flex-col gap-3 items-start lg:items-center">
+    <>
       {showFromPicker ? (
-        <div className="w-full">
+        <div className="text-sm">
           <DatePicker
             onChange={(date) => {
               onDateChange({ name: fromKey, val: date as Date });
@@ -84,30 +83,25 @@ export const DepartureReturnDates: React.FC<
         <></>
       )}
       {showToPicker ? (
-        <div className="w-full mt-3 lg:mt-0">
-          {/* <div className="font-semibold text-sm mb-[0.1rem]">
-            {labelTo}
-          </div> */}
-          <div className="w-full">
-            <DatePicker
-              onChange={(date) => {
-                onDateChange({ name: toKey, val: date as Date });
-              }}
-              dateFormat="dd/MM/yyyy"
-              // className="px-2 py-1 bg-white w-full border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] text-[1.05rem] text-[var(--primary)] rounded-[5px]"
-              selected={to}
-              placeholderText="Select date"
-              minDate={minDateTo ? minDateTo : new Date()}
-              customInput={
-                // @ts-ignore
-                <ExampleCustomInput label={labelTo} />
-              }
-            />
-          </div>
+        <div className="text-sm">
+          <DatePicker
+            onChange={(date) => {
+              onDateChange({ name: toKey, val: date as Date });
+            }}
+            dateFormat="dd/MM/yyyy"
+            // className="px-2 py-1 bg-white w-full border-[1px] border-[var(--primary)] appearance-none focus:outline-none focus:ring-0 focus:border-[var(--primary)] text-[1.05rem] text-[var(--primary)] rounded-[5px]"
+            selected={to}
+            placeholderText="Select date"
+            minDate={minDateTo ? minDateTo : new Date()}
+            customInput={
+              // @ts-ignore
+              <ExampleCustomInput label={labelTo} />
+            }
+          />
         </div>
       ) : (
         <></>
       )}
-    </div>
+    </>
   );
 };

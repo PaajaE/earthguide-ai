@@ -441,9 +441,10 @@ export default function Main({
                             return {
                               ...message,
                               content: text,
-                              part_id: data.end_of_bubble
-                                ? data.part_id
-                                : undefined,
+                              part_id:
+                                data.end_of_bubble || data.done
+                                  ? data.part_id
+                                  : undefined,
                             };
                           }
 
@@ -1010,8 +1011,8 @@ export default function Main({
                             data={panelData}
                             texts={texts}
                             flightParams={fpData}
-                            initFpData={defaultFpData}
                             showShadows={showShadows}
+                            defaultData={defaultFpData}
                             onSend={sendWithRetry}
                             onFormSubmit={handleFlightParamsSubmit}
                           />

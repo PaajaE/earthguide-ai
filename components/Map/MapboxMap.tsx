@@ -1,4 +1,10 @@
-import React, { memo, useEffect, useRef } from 'react';
+import React, {
+  MutableRefObject,
+  memo,
+  useCallback,
+  useEffect,
+  useRef,
+} from 'react';
 import mapboxgl from 'mapbox-gl';
 import 'mapbox-gl/dist/mapbox-gl.css'; // Import the Mapbox CSS
 import { IMapDataConverted } from '@/types';
@@ -7,20 +13,19 @@ interface Props {
   mapData: IMapDataConverted[];
 }
 
+mapboxgl.accessToken =
+  'pk.eyJ1IjoidG9tYXNwYXBpcm5payIsImEiOiJja2p5ZWlqOXUwNzNnMm9tZWk4NXF2ZWNoIn0.ayautXOLSJt0ry3tfXElbw';
+
 const MapboxMap: React.FC<Props> = ({ mapData }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
-  useEffect(() => {
-    mapboxgl.accessToken =
-      'pk.eyJ1IjoidG9tYXNwYXBpcm5payIsImEiOiJja2p5ZWlqOXUwNzNnMm9tZWk4NXF2ZWNoIn0.ayautXOLSJt0ry3tfXElbw';
-
-    if (mapContainerRef.current) {
+  const initMap = useCallback(
+    (ref: HTMLElement) => {
       const map = new mapboxgl.Map({
-        container: mapContainerRef.current,
+        container: ref,
         style: 'mapbox://styles/mapbox/streets-v11',
         center: [0, 0],
         zoom: 1,
-        // scrollZoom: false,
         attributionControl: false,
       });
 
@@ -120,8 +125,15 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
         padding: { top: 100, bottom: 100, left: 100, right: 100 },
         maxZoom: 8,
       });
+    },
+    [mapData]
+  );
+
+  useEffect(() => {
+    if (mapContainerRef.current) {
+      initMap(mapContainerRef.current);
     }
-  });
+  }, [initMap]);
 
   return (
     <div
@@ -129,7 +141,6 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
       id="map"
       style={{ width: '100%', height: '50vh', borderRadius: '10px' }}
     >
-      {/* −20.3000 −4.6796 -4.6796 -20.3000 */}
       {/* The map will be rendered here */}
     </div>
   );
