@@ -105,7 +105,7 @@ export default function Main({
   const [panelData, setPanelData] = useState<PanelData | null>(null);
   const [panelDataLoading, setPanelDataLoading] =
     useState<boolean>(false);
-  const [showPanelData, setShowPanelData] = useState<boolean>(true);
+  const [showPanelData, setShowPanelData] = useState<boolean>(false);
   const [showMobilePanelData, setShowMobilePanelData] =
     useState<boolean>(false);
   const [showModal, setShowModal] = useState<boolean>(false);
@@ -475,6 +475,7 @@ export default function Main({
                 }
                 if (data.done) {
                   setMessageIsStreaming(false);
+                  setShowPanelData(true);
                 }
               }
             };
@@ -896,82 +897,20 @@ export default function Main({
             <>
               {isMobileDevice ? (
                 <div
-                  className={`flex lg:hidden flex-col justify-start h-screen w-full text-[var(--primary-text)] ${lightMode}`}
+                  className={`relative flex lg:hidden flex-col justify-start h-screen w-full text-black`}
                 >
-                  <div className="h-full w-100">
-                    <div className="flex flex-col h-screen lg:h-full bg-transparent rounded-md">
-                      <Chat
-                        conversation={selectedConversation}
-                        messageIsStreaming={messageIsStreaming}
-                        messageError={messageError}
-                        lightMode={lightMode}
-                        logoPath={airlineData.logo}
-                        starterMessage={airlineData.starterMessage}
-                        texts={texts}
-                        shouldScrollToBottom={shouldScrollToBottom}
-                        promptPlaceholder={promptPlaceholder}
-                        onSend={sendWithRetry}
-                        onRateAnswer={handleRateAnswer}
-                        onAnotherPromptClick={
-                          handleAnotherPromptClick
-                        }
-                        onDisplayGallery={handleDisplayGallery}
-                        isMobile={isMobileDevice}
-                        onDisallowScrollToBottom={() => {
-                          setShouldScrollToBottom(false);
-                        }}
-                      />
-                      {showMobilePanelData && (
-                        <div
-                          id="defaultModal"
-                          tabIndex={-1}
-                          aria-hidden="true"
-                          className={`fixed top-0 left-0 right-0 bottom-0 z-20 ${
-                            showMobilePanelData ? '' : 'hidden'
-                          } w-full h-full p-0 lg:p-4 overflow-x-hidden overflow-y-hidden lg:inset-0 max-h-full bg-[#4d4d4d]`}
-                        >
-                          <div className="relative w-full h-full max-h-full">
-                            <div className="relative h-full bg-black lg:rounded-lg shadow dark:bg-gray-700">
-                              <div className="absolute right-0 z-30">
-                                <div className="flex justify-end p-2">
-                                  <button
-                                    type="button"
-                                    className="text-[var(--secondary-text)] flex justify-center align-center h-[40px] w-[40px] rounded-full bg-black/30 text-sm p-1.5 ml-auto items-center dark:hover:bg-gray-600 dark:hover:text-[var(--primary-text)]"
-                                    onClick={() =>
-                                      setShowMobilePanelData(false)
-                                    }
-                                  >
-                                    x
-                                    <span className="sr-only">
-                                      Close modal
-                                    </span>
-                                  </button>
-                                </div>
-                              </div>
-                              <div className="p-0 lg:p-6 space-y-6 w-full h-full">
-                                <div className="w-full h-full flex">
-                                  <RightSidebarMobile
-                                    loading={panelDataLoading}
-                                    data={panelData}
-                                    lightMode="light"
-                                    onAnotherPromptClick={
-                                      handleAnotherPromptClick
-                                    }
-                                    onSend={(message: Message) => {
-                                      setShowMobilePanelData(false);
-                                      sendWithRetry(message);
-                                    }}
-                                    onDisplayGallery={
-                                      handleDisplayGallery
-                                    }
-                                  />
-                                </div>
-                              </div>
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
+                  <div className="absolute w-full top-[10%] px-16 flex justify-center">
+                    <img
+                      src={airlineData.logo}
+                      alt="Your travel guide"
+                      className="w-full"
+                    />
+                  </div>
+                  <div className="h-full w-full flex justify-center items-center">
+                    <p className="w-2/3 text-center">
+                      Mobile version is not ready yet. Please, use
+                      desktop version.
+                    </p>
                   </div>
                 </div>
               ) : (
