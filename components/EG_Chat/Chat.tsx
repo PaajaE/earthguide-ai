@@ -69,7 +69,7 @@ function ChatFunction({
 }: Props): JSX.Element {
   const path = usePathname()?.substring(1);
 
-  const [expanded, setExpanded] = useState<boolean>(true);
+  const [expanded, setExpanded] = useState<boolean>(false);
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const chatContainerRef = useRef<HTMLDivElement>(null);

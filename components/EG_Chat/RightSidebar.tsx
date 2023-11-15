@@ -6,15 +6,9 @@ import {
   TranslateResponseBody,
   TypeOfMessage,
   TypeOfPrompt,
-  WhereToDisplay,
 } from '@/types';
-import { EarthGuideReactMarkdown } from './EarthGuideReactMarkdown';
-import { Toggle } from '../Shared/Toggle';
-import { IconArrowBarLeft } from '@tabler/icons-react';
-import { FC, useEffect, useState } from 'react';
-import { ChatMessage } from './ChatMessage';
+import { FC } from 'react';
 import { Button } from '../Shared/Button';
-import { ChatLoader } from './ChatLoader';
 import { FlightForm } from './FlightForm';
 
 interface Props {
@@ -25,6 +19,7 @@ interface Props {
   defaultData: boolean;
   showShadows?: boolean;
   onSend: (message: Message) => void;
+  onChangeFlightParams: (fp: Partial<IFlightParamsConverted>) => void;
   onFormSubmit: (
     flightParams: IFlightParamsConverted,
     defaultFpData: boolean
@@ -39,34 +34,35 @@ export const RightSidebar: FC<Props> = ({
   flightParams,
   defaultData,
   onSend,
+  onChangeFlightParams,
   onFormSubmit,
 }) => {
-  const [fpData, setFpData] =
-    useState<IFlightParamsConverted>(flightParams);
-  const [defaultFpData, setDefaultFpData] =
-    useState<boolean>(defaultData);
+  // const [fpData, setFpData] =
+  //   useState<IFlightParamsConverted>(flightParams);
+  // const [defaultFpData, setDefaultFpData] =
+  //   useState<boolean>(defaultData);
 
   const handleFormSubmit = () => {
-    onFormSubmit(fpData, defaultFpData);
+    // onFormSubmit(fpData, defaultFpData);
   };
 
-  const handleChangeFlightParams = (
-    newFpData: Partial<IFlightParamsConverted>
-  ) => {
-    console.log(newFpData);
-    setFpData((prevData) => {
-      return {
-        ...prevData,
-        ...newFpData,
-      };
-    });
-    setDefaultFpData(false);
-  };
+  // const handleChangeFlightParams = (
+  //   newFpData: Partial<IFlightParamsConverted>
+  // ) => {
+  //   console.log(newFpData);
+  //   setFpData((prevData) => {
+  //     return {
+  //       ...prevData,
+  //       ...newFpData,
+  //     };
+  //   });
+  //   setDefaultFpData(false);
+  // };
 
-  useEffect(() => {
-    setFpData(flightParams);
-    setDefaultFpData(defaultData);
-  }, [flightParams, defaultData]);
+  // useEffect(() => {
+  //   setFpData(flightParams);
+  //   setDefaultFpData(defaultData);
+  // }, [flightParams, defaultData]);
 
   return (
     <div
@@ -78,7 +74,7 @@ export const RightSidebar: FC<Props> = ({
     >
       <div className="w-auto rounded-md overflow-y-auto">
         <div className="text-[var(--tertiary-text)] pb-8 px-4">
-          {fpData && (
+          {flightParams && (
             <div
               className={`flex flex-row justify-start items-start gap-2.5 w-100 box-border bg-[var(--secondary)] rounded-t-[10px] rounded-r-[10px] ${
                 showShadows ? 'shadow-lg' : ''
@@ -88,10 +84,10 @@ export const RightSidebar: FC<Props> = ({
                 className={`p-8 leading-6 flex flex-col w-full font-plus jakarta sans font-[400] text-[var(--secondary-text)]`}
               >
                 <FlightForm
-                  flightParameters={fpData}
+                  flightParameters={flightParams}
                   messageId={''}
                   texts={texts}
-                  onChangeFlightParams={handleChangeFlightParams}
+                  onChangeFlightParams={onChangeFlightParams}
                   onFormSubmit={handleFormSubmit}
                 />
               </div>
