@@ -42,7 +42,6 @@ import {
   extractGpsCoordinates,
 } from '@/utils/app/misc';
 import { Gallery } from '@/components/EG_Chat/Gallery';
-import { RightSidebarMobile } from '@/components/EG_Chat/RightSidebarMobile';
 import { IAirlineDataItem } from '@/utils/data/airlines';
 import { formatDateToYYYYMMDD } from '@/utils/app/flight';
 import { Button } from './Shared/Button';
@@ -235,7 +234,7 @@ export default function Main({
     async (
       message: Message,
       newFpData?: IFlightParamsConverted,
-      defaultFpData?: boolean
+      fpDataDefault?: boolean
     ) => {
       if (selectedConversation) {
         const flightParamsData = newFpData
@@ -514,7 +513,10 @@ export default function Main({
                 flight_params: flightParams
                   ? flightParams
                   : undefined,
-                flight_params_default: defaultFpData,
+                flight_params_default:
+                  fpDataDefault !== undefined
+                    ? fpDataDefault
+                    : defaultFpData,
               })
             );
 
