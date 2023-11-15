@@ -243,13 +243,32 @@ export default function Main({
     [ipData?.gps]
   );
 
+  const getEmptyMessage = (fpDefault: boolean): string => {
+    return fpDefault
+      ? texts?.answer_button1.translation ?? ''
+      : texts?.change_FP.translation ?? '';
+  };
+
   const handleSend = useCallback(
     async (
-      message: Message,
+      messageIncoming: Message,
       newFpData?: IFlightParamsConverted,
       fpDataDefault?: boolean
     ) => {
       if (selectedConversation) {
+        let message: Message;
+        if (messageIncoming.content.length === 0) {
+          message = {
+            ...messageIncoming,
+            content: getEmptyMessage(
+              fpDataDefault !== undefined
+                ? fpDataDefault
+                : defaultFpData
+            ),
+          };
+        } else {
+          message = messageIncoming;
+        }
         const flightParamsData = newFpData
           ? newFpData
           : fpData
@@ -265,17 +284,11 @@ export default function Main({
         });
         let updatedConversation: Conversation;
 
-        // if (!flightParams) {
         updatedConversation = {
           ...selectedConversation,
           messages: [...selectedConversation.messages, message],
         };
         setSelectedConversation(updatedConversation);
-        // } else {
-        //   updatedConversation = {
-        //     ...selectedConversation,
-        //   };
-        // }
 
         const lastMessage = message;
 
