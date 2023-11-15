@@ -177,9 +177,9 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
                 }}
                 className={`text-[var(--primary)] ${
                   !airlinesData[path]
-                    ? 'cursor-pointer'
+                    ? 'cursor-pointer border-b border-[var(--primary)]'
                     : 'cursor-default'
-                } no-underline border-b border-[var(--primary)]`}
+                } no-underline `}
               >
                 {children}
               </button>
