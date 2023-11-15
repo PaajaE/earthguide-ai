@@ -185,6 +185,19 @@ export default function Main({
     }
   };
 
+  const handleChangeFlightParams = (
+    newFpData: Partial<IFlightParamsConverted>
+  ) => {
+    console.log(newFpData);
+    setFpData((prevData) => {
+      return {
+        ...prevData,
+        ...newFpData,
+      };
+    });
+    setDefaultFpData(false);
+  };
+
   const convertFpForSend = useCallback(
     (data: IFlightParamsConverted): IFlightParamsObtained => {
       console.log({ data });
@@ -540,7 +553,9 @@ export default function Main({
     },
     [
       convertFpForSend,
+      defaultFpData,
       deviceType,
+      fpData,
       ipData?.city,
       ipData?.country,
       ipData?.gps,
@@ -961,6 +976,9 @@ export default function Main({
                             defaultData={defaultFpData}
                             onSend={sendWithRetry}
                             onFormSubmit={handleFlightParamsSubmit}
+                            onChangeFlightParams={
+                              handleChangeFlightParams
+                            }
                           />
                         </>
                       )}

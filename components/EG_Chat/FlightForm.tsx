@@ -232,7 +232,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
             />
           )}
         </div>
-        <div className="flex justify-end mt-4">
+        {/* <div className="flex justify-end mt-4">
           <ButtonPrimitive
             className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-lg"
             onClick={(e) => {
@@ -242,7 +242,7 @@ export const FlightForm: React.FC<FormComponentProps> = ({
           >
             {texts?.flights_search_button.translation ?? 'Search'}
           </ButtonPrimitive>
-        </div>
+        </div> */}
       </div>
     </form>
   );
