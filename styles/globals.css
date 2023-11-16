@@ -99,6 +99,21 @@ pre {
   }
 }
 
+.more-tickets-link {
+  padding: 0;
+  padding-top: 0.5rem;
+  display: inline-block;
+}
+
+.more-tickets-link a {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  cursor: pointer;
+  border-bottom: 1px solid var(--primary);
+  color: var(--primary);
+}
+
 p.flights {
   display: inline-flex;
   flex-wrap: wrap;
@@ -121,7 +136,7 @@ strong.flights {
   border-bottom: 1px solid var(--primary);
 }
 
-.no-photos a img {
+.nute-photos a img {
   display: inline;
   width: 12px;
   margin-left: 0.2rem;
