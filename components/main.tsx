@@ -290,7 +290,7 @@ export default function Main({
         };
         setSelectedConversation(updatedConversation);
 
-        const lastMessage = message;
+        const lastMessage = messageIncoming;
 
         const callWS = () => {
           const ws = new WebSocket(
