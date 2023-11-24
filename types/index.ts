@@ -163,6 +163,7 @@ export interface IMapDataObtained {
   location: string;
   photos: string;
   price: string;
+  flightUrl: string;
 }
 
 export interface IMapDataConverted {
@@ -171,6 +172,7 @@ export interface IMapDataConverted {
   locationTitle: string;
   photos: string[];
   price: string;
+  flightUrl: string;
 }
 
 export enum FLIGHT_TYPES {
