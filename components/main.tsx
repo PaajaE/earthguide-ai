@@ -321,8 +321,14 @@ export default function Main({
                       JSON.parse(fixedData);
                     convertedMapData = mapDataObtained.map(
                       (mapLocation) => {
-                        const { id, gps, location, photos, price } =
-                          mapLocation;
+                        const {
+                          id,
+                          gps,
+                          location,
+                          photos,
+                          price,
+                          flightUrl,
+                        } = mapLocation;
                         const locationString =
                           removeMarkdown(location);
                         const photosArr =
@@ -337,6 +343,7 @@ export default function Main({
                           photos: photosArr,
                           locationTitle: locationString,
                           price,
+                          flightUrl,
                         };
                       }
                     );

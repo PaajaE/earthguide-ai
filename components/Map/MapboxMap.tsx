@@ -63,6 +63,11 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
           ) {
             const el = document.createElement('div');
             el.className = 'marker';
+            if (destination.flightUrl) {
+              el.onclick = (ev: MouseEvent) => {
+                window.open(destination.flightUrl);
+              };
+            }
 
             // el.style.width = `64px`;
             el.style.minHeight = `120px`;
@@ -76,7 +81,9 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
             el.style.backgroundRepeat = 'no-repeat';
             el.style.backgroundPosition = 'center';
             el.style.backgroundSize = 'cover';
-            el.style.cursor = 'pointer';
+            el.style.cursor = destination.flightUrl
+              ? 'pointer'
+              : 'not-allowed';
             el.style.border = `5px solid`;
             el.style.borderRadius = `10px`;
             el.style.borderColor = 'var(--tertiary)';
