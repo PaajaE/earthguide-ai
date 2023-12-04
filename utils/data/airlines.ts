@@ -87,12 +87,12 @@ export const airlinesData: IAirlinesData = {
   },
   kiwi: {
     title: 'Kiwi AI Advisor',
-    flightIcon: '/flight_icon_kiwi.svg',
-    logo: '/kiwi-logo.svg',
-    icon: '/kiwi-logo.svg',
+    flightIcon: '/flight_icon_kiwi.svg', // toto si udělám sám
+    logo: '/kiwi-logo.svg', // logo na stránce
+    icon: '/kiwi-logo.svg', // favicon v záložce
     starterMessage:
       'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
-    styles: [
+    styles: [ // tady jsou všechny barvy používané, hoď mi tam prosím jen ty první tři. Ostatní bývají stejné nebo je v případě potřeby jen prohodím
       {
         key: '--primary',
         value: '#00a991',

@@ -16,17 +16,16 @@ export const LeftSidebar: FC<Props> = ({ lightMode, logoPath }) => {
     >
       <div className="overflow-auto flex flex-row-reverse lg:flex-col">
         <div
-          className={`flex items-start lg:justify-center ${
-            !path ? 'w-[50%] justify-end' : 'w-full justify-center'
-          } lg:w-full lg:max-w-[180px]`}
+          className={`flex items-start lg:justify-center w-full justify-center lg:w-full lg:max-w-[180px]`}
         >
           <img
             src={logoPath}
             alt="Your travel guide"
-            className={`${!path ? 'w-full' : 'w-[70%]'}`}
+            className="w-full"
+            // className={`${!path ? 'w-full' : 'w-[70%]'}`}
           />
         </div>
-        {!path && (
+        {/* {!path && (
           <div className={`w-[50%] lg:w-full lg:mt-8`}>
             <img
               src="/unicorn.png"
@@ -34,7 +33,7 @@ export const LeftSidebar: FC<Props> = ({ lightMode, logoPath }) => {
               className="w-full"
             />
           </div>
-        )}
+        )} */}
       </div>
     </div>
   );
