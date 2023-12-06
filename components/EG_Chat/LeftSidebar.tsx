@@ -21,7 +21,7 @@ export const LeftSidebar: FC<Props> = ({ lightMode, logoPath }) => {
           <img
             src={logoPath}
             alt="Your travel guide"
-            className="w-full"
+            className="w-full ml-8"
             // className={`${!path ? 'w-full' : 'w-[70%]'}`}
           />
         </div>
