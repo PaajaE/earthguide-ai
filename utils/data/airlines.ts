@@ -22,8 +22,7 @@ export const airlinesData: IAirlinesData = {
     flightIcon: '/flightIcons/flight_icon.svg',
     logo: '/earth-guide.svg',
     icon: '/earth-guide.ico',
-    starterMessage:
-      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
+    starterMessage: '',
     styles: [
       {
         key: '--primary',
@@ -346,7 +345,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--tertiary',
-        value: '#ACBCD4',
+        value: '#ce210f',
       },
       {
         key: '--primary-text',
@@ -411,12 +410,11 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--secondary',
-        // value: '#e8edf1',
-        value: '#FCE19C',
+        value: '#f4f6f9',
       },
       {
         key: '--tertiary',
-        value: '#9DA9D3',
+        value: '#fbc13b',
       },
       {
         key: '--primary-text',
@@ -726,8 +724,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--secondary',
-        // value: '#e8edf1',
-        value: '#4972D1',
+        value: '#f4f6f9',
       },
       {
         key: '--tertiary',
@@ -817,13 +814,13 @@ export const airlinesData: IAirlinesData = {
       },
     ],
   },
-  norvegian: {
-    title: 'Norvegian AI Advisor',
+  norwegian: {
+    title: 'Norwegian AI Advisor',
     flightIcon: '/flightIcons/flight_icon_norvegian.svg',
     logo: '/norwegian-logo.png',
     icon: '/norwegian-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Norvegian. After being properly implemented with Norvegian’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Norwegian. After being properly implemented with Norvegian’s specific features, I can offer much more.',
     styles: [
       {
         key: '--primary',
@@ -976,7 +973,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--tertiary',
-        value: ' #F4D75F',
+        value: ' #deb92f',
       },
       {
         key: '--primary-text',
@@ -1011,7 +1008,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--tertiary',
-        value: '#e1bf93',
+        value: '#ffd5ad',
       },
       {
         key: '--primary-text',
@@ -1066,7 +1063,7 @@ export const airlinesData: IAirlinesData = {
     title: 'Skyscanner AI Advisor',
     flightIcon: '/flightIcons/flight_icon_skyscanner.svg',
     logo: '/skyscanner-logo.png',
-    icon: '/skyscanner-favi.png',
+    icon: '/skyscanner-favi.jpeg',
     starterMessage:
       'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Skyscanner. After being properly implemented with Skyscanner’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Skyscanner’s search results.',
     styles: [
@@ -1171,7 +1168,7 @@ export const airlinesData: IAirlinesData = {
     title: 'Travala AI Advisor',
     flightIcon: '/flightIcons/flight_icon_travala.svg',
     logo: '/travala-logo.svg',
-    icon: '/travala-favi.png',
+    icon: '/travala-favi.jpeg',
     starterMessage:
       'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Travala. After being properly implemented with Travala’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Travala’s search results.',
     styles: [
