@@ -172,7 +172,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--tertiary',
-        value: '#eee',
+        value: '#fc0',
       },
       {
         key: '--primary-text',
@@ -184,7 +184,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--tertiary-text',
-        value: 'black',
+        value: 'white',
       },
     ],
   },
