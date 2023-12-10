@@ -112,7 +112,7 @@ function ChatFunction({
               <div
                 className={`border-[#000000ff] leading-6 flex flex-col w-full  font-plus jakarta sans  font-[400] text-[var(--tertiary-text)]`}
               >
-                <div>{texts.intro.translation ?? starterMessage}</div>
+                <div>{starterMessage.length > 0 ? starterMessage : texts.intro.translation}</div>
                 <div className="mt-4 text-[var(--primary)] font-medium cursor-pointer">
                   <Collapse
                     label={

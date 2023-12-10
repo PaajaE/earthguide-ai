@@ -225,6 +225,11 @@ input:focus, select:focus {
   filter: var(--tw-blur) var(--tw-brightness) var(--tw-contrast) var(--tw-grayscale) var(--tw-hue-rotate) var(--tw-invert) var(--tw-saturate) var(--tw-sepia) var(--tw-drop-shadow);
 }
 
+.lottie path {
+  fill: var(--primary);
+  stroke: var(--primary);
+}
+
 /* .react-datepicker-wrapper div:has(+ input) {
   justify-content: flex-start;
   width: 150px;
