@@ -91,7 +91,7 @@ export const ChatInput: FC<Props> = ({
 
   return (
     <>
-      <div className="sticky w-full lg:w-[calc(50vw_-_2rem)] p-0 lg:p-4 lg:bottom-4 ">
+      <div className="sticky w-full lg:w-[calc(50vw_-_2rem)] p-0 lg:p-4 bottom-[1px] lg:bottom-4 ">
         <div
           className={`bg-[var(--secondary)] p-4 lg:p-8 rounded-lg ${
             showShadows ? 'shadow-lg' : ''

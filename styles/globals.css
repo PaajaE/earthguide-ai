@@ -15,9 +15,13 @@
 
 body {
   height: 100vh;
-  height: calc(100vh - var(--vh-offset, 0px));
   overflow: hidden;
   font-size: 1.05rem;
+}
+
+main {
+  height: 100vh;
+  height: calc(100vh - var(--vh-offset, 0px));
 }
 
 pre {
