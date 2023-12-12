@@ -29,7 +29,7 @@ export default function App({ Component, pageProps }: AppProps<{}>) {
       `vh: ${test.vh} offset: ${test.offset} windowHeight: ${test.windowHeight} value: ${test.value} is needed: ${test.isNeeded}`
     );
     const r: HTMLElement | null = document.querySelector(':root');
-    r?.style.setProperty('--vh-offset', `${test.offset}px`);
+    r?.style.setProperty('--window-height', `${test.windowHeight}px`);
   })
   return (
     <OrbitProvider

@@ -10,7 +10,7 @@
   --primary-text: white;
   --secondary-text: black;
   --tertiary-text: black;
-  --vh-offset: 0;
+  --window-height: 100vh;
 }
 
 body {
@@ -21,7 +21,7 @@ body {
 
 main {
   height: 100vh;
-  height: calc(100vh - var(--vh-offset, 0px));
+  height: var(--window-height);
 }
 
 pre {
