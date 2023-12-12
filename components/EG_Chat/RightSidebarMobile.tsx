@@ -42,7 +42,7 @@ export const RightSidebarMobile: FC<Props> = ({
           {(data || loading) && (
             <>
               <div
-                className={`border-[#000000ff] p-4 leading-6  font-plus jakarta sans  font-[400] overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_6rem)]`}
+                className={`border-[#000000ff] p-4 leading-6  font-plus jakarta sans  font-[400] overflow-y-auto overflow-x-hidden max-h-[calc(var(--window-height)_-_6rem)]`}
               >
                 {data && (
                   <EarthGuideReactMarkdown

@@ -91,11 +91,11 @@ function ChatFunction({
   ]);
 
   return (
-    <div className="relative flex flex-col justify-between w-auto lg:w-1/2 h-full lg:h-auto lg:min-h-[calc(100vh_-_100px)] max-w-full bg-transparent">
+    <div className="relative flex flex-col justify-between w-auto lg:w-1/2 h-full lg:h-auto lg:min-h-[calc(var(--window-height)_-_100px)] max-w-full bg-transparent">
       <>
         <div>
           <div
-            className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_12rem)] p-4 lg:py-0 lg:px-4"
+            className="overflow-y-auto overflow-x-hidden max-h-[calc(var(--window-height)_-_8rem)] lg:max-h-[calc(var(--window-height)_-_12rem)] p-4 lg:py-0 lg:px-4"
             ref={chatContainerRef}
           >
             {/* {isMobile && (
