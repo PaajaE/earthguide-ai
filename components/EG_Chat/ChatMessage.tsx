@@ -97,7 +97,7 @@ export const ChatMessage: FC<Props> = ({
                 fullWidthMessage ? 'max-w-full' : 'max-w-[85%]'
               } box-border ${showShadows ? 'shadow-lg' : ''} ${
                 message.role === 'user'
-                  ? 'w-fit ml-auto bg-[var(--primary)] rounded-t-lg rounded-bl-lg mb-5'
+                  ? 'w-fit ml-auto bg-[var(--primary)] text-[var(--primary-text)] rounded-t-lg rounded-bl-lg mb-5'
                   : ''
               } ${
                 message.role === 'sample'

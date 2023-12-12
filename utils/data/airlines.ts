@@ -127,7 +127,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/wizzair-logo.png',
     icon: '/wizzair-favicon.png',
     starterMessage:
-      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Wizzair. After being properly implemented with Wizzair’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -161,7 +161,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/vueling-logo.svg',
     icon: '/vueling.ico',
     starterMessage:
-      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Vueling. After being properly implemented with Vueling’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -194,8 +194,10 @@ export const airlinesData: IAirlinesData = {
     flightIcon: '/flightIcons/flight_icon_smartwings.svg',
     logo: '/logo-smartwings.svg',
     icon: '/smartwings.ico',
+    starterMessageCs:
+      'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací se Smartwings. Po správné implementaci specifických funkcí pro Smartwings budu moci nabídnout mnohem více.',
     starterMessage:
-      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Smartwings. After being properly implemented with Smartwings’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -229,7 +231,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/lufthansa-logo.svg',
     icon: '/lufthansa.ico',
     starterMessage:
-      'I am AI travel advisor. With my help, you can quickly discover the perfect flights to your dream destinations.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Lufthansa. After being properly implemented with Lufthansa’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
