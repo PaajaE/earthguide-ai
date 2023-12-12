@@ -5,6 +5,7 @@ interface IAirlinesData {
 export interface IAirlineDataItem {
   title: string;
   starterMessage: string;
+  starterMessageCs?: string;
   flightIcon: string;
   logo: string;
   icon: string;
@@ -56,7 +57,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/austrian-logo.svg',
     icon: '/austrian-logo.svg',
     starterMessage:
-      "Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Austrian Airlines. After being properly implemented with Austrian Airlines' specific features, I can offer much more.",
+      "Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Austrian Airlines. After being properly implemented with Austrian Airlines' specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).",
     styles: [
       {
         key: '--primary',
@@ -168,7 +169,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--secondary',
-        value: '#4d4d4d',
+        value: '#f4f6f9',
       },
       {
         key: '--tertiary',
@@ -176,15 +177,15 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--primary-text',
-        value: '#4d4d4d',
+        value: 'white',
       },
       {
         key: '--secondary-text',
-        value: 'white',
+        value: 'black',
       },
       {
         key: '--tertiary-text',
-        value: 'white',
+        value: 'black',
       },
     ],
   },
@@ -262,7 +263,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/american-logo.png',
     icon: '/american-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with American Airlines. After being properly implemented with American Airlines’ specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with American Airlines. After being properly implemented with American Airlines’ specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -296,8 +297,10 @@ export const airlinesData: IAirlinesData = {
     flightIcon: '/flightIcons/flight_icon_azair.svg',
     logo: '/azair-logo.png',
     icon: '/azair-favi.png',
+    starterMessageCs:
+      'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací s AZair. Po správné implementaci specifických funkcí pro AZair budu moci nabídnout mnohem více. V současné době používám API od Kiwi, ale mohu využívat výsledky vyhledávání od AZair.',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with AZair. After being properly implemented with AZair’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use AZair’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with AZair. After being properly implemented with AZair’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use AZair’s search results.',
     styles: [
       {
         key: '--primary',
@@ -332,7 +335,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/british-logo.png',
     icon: '/british-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with British Airlines. After being properly implemented with British Airlines’ specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with British Airlines. After being properly implemented with British Airlines’ specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -367,7 +370,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/easyjet-logo.png',
     icon: '/easyjet-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with easyJet. After being properly implemented with easyJet’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with easyJet. After being properly implemented with easyJet’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -402,7 +405,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/edreams-logo.png',
     icon: '/edreams-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with eDreams. After being properly implemented with eDream’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use eDream’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with eDreams. After being properly implemented with eDream’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use eDream’s search results.',
     styles: [
       {
         key: '--primary',
@@ -436,11 +439,11 @@ export const airlinesData: IAirlinesData = {
     logo: '/emirates-logo.png',
     icon: '/emirates-logo.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Emirates. After being properly implemented with Emirate’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Emirates. After being properly implemented with Emirate’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
-        value: '#DC0414',
+        value: '#d80212',
       },
       {
         key: '--secondary',
@@ -449,7 +452,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--tertiary',
-        value: '#DC0414',
+        value: '#d80212',
       },
       {
         key: '--primary-text',
@@ -471,7 +474,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/ethiad-logo.png',
     icon: '/ethiad-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Etihad. After being properly implemented with Etihad’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Etihad. After being properly implemented with Etihad’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -506,7 +509,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/eurowings-logo.png',
     icon: '/eurowings-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Eurowings. After being properly implemented with Eurowing’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Eurowings. After being properly implemented with Eurowing’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -541,7 +544,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/finnair-logo.png',
     icon: '/finnair-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Finnair. After being properly implemented with Finnair’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Finnair. After being properly implemented with Finnair’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -576,11 +579,11 @@ export const airlinesData: IAirlinesData = {
     logo: '/gotogate-logo.png',
     icon: '/gotogate-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Gotogate. After being properly implemented with Gotogate’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Gotogate’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Gotogate. After being properly implemented with Gotogate’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Gotogate’s search results.',
     styles: [
       {
         key: '--primary',
-        value: '#0C9CF4',
+        value: '#1097eb',
       },
       {
         key: '--secondary',
@@ -611,7 +614,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/hopper-logo.png',
     icon: '/hopper-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Hopper. After being properly implemented with Hopper’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Hopper’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Hopper. After being properly implemented with Hopper’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Hopper’s search results.',
     styles: [
       {
         key: '--primary',
@@ -646,7 +649,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/jetblue-logo.png',
     icon: '/jetblue-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with jetBlue. After being properly implemented with jetBlue’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with jetBlue. After being properly implemented with jetBlue’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -681,7 +684,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/klm-logo.png',
     icon: '/klm-logo.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with KLM. After being properly implemented with KLM’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with KLM. After being properly implemented with KLM’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -694,7 +697,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--tertiary',
-        value: '#7CD8FC',
+        value: '#04A4E4',
       },
       {
         key: '--primary-text',
@@ -716,7 +719,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/lastminute.com-logo.png',
     icon: '/lastminute-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Lastminute.com. After being properly implemented with Lastminute.com specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Lastminute.com search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Lastminute.com. After being properly implemented with Lastminute.com specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Lastminute.com search results.',
     styles: [
       {
         key: '--primary',
@@ -728,7 +731,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--tertiary',
-        value: '#b5b5b5',
+        value: '#EC2C91',
       },
       {
         key: '--primary-text',
@@ -750,7 +753,9 @@ export const airlinesData: IAirlinesData = {
     logo: '/letuska-logo.png',
     icon: '/letuska-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Letuska.cz. After being properly implemented with Letuska.cz specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Letuska.cz search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Letuska.cz. After being properly implemented with Letuska.cz specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Letuska.cz search results.',
+    starterMessageCs:
+      'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací s Letuska.cz. Po správné implementaci specifických funkcí pro Letuska.cz budu moci nabídnout mnohem více. V současné době používám API od Kiwi, ale mohu využívat výsledky vyhledávání od Letuska.cz.',
     styles: [
       {
         key: '--primary',
@@ -785,7 +790,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/liligo-logo.png',
     icon: '/liligo-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Liligo. After being properly implemented with Liligo’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Liligo’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Liligo. After being properly implemented with Liligo’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Liligo’s search results.',
     styles: [
       {
         key: '--primary',
@@ -820,7 +825,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/norwegian-logo.png',
     icon: '/norwegian-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Norwegian. After being properly implemented with Norvegian’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Norwegian. After being properly implemented with Norvegian’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -855,7 +860,9 @@ export const airlinesData: IAirlinesData = {
     logo: '/pelikan-logo.png',
     icon: '/pelikan-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Pelikán. After being properly implemented with Pelikán’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Pelikán’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Pelikán. After being properly implemented with Pelikán’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Pelikán’s search results.',
+    starterMessageCs:
+      'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací s Pelikánem. Po implementaci specifických funkcí pro Pelikán budu moci nabídnout mnohem více. V současné době používám API od Kiwi, ale mohu využívat výsledky vyhledávání od Pelikána.',
     styles: [
       {
         key: '--primary',
@@ -890,7 +897,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/qantas-logo.png',
     icon: '/qantas-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Qantas. After being properly implemented with Qanta’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Qantas. After being properly implemented with Qanta’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -925,20 +932,19 @@ export const airlinesData: IAirlinesData = {
     logo: '/qatar-logo.png',
     icon: '/qatar-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Qatar. After being properly implemented with Qatar’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Qatar. After being properly implemented with Qatar’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
-        value: '#5c0931',
+        value: '#8e2157',
       },
       {
         key: '--secondary',
-        // value: '#e8edf1',
         value: '#f4f6f9',
       },
       {
         key: '--tertiary',
-        value: '#ffa903',
+        value: '#8e2157',
       },
       {
         key: '--primary-text',
@@ -960,7 +966,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/ryanair-logo.png',
     icon: '/ryanair-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Ryanair. After being properly implemented with Ryanair’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Ryanair. After being properly implemented with Ryanair’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -995,7 +1001,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/sas-logo.png',
     icon: '/sas-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with SAS. After being properly implemented with SAS’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with SAS. After being properly implemented with SAS’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -1030,7 +1036,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/skiplagged-logo.png',
     icon: '/skiplagged-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Skiplagged. After being properly implemented with Skiplagged’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Skiplagged’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Skiplagged. After being properly implemented with Skiplagged’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Skiplagged’s search results.',
     styles: [
       {
         key: '--primary',
@@ -1065,7 +1071,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/skyscanner-logo.png',
     icon: '/skyscanner-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Skyscanner. After being properly implemented with Skyscanner’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Skyscanner’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Skyscanner. After being properly implemented with Skyscanner’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Skyscanner’s search results.',
     styles: [
       {
         key: '--primary',
@@ -1100,7 +1106,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/southwest-logo.png',
     icon: '/southwest-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Southwest. After being properly implemented with Southwest’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Southwest. After being properly implemented with Southwest’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -1135,7 +1141,9 @@ export const airlinesData: IAirlinesData = {
     logo: '/student-logo.png',
     icon: '/student-logo.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Student Agency. After being properly implemented with specific features of Student Agency, I can offer much more. At the moment, I am using API of Kiwi, but I can use Student Agency’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Student Agency. After being properly implemented with specific features of Student Agency, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Student Agency’s search results.',
+    starterMessageCs:
+      'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací se Student Agency. Po správné implementaci specifických funkcí pro Student Agency budu moci nabídnout mnohem více. V současné době používám API od Kiwi, ale mohu využívat výsledky vyhledávání od Student Agency.',
     styles: [
       {
         key: '--primary',
@@ -1170,7 +1178,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/travala-logo.svg',
     icon: '/travala-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Travala. After being properly implemented with Travala’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Travala’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Travala. After being properly implemented with Travala’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Travala’s search results.',
     styles: [
       {
         key: '--primary',
@@ -1205,7 +1213,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/traveloka-logo.png',
     icon: '/traveloka-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Traveloka. After being properly implemented with Traveloka’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Traveloka’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Traveloka. After being properly implemented with Traveloka’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Traveloka’s search results.',
     styles: [
       {
         key: '--primary',
@@ -1240,7 +1248,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/tripadvisor-logo.png',
     icon: '/tripadvisor-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Tripadvisor. After being properly implemented with Tripadvisor’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Tripadvisor’s search results.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Tripadvisor. After being properly implemented with Tripadvisor’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Tripadvisor’s search results.',
     styles: [
       {
         key: '--primary',
@@ -1275,7 +1283,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/united-logo.png',
     icon: '/united-favi.png',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with United. After being properly implemented with United’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with United. After being properly implemented with United’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -1310,7 +1318,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/virgin-logo.png',
     icon: '/virgin-favi.jpeg',
     starterMessage:
-      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Virgin Atlantic. After being properly implemented with Virgin Atlantic’s specific features, I can offer much more.',
+      'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Virgin Atlantic. After being properly implemented with Virgin Atlantic’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',
@@ -1345,7 +1353,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/wow-logo.png',
     icon: '/wow-logo.png',
     starterMessage:
-      ' Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Wow Air. After being properly implemented with Wow Air’s specific features, I can offer much more.',
+      ' Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Wow Air. After being properly implemented with Wow Air’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
       {
         key: '--primary',

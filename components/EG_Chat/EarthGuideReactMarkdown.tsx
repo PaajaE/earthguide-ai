@@ -88,7 +88,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
             return (
               <div
                 className={`order-first mb-4 ${
-                  withPadding ? '' : '-mt-8 -mx-8'
+                  withPadding ? '' : '-mt-3 lg:-mt-8 lg:-mx-8'
                 }`}
                 dangerouslySetInnerHTML={{ __html: div }}
               ></div>
@@ -103,7 +103,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
           } else if (div.includes(`class="no-photos"`)) {
             return (
               <div
-                className="w-100 order-last px-4"
+                className="w-100 order-last px-3 lg:px-4"
                 dangerouslySetInnerHTML={{ __html: div }}
               ></div>
             );
@@ -117,7 +117,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
             );
             return (
               <div
-                className={`w-100 relative -top-3 mb-3 text-justify`}
+                className={`w-100 relative -top-1 lg:-top-3 mb-1 lg:mb-3 lg:text-justify px-3 lg:px-0`}
                 dangerouslySetInnerHTML={{ __html: replacedIconDiv }}
               ></div>
             );
@@ -217,7 +217,7 @@ export const EarthGuideReactMarkdown: FC<Props> = ({
         },
         p({ children }) {
           return (
-            <div className="mb-4 last-of-type:mb-0 text-justify">
+            <div className="mb-4 last-of-type:mb-0 lg:text-justify px-3 lg:px-0">
               {children}
             </div>
           );
