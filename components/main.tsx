@@ -1,4 +1,5 @@
 import { jsonrepair } from 'jsonrepair';
+import vhCheck from 'vh-check';
 import removeMarkdown from 'markdown-to-text';
 import Chat from '@/components/EG_Chat/Chat';
 import {
@@ -45,7 +46,6 @@ import { Gallery } from '@/components/EG_Chat/Gallery';
 import { IAirlineDataItem } from '@/utils/data/airlines';
 import { formatDateToYYYYMMDD } from '@/utils/app/flight';
 import { Button } from './Shared/Button';
-import { useSearchParams } from 'next/navigation';
 
 interface IHandleSendParams {
   message: Message;
@@ -79,7 +79,8 @@ export default function Main({
 }: {
   specificAirlines?: string;
   airlineData: IAirlineDataItem;
-}) {
+  }) {
+
   const [conversations, setConversations] = useState<Conversation[]>(
     []
   );
@@ -815,6 +816,9 @@ export default function Main({
   }, [language, specificAirlines]);
 
   useEffect(() => {
+    const test = vhCheck();
+    console.log({ test });
+
     const ipData = fetchIpData();
     if (!ipData) {
       alert('no ip data');
