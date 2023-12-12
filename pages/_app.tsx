@@ -25,9 +25,6 @@ export default function App({ Component, pageProps }: AppProps<{}>) {
 
   useEffect(() => {
     const test = vhCheck();
-    alert(
-      `vh: ${test.vh} offset: ${test.offset} windowHeight: ${test.windowHeight} value: ${test.value} is needed: ${test.isNeeded}`
-    );
     const r: HTMLElement | null = document.querySelector(':root');
     r?.style.setProperty('--window-height', `${test.windowHeight}px`);
   })

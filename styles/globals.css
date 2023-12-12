@@ -15,6 +15,7 @@
 
 body {
   height: 100vh;
+  height: var(--window-height);
   overflow: hidden;
   font-size: 1.05rem;
 }
