@@ -5,6 +5,7 @@ interface IAirlinesData {
 export interface IAirlineDataItem {
   title: string;
   starterMessage: string;
+  starterMessageCs?: string;
   flightIcon: string;
   logo: string;
   icon: string;
@@ -168,7 +169,7 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--secondary',
-        value: '#4d4d4d',
+        value: '#f4f6f9',
       },
       {
         key: '--tertiary',
@@ -176,15 +177,15 @@ export const airlinesData: IAirlinesData = {
       },
       {
         key: '--primary-text',
-        value: '#4d4d4d',
+        value: 'white',
       },
       {
         key: '--secondary-text',
-        value: 'white',
+        value: 'black',
       },
       {
         key: '--tertiary-text',
-        value: 'white',
+        value: 'black',
       },
     ],
   },
@@ -296,6 +297,7 @@ export const airlinesData: IAirlinesData = {
     flightIcon: '/flightIcons/flight_icon_azair.svg',
     logo: '/azair-logo.png',
     icon: '/azair-favi.png',
+    starterMessageCs: 'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací s AZair. Po správné implementaci specifických funkcí pro AZair budu moci nabídnout mnohem více. V současné době používám API od Kiwi, ale mohu využívat výsledky vyhledávání od AZair.',
     starterMessage:
       'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with AZair. After being properly implemented with AZair’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use AZair’s search results.',
     styles: [
@@ -751,6 +753,8 @@ export const airlinesData: IAirlinesData = {
     icon: '/letuska-favi.png',
     starterMessage:
       'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Letuska.cz. After being properly implemented with Letuska.cz specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Letuska.cz search results.',
+    starterMessageCs:
+      'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací s Letuska.cz. Po správné implementaci specifických funkcí pro Letuska.cz budu moci nabídnout mnohem více. V současné době používám API od Kiwi, ale mohu využívat výsledky vyhledávání od Letuska.cz.',
     styles: [
       {
         key: '--primary',
@@ -856,6 +860,7 @@ export const airlinesData: IAirlinesData = {
     icon: '/pelikan-favi.png',
     starterMessage:
       'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Pelikán. After being properly implemented with Pelikán’s specific features, I can offer much more. At the moment, I am using API of Kiwi, but I can use Pelikán’s search results.',
+    starterMessageCs: 'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací s Pelikánem. Po implementaci specifických funkcí pro Pelikán budu moci nabídnout mnohem více. V současné době používám API od Kiwi, ale mohu využívat výsledky vyhledávání od Pelikána.',
     styles: [
       {
         key: '--primary',
@@ -1136,6 +1141,8 @@ export const airlinesData: IAirlinesData = {
     icon: '/student-logo.png',
     starterMessage:
       'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Student Agency. After being properly implemented with specific features of Student Agency, I can offer much more. At the moment, I am using API of Kiwi, but I can use Student Agency’s search results.',
+    starterMessageCs:
+      'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací se Student Agency. Po správné implementaci specifických funkcí pro Student Agency budu moci nabídnout mnohem více. V současné době používám API od Kiwi, ale mohu využívat výsledky vyhledávání od Student Agency.',
     styles: [
       {
         key: '--primary',

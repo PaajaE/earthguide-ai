@@ -11,12 +11,13 @@ import { IMapDataConverted } from '@/types';
 
 interface Props {
   mapData: IMapDataConverted[];
+  isMobile: boolean;
 }
 
 mapboxgl.accessToken =
   'pk.eyJ1IjoidG9tYXNwYXBpcm5payIsImEiOiJja2p5ZWlqOXUwNzNnMm9tZWk4NXF2ZWNoIn0.ayautXOLSJt0ry3tfXElbw';
 
-const MapboxMap: React.FC<Props> = ({ mapData }) => {
+const MapboxMap: React.FC<Props> = ({ mapData, isMobile }) => {
   const mapContainerRef = useRef<HTMLDivElement | null>(null);
 
   const initMap = useCallback(
@@ -62,22 +63,25 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
             typeof destination.gps.longitude === 'number'
           ) {
             const el = document.createElement('div');
-            el.className = 'marker';
+            el.className =
+              'marker h-20 w-20 lg:h-auto lg:w-auto lg:min-w-[160px] lg:max-w-[200px]';
             if (destination.flightUrl) {
               el.onclick = (ev: MouseEvent) => {
                 window.open(destination.flightUrl);
               };
             }
 
-            // el.style.width = `64px`;
-            el.style.minHeight = `120px`;
-            el.style.minWidth = `160px`;
-            el.style.maxWidth = `200px`;
-
             el.style.backgroundColor = '#e2e2e2';
-            el.style.backgroundImage = `linear-gradient(to top, rgba(78, 78, 78, 0.43) 0%, rgba(255, 255, 255, 0) 40%), url(${
-              destination.photos[0] ?? '/plane.jpg '
-            })`;
+            if (isMobile) {
+              el.style.backgroundImage = `linear-gradient(to top, rgba(78, 78, 78, 0.43) 0%, rgba(255, 255, 255, 0) 80%), url(${
+                destination.photos[0] ?? '/plane.jpg '
+              })`;
+            } else {
+              el.style.backgroundImage = `linear-gradient(to top, rgba(78, 78, 78, 0.43) 0%, rgba(255, 255, 255, 0) 40%), url(${
+                destination.photos[0] ?? '/plane.jpg '
+              })`;
+            }
+
             el.style.backgroundRepeat = 'no-repeat';
             el.style.backgroundPosition = 'center';
             el.style.backgroundSize = 'cover';
@@ -102,7 +106,7 @@ const MapboxMap: React.FC<Props> = ({ mapData }) => {
             }'>${destination.locationTitle}</div>`;
             elChild +=
               destination.price.length > 0
-                ? `<div style='color: white;'>${destination.price}</div>`
+                ? `<div style='color: white; font-size: x-small'>${destination.price}</div>`
                 : '';
             elChild += '</div>';
 

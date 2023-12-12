@@ -98,13 +98,13 @@ function ChatFunction({
             className="overflow-y-auto overflow-x-hidden max-h-[calc(100vh_-_8rem)] lg:max-h-[calc(100vh_-_12rem)] p-4 lg:py-0 lg:px-4"
             ref={chatContainerRef}
           >
-            {isMobile && (
+            {/* {isMobile && (
               <LeftSidebar lightMode="light" logoPath={logoPath} />
-            )}
+            )} */}
 
             <div
-              className={`flex flex-row justify-start items-start gap-2.5 py-4 px-8 ${
-                fullWidthMessage ? 'max-w-full' : 'max-w-[85%]'
+              className={`flex flex-row justify-start items-start gap-2.5 pt-4 py-2 px-4 lg:py4 lg:px-8 ${
+                fullWidthMessage ? 'max-w-full' : 'lg:max-w-[85%]'
               } ${
                 showShadows ? 'shadow-lg' : ''
               } box-border bg-[var(--secondary)] rounded-t-lg rounded-r-lg mb-5`}
@@ -112,7 +112,11 @@ function ChatFunction({
               <div
                 className={`border-[#000000ff] leading-6 flex flex-col w-full  font-plus jakarta sans  font-[400] text-[var(--tertiary-text)]`}
               >
-                <div>{starterMessage.length > 0 ? starterMessage : texts.intro.translation}</div>
+                <div>
+                  {starterMessage.length > 0
+                    ? starterMessage
+                    : texts.intro.translation}
+                </div>
                 <div className="mt-4 text-[var(--primary)] font-medium cursor-pointer">
                   <Collapse
                     label={
@@ -172,68 +176,6 @@ function ChatFunction({
               </div>
             </div>
 
-            <div className="flex lg:hidden flex-col mt-6">
-              <h2 className="text-[var(--tertiary-text)] font-bold mb-4">
-                {texts.examples
-                  ? `${texts.examples.translation}`
-                  : 'Examples'}
-              </h2>
-              <ChatMessage
-                message={{
-                  role: 'sample',
-                  typeOfMessage: TypeOfMessage.TEXT,
-                  content: `${
-                    texts.example1.translation ??
-                    'Affordable beach destinations in Europe. We want to fly in October. For 7 days.'
-                  }`,
-                }}
-                lightMode={lightMode}
-                onSampleClick={(content) => {
-                  onSend({
-                    role: 'user',
-                    typeOfMessage: TypeOfMessage.TEXT,
-                    content,
-                  });
-                }}
-              />
-              <ChatMessage
-                message={{
-                  role: 'sample',
-                  typeOfMessage: TypeOfMessage.TEXT,
-                  content: `${
-                    texts.example2.translation ??
-                    'Flight to UNESCO site. City break for 4 days, November, warm weather'
-                  }`,
-                }}
-                lightMode={lightMode}
-                onSampleClick={(content) => {
-                  onSend({
-                    role: 'user',
-                    typeOfMessage: TypeOfMessage.TEXT,
-                    content,
-                  });
-                }}
-              />
-              <ChatMessage
-                message={{
-                  role: 'sample',
-                  typeOfMessage: TypeOfMessage.TEXT,
-                  content: `${
-                    texts.example3.translation ??
-                    'Flight next weekend to destination with good weather and hiking trails with elevation at least 1000 m.'
-                  }`,
-                }}
-                lightMode={lightMode}
-                onSampleClick={(content) => {
-                  onSend({
-                    role: 'user',
-                    typeOfMessage: TypeOfMessage.TEXT,
-                    content,
-                  });
-                }}
-              />
-            </div>
-
             {conversation.messages.length === 0 ? (
               <></>
             ) : (
@@ -261,6 +203,7 @@ function ChatFunction({
                       onSend(message);
                     }}
                     onRateAnswer={onRateAnswer}
+                    isMobile={isMobile}
                     onDisplayGallery={onDisplayGallery}
                   />
                 ))}
