@@ -817,7 +817,7 @@ export default function Main({
 
   useEffect(() => {
     const test = vhCheck();
-    console.log({ test });
+    alert(`vh: ${test.vh} offset: ${test.offset} windowHeight: ${test.windowHeight} value: ${test.value} is needed: ${test.isNeeded}`);
 
     const ipData = fetchIpData();
     if (!ipData) {
