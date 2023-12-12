@@ -1,4 +1,5 @@
 import { jsonrepair } from 'jsonrepair';
+import vhCheck from 'vh-check';
 import removeMarkdown from 'markdown-to-text';
 import Chat from '@/components/EG_Chat/Chat';
 import {
@@ -45,7 +46,6 @@ import { Gallery } from '@/components/EG_Chat/Gallery';
 import { IAirlineDataItem } from '@/utils/data/airlines';
 import { formatDateToYYYYMMDD } from '@/utils/app/flight';
 import { Button } from './Shared/Button';
-import { useSearchParams } from 'next/navigation';
 
 interface IHandleSendParams {
   message: Message;
@@ -79,7 +79,8 @@ export default function Main({
 }: {
   specificAirlines?: string;
   airlineData: IAirlineDataItem;
-}) {
+  }) {
+
   const [conversations, setConversations] = useState<Conversation[]>(
     []
   );
@@ -806,6 +807,7 @@ export default function Main({
 
   useEffect(() => {
     if (language) {
+      console.log({language})
       fetchTranslation({
         language_of_browser: language,
         specific_airlines: specificAirlines,
@@ -814,6 +816,9 @@ export default function Main({
   }, [language, specificAirlines]);
 
   useEffect(() => {
+    const test = vhCheck();
+    console.log({ test });
+
     const ipData = fetchIpData();
     if (!ipData) {
       alert('no ip data');
@@ -936,19 +941,50 @@ export default function Main({
                 <div
                   className={`relative flex lg:hidden flex-col justify-start h-screen w-full text-black`}
                 >
-                  <div className="absolute w-full top-[10%] px-16 flex justify-center">
-                    <img
-                      src={airlineData.logo}
-                      alt="Your travel guide"
-                      className="w-full"
+                  <div className="sticky w-full max-h-[72px] px-4 py-2">
+                    <div className="w-full h-full flex justify-start items-center">
+                      <img
+                        src={airlineData.logo}
+                        alt="Your travel guide"
+                        className="h-[48px] object-center"
+                      />
+                    </div>
+                  </div>
+                  <div className="w-full h-full flex">
+                    <Chat
+                      conversation={selectedConversation}
+                      messageIsStreaming={messageIsStreaming}
+                      messageError={messageError}
+                      lightMode={lightMode}
+                      logoPath={airlineData.logo}
+                      starterMessage={
+                        language === 'cs'
+                          ? airlineData?.starterMessageCs ??
+                            airlineData.starterMessage
+                          : airlineData.starterMessage
+                      }
+                      texts={texts}
+                      shouldScrollToBottom={shouldScrollToBottom}
+                      fullWidthMessage={fullWidthMessage}
+                      withPadding={withPadding}
+                      showShadows={showShadows}
+                      promptPlaceholder={promptPlaceholder}
+                      onSend={sendWithRetry}
+                      onRateAnswer={handleRateAnswer}
+                      onAnotherPromptClick={handleAnotherPromptClick}
+                      onDisplayGallery={handleDisplayGallery}
+                      isMobile={isMobileDevice}
+                      onDisallowScrollToBottom={() => {
+                        setShouldScrollToBottom(false);
+                      }}
                     />
                   </div>
-                  <div className="h-full w-full flex justify-center items-center">
+                  {/* <div className="h-full w-full flex justify-center items-center">
                     <p className="w-2/3 text-center">
                       Mobile version is not ready yet. Please, use
                       desktop version.
                     </p>
-                  </div>
+                  </div> */}
                 </div>
               ) : (
                 <div
@@ -967,7 +1003,12 @@ export default function Main({
                         messageError={messageError}
                         lightMode={lightMode}
                         logoPath={airlineData.logo}
-                        starterMessage={airlineData.starterMessage}
+                        starterMessage={
+                          language === 'cs'
+                            ? airlineData?.starterMessageCs ??
+                              airlineData.starterMessage
+                            : airlineData.starterMessage
+                        }
                         texts={texts}
                         shouldScrollToBottom={shouldScrollToBottom}
                         fullWidthMessage={fullWidthMessage}

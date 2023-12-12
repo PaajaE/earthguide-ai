@@ -6,6 +6,7 @@ import {
   TypeOfMessage,
 } from '@/types';
 import { ButtonPrimitive } from '@kiwicom/orbit-components';
+import { Send } from "@kiwicom/orbit-components/icons"
 import {
   FC,
   KeyboardEvent,
@@ -90,16 +91,16 @@ export const ChatInput: FC<Props> = ({
 
   return (
     <>
-      <div className="sticky lg:w-[calc(50vw_-_2rem)] lg:p-4 ">
+      <div className="sticky w-full lg:w-[calc(50vw_-_2rem)] p-0 lg:p-4 lg:bottom-4 ">
         <div
-          className={`bg-[var(--secondary)] p-8 rounded-lg ${
+          className={`bg-[var(--secondary)] p-4 lg:p-8 rounded-lg ${
             showShadows ? 'shadow-lg' : ''
           }`}
         >
           <div className="flex gap-2">
             <textarea
               ref={textareaRef}
-              className="pl-4 pr-8 pt-[0.8rem] pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-lg  bg-[rgba(255,255,255,1)] text-[var(--tertiary-text)] drop-shadow-md"
+              className="pl-2 pr-4 py-[0.35rem] lg:pl-4 lg:pr-8 lg:pt-[0.8rem] lg:pb-[0.7rem] pb w-full border-[#979797ff] border-solid rounded-md lg:rounded-lg  bg-[rgba(255,255,255,1)] text-[var(--tertiary-text)] drop-shadow-md"
               style={{
                 resize: 'none',
                 bottom: `${textareaRef?.current?.scrollHeight}px`,
@@ -115,14 +116,15 @@ export const ChatInput: FC<Props> = ({
               onKeyDown={handleKeyDown}
             />
             <ButtonPrimitive
-              className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-3 px-6 rounded-lg"
+              className="bg-[var(--primary)] text-white hover:bg-white hover:text-[var(--primary)] border-[1px] border-[var(--primary)] font-semibold py-1 px-3 lg:py-3 lg:px-6 rounded-md lg:rounded-lg"
               onClick={handleSend}
+              iconLeft={isMobile && <Send/>}
             >
-              {texts.prompt_button.translation}
+              {!isMobile && texts.prompt_button.translation}
             </ButtonPrimitive>
           </div>
 
-          <p className="relative mt-2 text-[var(--secondary-text)] text-[0.65rem] w-full flex-col justify-center text-center">
+          <p className="hidden lg:flex relative mt-2 text-[var(--secondary-text)] text-[0.65rem] w-full flex-col justify-center text-center">
             {texts.text_under_prompt.translation}
 
             <a

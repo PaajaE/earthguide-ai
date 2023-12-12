@@ -27,6 +27,7 @@ interface Props {
   fullWidthMessage?: boolean;
   showShadows?: boolean;
   withPadding?: boolean;
+  isMobile: boolean;
   onAnotherPromptClick?: (
     typeOfPrompt: TypeOfPrompt,
     id: string
@@ -48,6 +49,7 @@ export const ChatMessage: FC<Props> = ({
   showShadows = false,
   withPadding = false,
   onSend,
+  isMobile,
   onRateAnswer,
   onAnotherPromptClick,
   onSampleClick,
@@ -63,8 +65,10 @@ export const ChatMessage: FC<Props> = ({
         <>
           {message.role === 'earth.guide' ? (
             <div
-              className={`flex flex-row justify-start items-start gap-2.5 px-8 py-8 w-auto bg-[var(--secondary)] rounded-t-lg rounded-r-lg mb-1 ${
-                fullWidthMessage ? 'max-w-full' : 'max-w-[85%]'
+              className={`flex flex-row justify-start items-start gap-2.5 py-3 lg:px-8 lg:py-8 w-auto bg-[var(--secondary)] rounded-t-lg rounded-r-lg mb-1 ${
+                fullWidthMessage
+                  ? 'max-w-full'
+                  : 'max-w-[90%] lg:max-w-[85%]'
               } box-border ${showShadows ? 'shadow-lg' : ''}${
                 streamingFinished
                   ? "after:content-['✓'] after:absolute after:bottom-1 after:right-2 after:text-slate-200"
@@ -89,7 +93,7 @@ export const ChatMessage: FC<Props> = ({
             </div>
           ) : (
             <div
-              className={`flex flex-row justify-start items-start gap-2.5 py-4 px-8 ${
+              className={`flex flex-row justify-start items-start gap-2.5 px-3 py-3 lg:px-8 ${
                 fullWidthMessage ? 'max-w-full' : 'max-w-[85%]'
               } box-border ${showShadows ? 'shadow-lg' : ''} ${
                 message.role === 'user'
@@ -227,14 +231,14 @@ export const ChatMessage: FC<Props> = ({
           <>
             {message.mapData && message.mapData.length > 0 && (
               <div
-                className={`flex flex-row justify-start items-start gap-2.5 mb-5 w-auto max-w-[85%] box-border rounded-lg ${
+                className={`flex flex-row justify-start items-start gap-2.5 mb-5 w-auto lg:max-w-[85%] box-border rounded-lg ${
                   showShadows ? 'shadow-lg' : ''
                 }`}
               >
                 <div
                   className={`border-[#000000ff] leading-6 flex flex-col relative w-full h-[50vh] font-plus jakarta sans  font-[400] text-[var(--secondary-text)] rounded-lg`}
                 >
-                  <MapboxMap mapData={message.mapData} />
+                  <MapboxMap mapData={message.mapData} isMobile={isMobile} />
                 </div>
               </div>
             )}
