@@ -64,7 +64,7 @@ const MapboxMap: React.FC<Props> = ({ mapData, isMobile }) => {
           ) {
             const el = document.createElement('div');
             el.className =
-              'marker h-20 w-20 lg:h-auto lg:w-auto lg:min-w-[160px] lg:max-w-[200px]';
+              'marker h-20 w-20 lg:h-unset lg:w-auto lg:min-w-[160px] lg:max-w-[200px] lg:min-h-[120px]';
             if (destination.flightUrl) {
               el.onclick = (ev: MouseEvent) => {
                 window.open(destination.flightUrl);
@@ -106,7 +106,7 @@ const MapboxMap: React.FC<Props> = ({ mapData, isMobile }) => {
             }'>${destination.locationTitle}</div>`;
             elChild +=
               destination.price.length > 0
-                ? `<div style='color: white; font-size: x-small'>${destination.price}</div>`
+                ? `<div style='color: white; font-size: x-small lg:small'>${destination.price}</div>`
                 : '';
             elChild += '</div>';
 

@@ -1,5 +1,4 @@
 import { jsonrepair } from 'jsonrepair';
-import vhCheck from 'vh-check';
 import removeMarkdown from 'markdown-to-text';
 import Chat from '@/components/EG_Chat/Chat';
 import {
@@ -816,9 +815,6 @@ export default function Main({
   }, [language, specificAirlines]);
 
   useEffect(() => {
-    const test = vhCheck();
-    console.log({ test });
-
     const ipData = fetchIpData();
     if (!ipData) {
       alert('no ip data');
@@ -939,7 +935,7 @@ export default function Main({
             <>
               {isMobileDevice ? (
                 <div
-                  className={`relative flex lg:hidden flex-col justify-start h-screen w-full text-black`}
+                  className={`relative flex lg:hidden flex-col justify-start h-full w-full text-black`}
                 >
                   <div className="sticky w-full max-h-[72px] px-4 py-2">
                     <div className="w-full h-full flex justify-start items-center">
@@ -988,7 +984,7 @@ export default function Main({
                 </div>
               ) : (
                 <div
-                  className={`hidden lg:flex flex-col h-screen w-100 text-[var(--primary-text)] ${lightMode}`}
+                  className={`hidden lg:flex flex-col h-[var(--window-height)] w-100 text-[var(--primary-text)] ${lightMode}`}
                 >
                   <div className="h-full w-full p-4">
                     <div className="flex gap-8 w-full h-full bg-[#FAFAFA] py-4 rounded-md">

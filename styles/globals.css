@@ -10,13 +10,19 @@
   --primary-text: white;
   --secondary-text: black;
   --tertiary-text: black;
+  --window-height: 100vh;
 }
 
 body {
   height: 100vh;
-  height: calc(100vh - var(--vh-offset, 0px));
+  height: var(--window-height);
   overflow: hidden;
   font-size: 1.05rem;
+}
+
+main {
+  height: 100vh;
+  height: var(--window-height);
 }
 
 pre {
