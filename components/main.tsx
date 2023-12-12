@@ -818,6 +818,10 @@ export default function Main({
   useEffect(() => {
     const test = vhCheck();
     alert(`vh: ${test.vh} offset: ${test.offset} windowHeight: ${test.windowHeight} value: ${test.value} is needed: ${test.isNeeded}`);
+    if (test.isNeeded) {
+      const r: HTMLElement | null = document.querySelector(':root');
+      r?.style.setProperty('--vh-offset', `${test.offset}px`);
+    }
 
     const ipData = fetchIpData();
     if (!ipData) {
