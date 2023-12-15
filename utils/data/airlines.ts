@@ -195,7 +195,7 @@ export const airlinesData: IAirlinesData = {
     logo: '/logo-smartwings.svg',
     icon: '/smartwings.ico',
     starterMessageCs:
-      'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací se Smartwings. Po správné implementaci specifických funkcí pro Smartwings budu moci nabídnout mnohem více.',
+      'Ahoj, jsem tvůj AI cestovní poradce. Budu ti asistovat při objevování snových destinací se Smartwings. Po správné implementaci specifických funkcí pro Smartwings budu moci nabídnout mnohem více (včetně ukazování letenek z Vašich weobých stránek a ne extermích API).',
     starterMessage:
       'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Smartwings. After being properly implemented with Smartwings’s specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs).',
     styles: [
@@ -718,8 +718,8 @@ export const airlinesData: IAirlinesData = {
   lastminute: {
     title: 'Lastminute.com AI Advisor',
     flightIcon: '/flightIcons/flight_icon_lastminute.svg',
-    logo: '/lastminute.com-logo.png',
-    icon: '/lastminute-favi.jpeg',
+    logo: '/earth-guide.svg',
+    icon: '/earth-guide.ico',
     starterMessage:
       'Hello, I am your AI travel advisor. I will assist you in discovering dream destinations with Lastminute.com. After being properly implemented with Lastminute.com specific features, I can offer much more (inlcuding showing flight tickets from your websites and not external APIs). At the moment, I am using API of Kiwi, but I can use Lastminute.com search results.',
     styles: [
