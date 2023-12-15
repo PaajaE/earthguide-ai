@@ -45,7 +45,11 @@ export default function Page() {
         />
         <link rel="icon" href={data.icon} />
       </Head>
-      <Main specificAirlines={path} airlineData={data} />
+      {path ? (
+        <Main specificAirlines={path} airlineData={data} />
+      ) : (
+        <></>
+      )}
     </>
   );
 }
